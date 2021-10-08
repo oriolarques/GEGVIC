@@ -1,46 +1,43 @@
-#' Title
+#' @title ge_pca
 #'
-#' @param data Data frame that contains the gene expression data
-#' @param gs
-#' @param metadata Data frame that contains supporting variables to the data
-#' such as sample groups, treatments, etc.
-#' @param group Unquoted name of the column in the metadata where the grouping factor is
-#' located.
-#' @param colors Character vector indicating the colors of the different groups
-#' to compare. Default values are black and orange
-
+#' @description
 #'
-#' @return
+#' @param counts Data frame that contains gene expression data as raw counts.
+#' @param genes_id Name of the column that contains gene identifiers. Should be
+#' one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param design Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.
+#' @param colors  Character vector indicating the colors of the different groups
+#' to compare. Default values are two: black and orange.
+#'
+#' @return Returns a ggplot object.
+#'
 #' @export
 #'
 #' @import DESeq2
 #' @import dplyr
 #' @import ggplot2
+#' @import tibble
 #'
 #' @examples
 #'
-ge_pca <- function(data,
-                   gs,
+ge_pca <- function(counts,
+                   genes_id,
                    metadata,
-                   group,
+                   design,
                    colors = c('black', 'orange')) {
 
-    group <- enquo(group)
-
-    # Get gene symbols as rownames
-    data <- data %>%
-        column_to_rownames(gs)
+    # Preprocess counts data
+    counts <- preprocess_ge_counts(counts = counts,
+                                   genes_id = genes_id)
 
     # Get patient ID's as rownames
-    metadata <- metadata %>%
-        mutate(!!group := as.factor(!!group)) %>%
-        column_to_rownames('Samples')
+    metadata <- preprocess_ge_meta(metadata = metadata)
 
-    print(metadata)
     # Create DESeq2Dataset object
-    dds <- DESeqDataSetFromMatrix(countData = data,
+    dds <- DESeqDataSetFromMatrix(countData = counts,
                                   colData = metadata,
-                                  design = formula(paste('~', group, collapse = " ")))
+                                  design = formula(paste('~', design, collapse = " ")))
     # Generate  normalized counts
     dds <- estimateSizeFactors(dds)
 

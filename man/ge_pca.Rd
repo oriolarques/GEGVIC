@@ -2,27 +2,28 @@
 % Please edit documentation in R/ge_pca.R
 \name{ge_pca}
 \alias{ge_pca}
-\title{Title}
+\title{ge_pca}
 \usage{
-ge_pca(data, gs, metadata, group, colors = c("black", "orange"))
+ge_pca(counts, genes_id, metadata, design, colors = c("black", "orange"))
 }
 \arguments{
-\item{data}{Data frame that contains the gene expression data}
+\item{counts}{Data frame that contains gene expression data as raw counts.}
 
-\item{metadata}{Data frame that contains supporting variables to the data
-such as sample groups, treatments, etc.}
+\item{genes_id}{Name of the column that contains gene identifiers. Should be
+one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
 
-\item{group}{Name of the column in the metadata where the grouping factor is
-located.}
+\item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{design}{Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.}
 
 \item{colors}{Character vector indicating the colors of the different groups
-to compare. Default values are black and orange}
+to compare. Default values are two: black and orange.}
 }
 \value{
-
+Returns a ggplot object.
 }
 \description{
-Title
+
 }
 \examples{
 
