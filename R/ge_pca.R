@@ -31,7 +31,7 @@ ge_pca <- function(counts,
     counts <- preprocess_ge_counts(counts = counts,
                                    genes_id = genes_id)
 
-    # Get patient ID's as rownames
+    # Preprocess metadata
     metadata <- preprocess_ge_meta(metadata = metadata)
 
     # Create DESeq2Dataset object
