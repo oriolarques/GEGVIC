@@ -4,14 +4,18 @@
 \alias{ge_annot}
 \title{Title}
 \usage{
-ge_annot(x)
+ge_annot(results_dds, genes_id)
 }
 \arguments{
-\item{x}{}
+\item{genes_id}{Name of the column that contains gene identifiers. Should be
+one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
 }
 \value{
 
 }
 \description{
 Title
+}
+\examples{
+ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
 }

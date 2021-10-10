@@ -7,8 +7,10 @@
 #' one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param design Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.
-#' @param ref_level Name of the level to be used as a reference when calculating
-#' differential gene expression.
+#' @param ref_level Character vector where the first element is the column name
+#' where the reference level is located and a second element indicating the name
+#' of level to be used as a reference when calculating differential gene
+#' expression.
 #'
 #' @return Returns a list of differential gene expression results, one for each
 #' level comparison, in form of DESeqResults objects.
@@ -21,6 +23,10 @@
 #' @import tibble
 #'
 #' @examples
+#' results_dds <- ge_diff_exp(counts = input_ge_module,
+#' genes_id = 'entrezgene_id', metadata = metadata_ge_module,
+#' design = 'Response', ref_level = c('Response', 'Non_Responders'))
+#'
 ge_diff_exp <- function(counts,
                         genes_id,
                         metadata,
@@ -41,7 +47,7 @@ ge_diff_exp <- function(counts,
                                   design = formula(paste('~', design, collapse = " ")))
 
     # Define the reference level in the grouping variable
-    dds[[ref_level]] <- relevel(dds[[ref_level]], ref = ref_level)
+    dds[[ref_level[1]]] <- relevel(dds[[ref_level[1]]], ref = ref_level[2])
 
     # Compute differential gene expression using DESeq ------------------------
     dds <- DESeq(dds)

@@ -16,13 +16,21 @@ one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
 
 \item{design}{Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.}
 
-\item{ref_level}{Name of the level to be used as a reference when calculating
-differential gene expression.}
+\item{ref_level}{Character vector where the first element is the column name
+where the reference level is located and a second element indicating the name
+of level to be used as a reference when calculating differential gene
+expression.}
 }
 \value{
 Returns a list of differential gene expression results, one for each
 level comparison, in form of DESeqResults objects.
 }
 \description{
+
+}
+\examples{
+results_dds <- ge_diff_exp(counts = input_ge_module,
+genes_id = 'entrezgene_id', metadata = metadata_ge_module,
+design = 'Response', ref_level = c('Response', 'Non_Responders'))
 
 }
