@@ -4,7 +4,7 @@
 #'
 #' @param counts Data frame that contains gene expression data as raw counts.
 #' @param genes_id Name of the column that contains gene identifiers. Should be
-#' one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.
+#' one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param design Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.
 #' @param ref_level Character vector where the first element is the column name
@@ -18,14 +18,17 @@
 #' @export
 #'
 #' @import DESeq2
+#' @import apeglm
 #' @import dplyr
 #' @import ggplot2
 #' @import tibble
 #'
 #' @examples
 #' results_dds <- ge_diff_exp(counts = input_ge_module,
-#' genes_id = 'entrezgene_id', metadata = metadata_ge_module,
-#' design = 'Response', ref_level = c('Response', 'Non_Responders'))
+#'                            genes_id = 'entrezgene_id',
+#'                            metadata = metadata_ge_module,
+#'                            design = 'Response',
+#'                            ref_level = c('Response', 'Non_Responders'))
 #'
 ge_diff_exp <- function(counts,
                         genes_id,
@@ -58,7 +61,7 @@ ge_diff_exp <- function(counts,
     results_dds <- list()
 
     # Iterate over the different comparisons
-    for(i in seq(from = 2, to = length(resultsNames(dds)))){
+    for (i in seq(from = 2, to = length(resultsNames(dds)))) {
         # Calculate shrinkage estimators and save results in the results_dds list
         results_dds[[i-1]] <- lfcShrink(dds = dds,
                                         coef = resultsNames(dds)[i],

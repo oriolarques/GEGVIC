@@ -2,19 +2,24 @@
 % Please edit documentation in R/ge_annot.R
 \name{ge_annot}
 \alias{ge_annot}
-\title{Title}
+\title{ge_annot}
 \usage{
 ge_annot(results_dds, genes_id)
 }
 \arguments{
+\item{results_dds}{The output of the ge_diff_exp function. List containing
+data frames of differential gene expression results between the different groups.}
+
 \item{genes_id}{Name of the column that contains gene identifiers. Should be
-one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
+one of the following: 'ensembl_gene_id', 'entrezgene_id' or 'hgnc_symbol'.}
 }
 \value{
-
+Returns a list of data frames containing differential gene expression
+results, one for each level comparison where genes have been annotated using
+the hgnc_symbol: Hugo Gene Nomenclature Committee nomenclature.
 }
 \description{
-Title
+
 }
 \examples{
 ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')

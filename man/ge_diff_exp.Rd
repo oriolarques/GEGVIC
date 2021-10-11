@@ -10,7 +10,7 @@ ge_diff_exp(counts, genes_id, metadata, design, ref_level)
 \item{counts}{Data frame that contains gene expression data as raw counts.}
 
 \item{genes_id}{Name of the column that contains gene identifiers. Should be
-one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
+one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
 
 \item{metadata}{Data frame that contains supporting variables to the data.}
 
@@ -30,7 +30,9 @@ level comparison, in form of DESeqResults objects.
 }
 \examples{
 results_dds <- ge_diff_exp(counts = input_ge_module,
-genes_id = 'entrezgene_id', metadata = metadata_ge_module,
-design = 'Response', ref_level = c('Response', 'Non_Responders'))
+                           genes_id = 'entrezgene_id',
+                           metadata = metadata_ge_module,
+                           design = 'Response',
+                           ref_level = c('Response', 'Non_Responders'))
 
 }
