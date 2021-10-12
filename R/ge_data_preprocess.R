@@ -12,13 +12,14 @@
 #'
 #' @import dplyr
 #' @import tibble
+#'
 #' @examples
 #'
 preprocess_ge_counts <- function(counts,
                                  genes_id) {
     # Get gene symbols as rownames
     counts <- counts %>%
-        column_to_rownames(genes_id)
+        tibble::column_to_rownames(genes_id)
 
     return(counts)
 
@@ -43,8 +44,8 @@ preprocess_ge_counts <- function(counts,
 preprocess_ge_meta <- function(metadata) {
     # Get patient ID's as rownames
     metadata <- metadata %>%
-        mutate_all(., as.factor) %>%
-        column_to_rownames('Samples')
+        dplyr::mutate_all(., as.factor) %>%
+        tibble::column_to_rownames('Samples')
 
     return(metadata)
 

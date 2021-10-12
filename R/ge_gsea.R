@@ -1,14 +1,28 @@
-#' Title
+#' @title ge_gsea
 #'
-#' @param annot_res
-#' @param gmt
-#' @param gsea_pvalue
+#' @description
+#'
+#' @param annot_res The output of ge_annot. List containing data frames of
+#' differential gene expression results between the different groups.
+#' @param gmt A data frame containg the gene sets to analyse usgin GSEA. This
+#' object should be obtained using the read.gmt function from the clusterProfiler
+#' package.
+#' @param gsea_pvalue Numeric value to define the adjusted pvalue cutoff during
+#' GSEA. Set to 0.2 by default.
 #'
 #' @return
+#'
 #' @export
 #'
+#' @import dplyr
+#' @import clusterProfiler
+#' @import GSEAmining
+#'
 #' @examples
-ge_gsea <- function(annot_res, gmt, gsea_pvalue = 0.05) {
+#'
+ge_gsea <- function(annot_res,
+                    gmt,
+                    gsea_pvalue = 0.2) {
 
     # 1. Obtain geneLists
         ## Create a list to store as many geneList as conditions
@@ -37,7 +51,7 @@ ge_gsea <- function(annot_res, gmt, gsea_pvalue = 0.05) {
             names(geneLists)[i] <- paste0('geneList_', names(annot_res)[i])
         }
 
-        # 2. Perform GSEA
+        # 3. Perform GSEA
             ## Create an empty list to store GSEA results
             GSEA.res <- list()
             temp_gsea <- NULL
@@ -46,7 +60,8 @@ ge_gsea <- function(annot_res, gmt, gsea_pvalue = 0.05) {
             ### Iterate over the annotated results list
             for (i in seq_along(annot_res)) {
                 temp_gsea <- GSEA(geneList = geneLists[[i]],
-                                  TERM2GENE = gmt)
+                                  TERM2GENE = gmt,
+                                  pvalueCutoff = gsea_pvalue)
                 # Delay the next process 0.5 seconds
                 Sys.sleep(0.5)
                 # Save the GSEA results
@@ -79,6 +94,5 @@ ge_gsea <- function(annot_res, gmt, gsea_pvalue = 0.05) {
                                            hc = gs.cl))
 
             }
-
 
 }

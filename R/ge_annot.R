@@ -15,6 +15,7 @@
 #'
 #' @import DESeq2
 #' @import dplyr
+#' @import tibble
 #' @import rlang
 #'
 #' @examples
@@ -36,34 +37,34 @@ ge_annot <- function(results_dds,
 
         # Get the results as a data frame
         # First evaluate if genes are annotated already as hgnc_symbol
-        if (as_name(genes_id) != 'hgnc_symbol'){
+        if (rlang::as_name(genes_id) == 'hgnc_symbol'){
             # If so:
             temp_df <- as.data.frame(results_dds[[i]]) %>%
                 # Rownames to column with the name indicated in the genes_id parameter
-                rownames_to_column(as_name(genes_id)) %>%
+                tibble::rownames_to_column(rlang::as_name(genes_id)) %>%
                 # Filter those missing gene symbols
-                filter(hgnc_symbol!='') %>%
+                dplyr::filter(hgnc_symbol != '') %>%
                 # Remove duplicated genes
-                distinct(hgnc_symbol, .keep_all = TRUE)
+                dplyr::distinct(hgnc_symbol, .keep_all = TRUE)
 
         } else {
             # If genes are identified as entrezgene_id or ensembl_gene_id:
             temp_df <- as.data.frame(results_dds[[i]]) %>%
                 # Rownames to column with the name indicated in the genes_id parameter
-                rownames_to_column(as_name(genes_id)) %>%
+                tibble::rownames_to_column(rlang::as_name(genes_id)) %>%
                 # Join the data frame with the GRCh38_p13 biomaRt table stored in data
-                inner_join(x = .,
+                dplyr::inner_join(x = .,
                            y = ensembl_biomart_GRCh38_p13 %>%
                                mutate(entrezgene_id = as.character(entrezgene_id)),
-                           by = as_name(genes_id)) %>%
+                           by = rlang::as_name(genes_id)) %>%
                 # From all annotation columns keep only hgnc symbol column
                 dplyr::select(hgnc_symbol,
                               everything(),
                               -c(entrezgene_id, ensembl_gene_id)) %>%
                 # Filter those missing gene symbols
-                filter(hgnc_symbol!='') %>%
+                dplyr::filter(hgnc_symbol != '') %>%
                 # Remove duplicated genes
-                distinct(hgnc_symbol, .keep_all = TRUE)
+                dplyr::distinct(hgnc_symbol, .keep_all = TRUE)
         }
         # Store the results in the list
         results_dds.annot[[i]] <- temp_df

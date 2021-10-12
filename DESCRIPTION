@@ -16,7 +16,12 @@ Imports:
     dplyr,
     ggplot2,
     DESeq2,
-    tibble
+    tibble,
+    apeglm,
+    rlang,
+    ggrepel,
+    clusterProfiler,
+    GSEAmining
 Suggests: 
     rmarkdown,
     knitr

@@ -2,11 +2,11 @@
 #'
 #' @description
 #'
-#' @param annot_res The output of ge_annot.  List containing data frames of
+#' @param annot_res The output of ge_annot. List containing data frames of
 #' differential gene expression results between the different groups.
 #' @param fold_change An integer to define the fold change value to consider
 #' that a gene is differentially expressed.
-#' @param p.adj An integer to define the maximum adjusted p-value to consider
+#' @param p.adj Numeric value to define the maximum adjusted p-value to consider
 #' that a gene is differentially expressed.
 #'
 #' @return ggplot graphs.
@@ -18,7 +18,10 @@
 #' @import ggrepel
 #'
 #' @examples
-ge_volcano <- function(annot_res, fold_change = 2, p.adj = 0.05) {
+#'
+ge_volcano <- function(annot_res,
+                       fold_change = 2,
+                       p.adj = 0.05) {
 
     # Create a temporal object to store the plots within the loop
     volcano.plot <- NULL

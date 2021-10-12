@@ -7,18 +7,21 @@
 ge_volcano(annot_res, fold_change = 2, p.adj = 0.05)
 }
 \arguments{
-\item{annot_res}{The output of ge_annot.  List containing data frames of
+\item{annot_res}{The output of ge_annot. List containing data frames of
 differential gene expression results between the different groups.}
 
 \item{fold_change}{An integer to define the fold change value to consider
 that a gene is differentially expressed.}
 
-\item{p.adj}{An integer to define the maximum adjusted p-value to consider
+\item{p.adj}{Numeric value to define the maximum adjusted p-value to consider
 that a gene is differentially expressed.}
 }
 \value{
 ggplot graphs.
 }
 \description{
+
+}
+\examples{
 
 }
