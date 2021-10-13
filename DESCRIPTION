@@ -18,7 +18,6 @@ Imports:
     DESeq2,
     tibble,
     apeglm,
-    rlang,
     ggrepel,
     clusterProfiler,
     GSEAmining

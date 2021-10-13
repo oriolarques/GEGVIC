@@ -11,6 +11,7 @@ module_ge(
   colors = c("black", "orange"),
   design,
   ref_level,
+  biomart,
   fold_change = 2,
   p.adj = 0.05,
   gmt,

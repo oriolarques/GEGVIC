@@ -6,6 +6,7 @@
 #' data frames of differential gene expression results between the different groups.
 #' @param genes_id Name of the column that contains gene identifiers. Should be
 #' one of the following: 'ensembl_gene_id', 'entrezgene_id' or 'hgnc_symbol'.
+#' @param biomart
 #'
 #' @return Returns a list of data frames containing differential gene expression
 #' results, one for each level comparison where genes have been annotated using
@@ -16,13 +17,13 @@
 #' @import DESeq2
 #' @import dplyr
 #' @import tibble
-#' @import rlang
 #'
 #' @examples
 #' ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
 
 ge_annot <- function(results_dds,
-                     genes_id){
+                     genes_id,
+                     biomart){
 
     # Create a data.frame to store temporarilly data
     temp_df <- NULL
@@ -33,15 +34,15 @@ ge_annot <- function(results_dds,
     # Iterate over the differential gene expression results list
     for (i in seq_along(results_dds)) {
 
-        genes_id <- enquo(genes_id)
+        #genes_id <- enquo(genes_id)
 
         # Get the results as a data frame
         # First evaluate if genes are annotated already as hgnc_symbol
-        if (rlang::as_name(genes_id) == 'hgnc_symbol'){
+        if (genes_id == 'hgnc_symbol'){
             # If so:
             temp_df <- as.data.frame(results_dds[[i]]) %>%
                 # Rownames to column with the name indicated in the genes_id parameter
-                tibble::rownames_to_column(rlang::as_name(genes_id)) %>%
+                tibble::rownames_to_column(genes_id) %>%
                 # Filter those missing gene symbols
                 dplyr::filter(hgnc_symbol != '') %>%
                 # Remove duplicated genes
@@ -51,12 +52,12 @@ ge_annot <- function(results_dds,
             # If genes are identified as entrezgene_id or ensembl_gene_id:
             temp_df <- as.data.frame(results_dds[[i]]) %>%
                 # Rownames to column with the name indicated in the genes_id parameter
-                tibble::rownames_to_column(rlang::as_name(genes_id)) %>%
+                tibble::rownames_to_column(genes_id) %>%
                 # Join the data frame with the GRCh38_p13 biomaRt table stored in data
                 dplyr::inner_join(x = .,
-                           y = ensembl_biomart_GRCh38_p13 %>%
+                           y = biomart %>%
                                mutate(entrezgene_id = as.character(entrezgene_id)),
-                           by = rlang::as_name(genes_id)) %>%
+                           by = genes_id) %>%
                 # From all annotation columns keep only hgnc symbol column
                 dplyr::select(hgnc_symbol,
                               everything(),

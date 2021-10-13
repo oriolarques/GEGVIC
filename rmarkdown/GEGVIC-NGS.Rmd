@@ -1,0 +1,86 @@
+---
+title: "GEGVIC-NGS"
+author: "Oriol Arqués"
+date: '`r format(Sys.Date(),"%e de %B, %Y")`'
+output: 
+    html_document:
+        toc: yes
+params:
+    counts: '../../proves_R_tfm/input_ge_module.csv'
+    genes_id: 'entrezgene_id'
+    metadata: '../../proves_R_tfm/metadata_ge_module.csv'
+    colors: !r c('black', 'orange')
+    design: 'Response'
+    ref_level: !r c('Response', 'Non_Responders')
+    fold_change: 1.5,
+    p.adj: 0.05,
+    gmt: '../../proves_R_tfm/c7.all.v7.2.symbols.gmt'
+    gsea_pvalue: 1
+    biomart: '../../proves_R_tfm/ensembl_biomart_GRCh38_p13.csv'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r load}
+library(GEGVIC)
+library(clusterProfiler)
+
+counts <- read.csv(params$counts, header = TRUE, sep = ',')
+metadata <- read.csv(params$metadata, header = TRUE, sep = ',')
+gmt <- read.gmt(params$gmt)
+biomart <- read.csv(params$biomart, header = TRUE, sep = ',')
+```
+
+
+```{r pca}
+# Get data PCA
+    ge_pca(counts = counts,
+                  genes_id = params$genes_id,
+                  metadata = metadata,
+                  design = params$design,
+                  colors = params$colors)
+
+    
+```
+
+
+```{r de}
+# Run differential gene expression analysis
+    results.dds <- ge_diff_exp(counts = counts,
+                               genes_id = params$genes_id,
+                               metadata = metadata,
+                               design = params$design,
+                               ref_level = params$ref_level)
+```
+
+
+```{r annot}
+# Annotate gene symbols
+    annot.res <- ge_annot(results_dds = results.dds,
+                          genes_id = params$genes_id,
+                          biomart = biomart)
+
+head(annot.res)
+```
+
+
+```{r volcano}
+# Create volcano plot
+    ge_volcano(annot_res = annot.res,
+               fold_change = params$fold_change,
+               p.adj = params$p.adj)
+```
+
+
+```{r gsea}
+# Obtain GSEA results
+    ge_gsea(annot_res = annot.res,
+            gmt = gmt,
+            gsea_pvalue = params$gsea_pvalue)
+
+```
+
+

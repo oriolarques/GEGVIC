@@ -22,7 +22,6 @@
 #' @import ggplot2
 #' @import tibble
 #' @import apeglm
-#' @import rlang
 #' @import ggrepel
 #' @import clusterProfiler
 #' @import GSEAmining
@@ -36,17 +35,20 @@ module_ge <- function(counts,
                       colors = c('black', 'orange'),
                       design,
                       ref_level,
+                      biomart,
                       fold_change = 2,
                       p.adj = 0.05,
                       gmt,
                       gsea_pvalue = 0.2) {
 
     # Get data PCA
-    ge_pca(counts,
+    pca <- ge_pca(counts,
            genes_id,
            metadata,
            design,
            colors = c('black', 'orange'))
+
+    print(pca)
 
     # Run differential gene expression analysis
     results.dds <- ge_diff_exp(counts = counts,
@@ -55,18 +57,22 @@ module_ge <- function(counts,
                                design = design,
                                ref_level = ref_level)
 
+
     # Annotate gene symbols
     annot.res <- ge_annot(results_dds = results.dds,
-                          genes_id = genes_id)
+                          genes_id = genes_id,
+                          biomart = biomart)
 
     # Create volcano plot
-    #ge_volcano(annot_res = annot.res,
-     #          fold_change = fold_change,
-      #         p.adj = p.adj)
+    ge_volcano(annot_res = annot.res,
+               fold_change = fold_change,
+               p.adj = p.adj)
 
     # Obtain GSEA results
-    #ge_gsea(annot_res = annot.res,
-     #       gmt = gmt,
-      #      gsea_pvalue = gsea_pvalue)
+    ge_gsea(annot_res = annot.res,
+            gmt = gmt,
+            gsea_pvalue = gsea_pvalue)
+
 
 }
+
