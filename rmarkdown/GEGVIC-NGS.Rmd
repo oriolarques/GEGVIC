@@ -12,8 +12,9 @@ params:
     colors: !r c('black', 'orange')
     design: 'Response'
     ref_level: !r c('Response', 'Non_Responders')
-    fold_change: 1.5,
-    p.adj: 0.05,
+    shrink: 'none'
+    fold_change: 1.5
+    p.adj: 0.05
     gmt: '../../proves_R_tfm/c7.all.v7.2.symbols.gmt'
     gsea_pvalue: 1
     biomart: '../../proves_R_tfm/ensembl_biomart_GRCh38_p13.csv'
@@ -53,7 +54,8 @@ biomart <- read.csv(params$biomart, header = TRUE, sep = ',')
                                genes_id = params$genes_id,
                                metadata = metadata,
                                design = params$design,
-                               ref_level = params$ref_level)
+                               ref_level = params$ref_level,
+                               shrink = params$shrink)
 ```
 
 
@@ -63,7 +65,6 @@ biomart <- read.csv(params$biomart, header = TRUE, sep = ',')
                           genes_id = params$genes_id,
                           biomart = biomart)
 
-head(annot.res)
 ```
 
 

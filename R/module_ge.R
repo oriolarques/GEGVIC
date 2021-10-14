@@ -8,6 +8,7 @@
 #' @param colors
 #' @param design
 #' @param ref_level
+#' @param shrink
 #' @param fold_change
 #' @param p.adj
 #' @param gmt
@@ -35,6 +36,7 @@ module_ge <- function(counts,
                       colors = c('black', 'orange'),
                       design,
                       ref_level,
+                      shrink = 'apeglm',
                       biomart,
                       fold_change = 2,
                       p.adj = 0.05,
@@ -55,7 +57,8 @@ module_ge <- function(counts,
                                genes_id = genes_id,
                                metadata = metadata,
                                design = design,
-                               ref_level = ref_level)
+                               ref_level = ref_level,
+                               shrink = shrink)
 
 
     # Annotate gene symbols

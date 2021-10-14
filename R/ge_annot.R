@@ -1,6 +1,7 @@
 #' @title ge_annot
 #'
-#' @description
+#' @description Associates Entrez_gene_id (NCBI-ID) or ENSEMBL_gene_id to
+#' HGNC symbols (Hugo Gene Nomenclature Committee nomenclature).
 #'
 #' @param results_dds The output of the ge_diff_exp function. List containing
 #' data frames of differential gene expression results between the different groups.
@@ -10,7 +11,7 @@
 #'
 #' @return Returns a list of data frames containing differential gene expression
 #' results, one for each level comparison where genes have been annotated using
-#' the hgnc_symbol: Hugo Gene Nomenclature Committee nomenclature.
+#' HGNC symbols.
 #'
 #' @export
 #'
@@ -19,7 +20,7 @@
 #' @import tibble
 #'
 #' @examples
-#' ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
+#' annot.res <- ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
 
 ge_annot <- function(results_dds,
                      genes_id,

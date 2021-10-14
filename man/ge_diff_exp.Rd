@@ -4,7 +4,7 @@
 \alias{ge_diff_exp}
 \title{ge_diff_exp}
 \usage{
-ge_diff_exp(counts, genes_id, metadata, design, ref_level)
+ge_diff_exp(counts, genes_id, metadata, design, ref_level, shrink = "apeglm")
 }
 \arguments{
 \item{counts}{Data frame that contains gene expression data as raw counts.}
@@ -20,6 +20,9 @@ one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
 where the reference level is located and a second element indicating the name
 of level to be used as a reference when calculating differential gene
 expression.}
+
+\item{shrink}{Name of the shrinkage method to apply: "apeglm", "ashr",
+"normal" or "none". Default value is "apeglm"}
 }
 \value{
 Returns a list of differential gene expression results, one for each
@@ -33,6 +36,7 @@ results_dds <- ge_diff_exp(counts = input_ge_module,
                            genes_id = 'entrezgene_id',
                            metadata = metadata_ge_module,
                            design = 'Response',
-                           ref_level = c('Response', 'Non_Responders'))
+                           ref_level = c('Response', 'Non_Responders'),
+                           shrink = 'apeglm')
 
 }

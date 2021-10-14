@@ -1,6 +1,6 @@
 #' @title ge_volcano
 #'
-#' @description
+#' @description Plots volcano plots from the outputs of the ge_annot() function.
 #'
 #' @param annot_res The output of ge_annot. List containing data frames of
 #' differential gene expression results between the different groups.
@@ -18,13 +18,15 @@
 #' @import ggrepel
 #'
 #' @examples
-#'
+#' annot.res <- ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
+#' ge_volcano(annot_res = annot.results, fold_change = 2, p.adj = 0.05)
+
 ge_volcano <- function(annot_res,
                        fold_change = 2,
                        p.adj = 0.05) {
 
     # Create a temporal object to store the plots within the loop
-    volcano.plot <- NULL
+    temp_plot <- NULL
 
     # Iterate over the annotated results list
     for (i in seq_along(annot_res)) {
@@ -37,20 +39,27 @@ ge_volcano <- function(annot_res,
             arrange(desc(.data$log2FoldChange))
 
         # Make a volcano plot
-        volcano.plot <- ggplot(volcano.plot, aes(x = .data$log2FoldChange,
+        temp_plot <- ggplot(volcano.plot, aes(x = .data$log2FoldChange,
                                        y = -log10(.data$padj))) +
             # Plot all the genes in grey
             geom_point(alpha = 0.55, col = 'grey')+
             # Plot the significantly up-regulated genes
-            geom_point(data = subset(volcano.plot, log2FoldChange > log2(fold_change) & padj < p.adj),
+            geom_point(data = subset(x = volcano.plot,
+                                     subset = log2FoldChange > log2(fold_change) & padj < p.adj),
                        mapping = aes(x = .data$log2FoldChange,
-                                     y = -log10(.data$padj)), col = 'red3', alpha = 0.6) +
+                                     y = -log10(.data$padj)),
+                       col = 'red3',
+                       alpha = 0.6) +
             # Plot the significantly down-regulated genes
-            geom_point(data = subset(volcano.plot, log2FoldChange < -log2(fold_change) & padj < p.adj),
-                       mapping = aes(.data$log2FoldChange, -log10(.data$padj)), col = 'blue3', alpha = 0.6) +
+            geom_point(data = subset(x = volcano.plot,
+                                     subset = log2FoldChange < -log2(fold_change) & padj < p.adj),
+                       mapping = aes(x = .data$log2FoldChange,
+                                     y = -log10(.data$padj)),
+                       col = 'blue3',
+                       alpha = 0.6) +
             # Label the top 10 up-regulated genes
-            geom_text_repel(data = top_n(subset(volcano.plot,
-                                                log2FoldChange > log2(fold_change) &
+            geom_text_repel(data = top_n(subset(x = volcano.plot,
+                                                subset = log2FoldChange > log2(fold_change) &
                                                     padj < p.adj),
                                          n = - 10,
                                          wt = .data$padj),
@@ -59,8 +68,8 @@ ge_volcano <- function(annot_res,
                             box.padding = 0.5,
                             max.overlaps = 1000) +
             # Label the top 10 down-regulated genes
-            geom_text_repel(data = top_n(subset(volcano.plot,
-                                                log2FoldChange < -log2(fold_change) &
+            geom_text_repel(data = top_n(subset(x = volcano.plot,
+                                                subset = log2FoldChange < -log2(fold_change) &
                                                     padj < p.adj),
                                          n = - 10,
                                          wt = .data$padj),
@@ -70,7 +79,8 @@ ge_volcano <- function(annot_res,
                             max.overlaps = 1000) +
 
             # Plot lines to identify the log2FoldChange -2 and 2 and the -log10(padj) < 0.01
-            geom_vline(xintercept = c(-log2(fold_change), log2(fold_change)),
+            geom_vline(xintercept = c(-log2(fold_change),
+                                      log2(fold_change)),
                        linetype = 'dashed')+
             geom_hline(yintercept = -log10(p.adj),
                        linetype = 'dashed')+
@@ -93,7 +103,7 @@ ge_volcano <- function(annot_res,
                   plot.title = element_text(size=15, face = 'bold', hjust = 0.5))
 
         # Plot the results
-        print(volcano.plot)
+        print(temp_plot)
 
     }
 

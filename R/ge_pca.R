@@ -1,6 +1,7 @@
 #' @title ge_pca
 #'
-#' @description
+#' @description Creates a PCA plot from gene expression data using the VST
+#' transformation from the plotPCA function from the DESeq2 package.
 #'
 #' @param counts Data frame that contains gene expression data as raw counts.
 #' @param genes_id Name of the column that contains gene identifiers. Should be
@@ -20,7 +21,9 @@
 #' @import tibble
 #'
 #' @examples
-#'
+#' ge_pca <- function(counts = input_ge_module, genes_id = 'entrezgene_id,
+#' metadata = metadata_ge_module, design = 'Response', colors = c('black', 'orange'))
+
 ge_pca <- function(counts,
                    genes_id,
                    metadata,
@@ -35,20 +38,21 @@ ge_pca <- function(counts,
     metadata <- preprocess_ge_meta(metadata = metadata)
 
     # Create DESeq2Dataset object
-    dds <- DESeqDataSetFromMatrix(countData = counts,
-                                  colData = metadata,
-                                  design = formula(paste('~', design, collapse = " ")))
+    dds <- DESeq2::DESeqDataSetFromMatrix(countData = counts,
+                                          colData = metadata,
+                                          design = formula(paste('~', design,
+                                                                 collapse = " ")))
     # Generate  normalized counts
-    dds <- estimateSizeFactors(dds)
+    dds <- DESeq2::estimateSizeFactors(dds)
 
     # Transform normalized counts for data visualization
-    vsd <- vst(dds, blind=FALSE)
+    vsd <- DESeq2::vst(dds, blind=FALSE)
 
     # plot PCA
-    plotPCA(vsd, intgroup="Response") +
-        scale_color_manual(values = colors) +
-        labs(title = 'Principal Component Analysis') +
-        theme_bw() +
-        theme(plot.title = element_text(hjust = 0.5))
+    DESeq2::plotPCA(vsd, intgroup="Response") +
+                scale_color_manual(values = colors) +
+                labs(title = 'Principal Component Analysis') +
+                theme_bw() +
+                theme(plot.title = element_text(hjust = 0.5))
 
 }
