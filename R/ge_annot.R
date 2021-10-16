@@ -62,7 +62,8 @@ ge_annot <- function(results_dds,
                 # From all annotation columns keep only hgnc symbol column
                 dplyr::select(hgnc_symbol,
                               everything(),
-                              -c(entrezgene_id, ensembl_gene_id)) %>%
+                              -c(entrezgene_id, ensembl_gene_id,
+                                 transcript_length, refseq_mrna)) %>%
                 # Filter those missing gene symbols
                 dplyr::filter(hgnc_symbol != '') %>%
                 # Remove duplicated genes
