@@ -22,14 +22,14 @@ of level to be used as a reference when calculating differential gene
 expression.}
 
 \item{shrink}{Name of the shrinkage method to apply: "apeglm", "ashr",
-"normal" or "none". Default value is "apeglm"}
+"normal" or "none". Use none to skip shrinkage. Default value is "apeglm".}
 }
 \value{
 Returns a list of differential gene expression results, one for each
 level comparison, in form of DESeqResults objects.
 }
 \description{
-
+Performs differential gene expression using DESeq2.
 }
 \examples{
 results_dds <- ge_diff_exp(counts = input_ge_module,

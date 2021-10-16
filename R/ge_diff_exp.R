@@ -12,7 +12,7 @@
 #' of level to be used as a reference when calculating differential gene
 #' expression.
 #' @param shrink Name of the shrinkage method to apply: "apeglm", "ashr",
-#' "normal" or "none". Default value is "apeglm"
+#' "normal" or "none". Use none to skip shrinkage. Default value is "apeglm".
 #'
 #' @return Returns a list of differential gene expression results, one for each
 #' level comparison, in form of DESeqResults objects.

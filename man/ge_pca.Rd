@@ -23,8 +23,6 @@ to compare. Default values are two: black and orange.}
 Returns a ggplot object.
 }
 \description{
-
-}
-\examples{
-
+Creates a PCA plot from gene expression data using the VST
+transformation from the plotPCA function from the DESeq2 package.
 }

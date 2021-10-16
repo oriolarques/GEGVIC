@@ -17,11 +17,18 @@ that a gene is differentially expressed.}
 that a gene is differentially expressed.}
 }
 \value{
-ggplot graphs.
+Returns ggplot graphs.
 }
 \description{
-
+Plots volcano plots from the outputs of the ge_annot() function.
 }
 \examples{
-
+results_dds <- ge_diff_exp(counts = input_ge_module,
+                           genes_id = 'entrezgene_id',
+                           metadata = metadata_ge_module,
+                           design = 'Response',
+                           ref_level = c('Response', 'Non_Responders'),
+                           shrink = 'apeglm')
+annot.res <- ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
+ge_volcano(annot_res = annot.results, fold_change = 2, p.adj = 0.05)
 }

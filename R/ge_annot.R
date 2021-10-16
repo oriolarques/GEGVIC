@@ -7,7 +7,9 @@
 #' data frames of differential gene expression results between the different groups.
 #' @param genes_id Name of the column that contains gene identifiers. Should be
 #' one of the following: 'ensembl_gene_id', 'entrezgene_id' or 'hgnc_symbol'.
-#' @param biomart
+#' @param biomart Data frame containing a biomaRt query with the following
+#' attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
+#' refseq_mrna.
 #'
 #' @return Returns a list of data frames containing differential gene expression
 #' results, one for each level comparison where genes have been annotated using
@@ -20,7 +22,15 @@
 #' @import tibble
 #'
 #' @examples
-#' annot.res <- ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
+#' results_dds <- ge_diff_exp(counts = input_ge_module,
+#'                            genes_id = 'entrezgene_id',
+#'                            metadata = metadata_ge_module,
+#'                            design = 'Response',
+#'                            ref_level = c('Response', 'Non_Responders'),
+#'                            shrink = 'apeglm')
+#' annot.res <- ge_annot(results_dds = results_dds,
+#'                       genes_id = 'entrezgene_id',
+#'                       biomart = ensembl_biomart_GRCh38_p13)
 
 ge_annot <- function(results_dds,
                      genes_id,
@@ -34,8 +44,6 @@ ge_annot <- function(results_dds,
 
     # Iterate over the differential gene expression results list
     for (i in seq_along(results_dds)) {
-
-        #genes_id <- enquo(genes_id)
 
         # Get the results as a data frame
         # First evaluate if genes are annotated already as hgnc_symbol

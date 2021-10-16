@@ -2,19 +2,33 @@
 #'
 #' @description
 #'
-#' @param counts
-#' @param genes_id
-#' @param metadata
-#' @param colors
-#' @param design
-#' @param ref_level
-#' @param shrink
-#' @param fold_change
-#' @param p.adj
-#' @param gmt
-#' @param gsea_pvalue
+#' @param counts Data frame that contains gene expression data as raw counts.
+#' @param genes_idName of the column that contains gene identifiers. Should be
+#' one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param design Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.
+#' @param colors  Character vector indicating the colors of the different groups
+#' to compare. Default values are two: black and orange.
+#' @param ref_level Character vector where the first element is the column name
+#' where the reference level is located and a second element indicating the name
+#' of level to be used as a reference when calculating differential gene
+#' expression.
+#' @param shrink Name of the shrinkage method to apply: "apeglm", "ashr",
+#' "normal" or "none". Use none to skip shrinkage. Default value is "apeglm".
+#' @param biomart Data frame containing a biomaRt query with the following
+#' attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
+#' refseq_mrna.
+#' @param fold_change An integer to define the fold change value to consider
+#' that a gene is differentially expressed.
+#' @param p.adjNumeric value to define the maximum adjusted p-value to consider
+#' that a gene is differentially expressed.
+#' @param gmt A data frame containg the gene sets to analyse using GSEA. This
+#' object should be obtained with the read.gmt function from the clusterProfiler
+#' package.
+#' @param gsea_pvalue Numeric value to define the adjusted pvalue cutoff during
+#' GSEA. Set to 0.2 by default.
 #'
-#' @return
+#' @return Returns ggplot objects containing PCA, Volcano plot and GSEA analyses.
 #'
 #' @export
 #'
@@ -28,13 +42,24 @@
 #' @import GSEAmining
 #'
 #' @examples
-#'
+#' module_ge(counts = input_ge_module,
+#'           genes_id = 'entrezgene_id',
+#'           metadata = metadata_ge_module,
+#'           design = 'Response',
+#'           colors = c('black', 'orange'),
+#'           ref_level = c('Response', 'Non_Responders'),
+#'           shrink = 'apeglm',
+#'           biomart = ensembl_biomart_GRCh38_p13,
+#'           fold_change = 2,
+#'           p.adj = 0.05,
+#'           gmt = c7.all.v7.2.symbols.gmt,
+#'           gsea_pvalue = 0.2)
 #'
 module_ge <- function(counts,
                       genes_id,
                       metadata,
-                      colors = c('black', 'orange'),
                       design,
+                      colors = c('black', 'orange'),
                       ref_level,
                       shrink = 'apeglm',
                       biomart,

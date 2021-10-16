@@ -4,13 +4,13 @@
 #'
 #' @param annot_res The output of ge_annot. List containing data frames of
 #' differential gene expression results between the different groups.
-#' @param gmt A data frame containg the gene sets to analyse usgin GSEA. This
-#' object should be obtained using the read.gmt function from the clusterProfiler
+#' @param gmt A data frame containg the gene sets to analyse using GSEA. This
+#' object should be obtained with the read.gmt function from the clusterProfiler
 #' package.
 #' @param gsea_pvalue Numeric value to define the adjusted pvalue cutoff during
 #' GSEA. Set to 0.2 by default.
 #'
-#' @return
+#' @return Returns ggplot objects.
 #'
 #' @export
 #'
@@ -19,7 +19,19 @@
 #' @import GSEAmining
 #'
 #' @examples
-#'
+#' results_dds <- ge_diff_exp(counts = input_ge_module,
+#'                            genes_id = 'entrezgene_id',
+#'                            metadata = metadata_ge_module,
+#'                            design = 'Response',
+#'                            ref_level = c('Response', 'Non_Responders'),
+#'                            shrink = 'apeglm')
+#' annot.res <- ge_annot(results_dds = results_dds,
+#'                       genes_id = 'entrezgene_id',
+#'                       biomart = ensembl_biomart_GRCh38_p13)
+#' ge_gsea(annot_res = annot.res,
+#'         gmt = c7.all.v7.2.symbols.gmt,
+#'         gsea_pvalue = 0.2)
+
 ge_gsea <- function(annot_res,
                     gmt,
                     gsea_pvalue = 0.2) {

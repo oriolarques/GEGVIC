@@ -7,17 +7,18 @@
 preprocess_ge_counts(counts, genes_id)
 }
 \arguments{
-\item{counts}{Data frame that contains gene expression data as raw counts}
+\item{counts}{Data frame that contains gene expression data as raw counts.}
 
 \item{genes_id}{Name of the column that contains gene identifiers. Should be
-one of the following:'entrezgene_id', 'ensembl_gene_id' or 'hgnc_symbol'}
+one of the following:'entrezgene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
 }
 \value{
 Generates a data frame.
 }
 \description{
-
+Prepares RNA-seq raw counts for posterior analysis using DESeq2.
 }
 \examples{
+counts <- preprocess_ge_counts(counts = input_ge_module, genes_id = 'rentrezgene_id')
 
 }

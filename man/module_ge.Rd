@@ -8,8 +8,8 @@ module_ge(
   counts,
   genes_id,
   metadata,
-  colors = c("black", "orange"),
   design,
+  colors = c("black", "orange"),
   ref_level,
   shrink = "apeglm",
   biomart,
@@ -20,15 +20,61 @@ module_ge(
 )
 }
 \arguments{
-\item{gsea_pvalue}{}
+\item{counts}{Data frame that contains gene expression data as raw counts.}
+
+\item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{design}{Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.}
+
+\item{colors}{Character vector indicating the colors of the different groups
+to compare. Default values are two: black and orange.}
+
+\item{ref_level}{Character vector where the first element is the column name
+where the reference level is located and a second element indicating the name
+of level to be used as a reference when calculating differential gene
+expression.}
+
+\item{shrink}{Name of the shrinkage method to apply: "apeglm", "ashr",
+"normal" or "none". Use none to skip shrinkage. Default value is "apeglm".}
+
+\item{biomart}{Data frame containing a biomaRt query with the following
+attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
+refseq_mrna.}
+
+\item{fold_change}{An integer to define the fold change value to consider
+that a gene is differentially expressed.}
+
+\item{gmt}{A data frame containg the gene sets to analyse using GSEA. This
+object should be obtained with the read.gmt function from the clusterProfiler
+package.}
+
+\item{gsea_pvalue}{Numeric value to define the adjusted pvalue cutoff during
+GSEA. Set to 0.2 by default.}
+
+\item{genes_idName}{of the column that contains gene identifiers. Should be
+one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
+
+\item{p.adjNumeric}{value to define the maximum adjusted p-value to consider
+that a gene is differentially expressed.}
 }
 \value{
-
+Returns ggplot objects containing PCA, Volcano plot and GSEA analyses.
 }
 \description{
 
 }
 \examples{
-
+module_ge(counts = input_ge_module,
+          genes_id = 'entrezgene_id',
+          metadata = metadata_ge_module,
+          design = 'Response',
+          colors = c('black', 'orange'),
+          ref_level = c('Response', 'Non_Responders'),
+          shrink = 'apeglm',
+          biomart = ensembl_biomart_GRCh38_p13,
+          fold_change = 2,
+          p.adj = 0.05,
+          gmt = c7.all.v7.2.symbols.gmt,
+          gsea_pvalue = 0.2)
 
 }

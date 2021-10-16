@@ -7,14 +7,14 @@
 preprocess_ge_meta(metadata)
 }
 \arguments{
-\item{metadata}{Data frame that contains supporting variables to the data}
+\item{metadata}{Data frame that contains supporting variables to the data.}
 }
 \value{
 Generates a data frame.
 }
 \description{
-
+Prepares metadata file for posterior analysis using DESeq2.
 }
 \examples{
-
+metadata <- preprocess_ge_meta(metadata = metadata_ge_module)
 }

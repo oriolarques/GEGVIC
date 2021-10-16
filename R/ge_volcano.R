@@ -9,7 +9,7 @@
 #' @param p.adj Numeric value to define the maximum adjusted p-value to consider
 #' that a gene is differentially expressed.
 #'
-#' @return ggplot graphs.
+#' @return Returns ggplot graphs.
 #'
 #' @export
 #'
@@ -18,6 +18,12 @@
 #' @import ggrepel
 #'
 #' @examples
+#' results_dds <- ge_diff_exp(counts = input_ge_module,
+#'                            genes_id = 'entrezgene_id',
+#'                            metadata = metadata_ge_module,
+#'                            design = 'Response',
+#'                            ref_level = c('Response', 'Non_Responders'),
+#'                            shrink = 'apeglm')
 #' annot.res <- ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
 #' ge_volcano(annot_res = annot.results, fold_change = 2, p.adj = 0.05)
 
