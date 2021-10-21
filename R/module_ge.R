@@ -7,7 +7,7 @@
 #' one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param design Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.
-#' @param colors  Character vector indicating the colors of the different groups
+#' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
 #' @param ref_level Character vector where the first element is the column name
 #' where the reference level is located and a second element indicating the name
