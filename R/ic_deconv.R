@@ -11,8 +11,8 @@
 #' @param gene_expression Output from the ic_raw_to_tpm function. This is a
 #' matrix containing expression counts as TPM with HGNC gene symbols as rownames
 #' and samples identifiers as colnames.
-#' @param indications Vector used by TIMER method that specifies a cancer
-#' indication for each sample in the tpm matrix. Indications supported by TIMER
+#' @param indications Character vector of cancer type codes for each sample in
+#' the tpm matrix.This is used by TIMER method. Indications supported
 #' can be checked using immunedeconv::timer_available_cancers. Default value is
 #' NULL.
 #' @param cibersort Path to the CIBERSORT.R and LM22.txt files. Default value is

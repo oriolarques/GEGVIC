@@ -1,6 +1,9 @@
 #' @title module_ge
 #'
-#' @description
+#' @description Analyses differential gene expression from RNA-seq raw counts and
+#' plots PCA, volcano plots and gene set enrichment analysis (GSEA) for the
+#' desired comparisons.
+#'
 #'
 #' @param counts Data frame that contains gene expression data as raw counts.
 #' @param genes_idName of the column that contains gene identifiers. Should be

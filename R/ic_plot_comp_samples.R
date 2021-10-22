@@ -1,13 +1,24 @@
 #' @title ic_plot_comp_samples
 #'
-#' @description
+#' @description Plots predicted immune cell populations to be compared between
+#' sample groups. Among different immune cells, the following are represented:
+#' B cells, Macrophages, myeloid Dendritic cells, Neutrophils, Natural Killer,
+#' T cell CD4+ and T cell CD8+.
 #'
-#' @param df
-#' @param metadata
-#' @param response
-#' @param compare
-#' @param p_label
-#' @param colors
+#' @param df Output ot ic_deconv function. A data frame containing the predictions
+#' of the six methods included in the immunedeconv package. First column must
+#' indicate and be named as cell_type, method and the rest being the numeric
+#' prediction for each sample.
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param response Unquoted name of the variable indicating the groups to analyse.
+#' @param compare A character string indicating which method to be used for
+#' comparing means. Options are 't.test' and 'wilcox.test' for two groups or
+#' 'anova' and 'kruskal.test' for more groups. Default value is NULL.
+#' @param p_label Character string specifying label type. Allowed values include
+#' 'p.signif' (shows the significance levels), 'p.format' (shows the formatted
+#' p-value).
+#' @param colors Character vector indicating the colors of the different groups
+#' to compare. Default values are two: black and orange.
 #'
 #' @return Returns a ggplot object.
 #'
@@ -21,15 +32,27 @@
 #' @import rlang
 #'
 #' @examples
-#'
-#'
-#'
-#'
-#'
+#' tpm <- ic_raw_to_tpm(counts = input_ge_module,
+#'                      genes_id = 'entrezgene_id,
+#'                      biomart = ensembl_biomart_GRCh38_p13)
+#' ic.pred <- ic_deconv(gene_expression = tpm,
+#'                      indications = rep('skcm', ncol(tpm)),
+#'                      cibersort = 'cibersort/',
+#'                      tumor = TRUE,
+#'                      rmgenes = NULL,
+#'                      scale_mrna = TRUE,
+#'                      expected_cell_types = NULL)
+#' ic_plot_comp_samples(df = ic.pred,
+#'                      metadata = metadata_ge_module,
+#'                      response = Response,
+#'                      compare = 'wilcox.test',
+#'                      p_label = 'p.format',
+#'                      colors = c('black', 'orange'))
+
 ic_plot_comp_samples <- function(df,
                                  metadata,
-                                 response, # unquoted name of grouping variable
-                                 compare = NULL, # compare method ggpubr: t.test, wilcox.test, anova, kruskal.test
+                                 response,
+                                 compare = NULL,
                                  p_label = 'p.format',
                                  colors = c('black', 'orange')) {
 

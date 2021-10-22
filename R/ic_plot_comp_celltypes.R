@@ -1,10 +1,15 @@
 #' @title ic_plot_comp_celltypes
 #'
-#' @description
+#' @description Plots immune cell fractions to be compared within each sample.
+#' Results from three different methods (CIBERSORT, EPIC and QUANTISEQ) are
+#' presented by each group of samples.
 #'
-#' @param df
-#' @param metadata
-#' @param response
+#' @param df Output ot ic_deconv function. A data frame containing the predictions
+#' of the six methods included in the immunedeconv package. First column must
+#' indicate and be named as cell_type, method and the rest being the numeric
+#' prediction for each sample.
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param response Unquoted name of the variable indicating the groups to analyse.
 #'
 #' @return Returns a ggplot object.
 #'
@@ -19,12 +24,26 @@
 #'
 #'
 #' @examples
-#'
-#'
+#' tpm <- ic_raw_to_tpm(counts = input_ge_module,
+#'                      genes_id = 'entrezgene_id,
+#'                      biomart = ensembl_biomart_GRCh38_p13)
+#' ic.pred <- ic_deconv(gene_expression = tpm,
+#'                      indications = rep('skcm', ncol(tpm)),
+#'                      cibersort = 'cibersort/',
+#'                      tumor = TRUE,
+#'                      rmgenes = NULL,
+#'                      scale_mrna = TRUE,
+#'                      expected_cell_types = NULL)
+#' ic_plot_comp_samples(df = ic.pred,
+#'                      metadata = metadata_ge_module,
+#'                      response = Response,
+#'                      compare = 'wilcox.test',
+#'                      p_label = 'p.format',
+#'                      colors = c('black', 'orange'))
 #'
 ic_plot_comp_celltypes <- function(df,
                                    metadata,
-                                   response) { # grouping variable
+                                   response) {
 
     # Create an object to process the data
     temp_df <- NULL
