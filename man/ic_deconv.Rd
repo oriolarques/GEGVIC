@@ -19,8 +19,8 @@ ic_deconv(
 matrix containing expression counts as TPM with HGNC gene symbols as rownames
 and samples identifiers as colnames.}
 
-\item{indications}{Vector used by TIMER method that specifies a cancer
-indication for each sample in the tpm matrix. Indications supported by TIMER
+\item{indications}{Character vector of cancer type codes for each sample in
+the tpm matrix.This is used by TIMER method. Indications supported
 can be checked using immunedeconv::timer_available_cancers. Default value is
 NULL.}
 

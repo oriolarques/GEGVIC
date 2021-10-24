@@ -22,11 +22,71 @@ module_ic(
 )
 }
 \arguments{
-\item{colors}{}
+\item{counts}{Data frame that contains gene expression data as raw counts.}
+
+\item{genes_id}{Name of the column that contains gene identifiers. Should be
+one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
+
+\item{biomart}{Data frame containing a biomaRt query with the following
+attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
+refseq_mrna.}
+
+\item{indications}{Character vector of cancer type codes for each sample in
+the tpm matrix.This is used by TIMER method. Indications supported
+can be checked using immunedeconv::timer_available_cancers. Default value is
+NULL.}
+
+\item{cibersort}{Path to the CIBERSORT.R and LM22.txt files. Default value is
+NULL.}
+
+\item{tumor}{Logical value to define if samples are tumors. If so EPIC and
+quanTIseq use a signature matrix/procedure optimized for tumor samples.
+Default value is TRUE.}
+
+\item{rmgenes}{A character vector of gene symbols. Exclude these genes from
+the analysis. Use this to exclude e.g. noisy genes.}
+
+\item{scale_mrna}{Logical. If FALSE, disable correction for mRNA content of
+different cell types. This is supported by methods that compute an absolute
+score (EPIC and quanTIseq). Default value is TRUE.}
+
+\item{expected_cell_types}{Limit the analysis to the cell types given in this
+list. If the cell types present in the sample are known a priori, setting
+this can improve results for xCell
+(see https://github.com/grst/immunedeconv/issues/1).}
+
+\item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{response}{Unquoted name of the variable indicating the groups to analyse.}
+
+\item{compare}{A character string indicating which method to be used for
+comparing means. Options are 't.test' and 'wilcox.test' for two groups or
+'anova' and 'kruskal.test' for more groups. Default value is NULL.}
+
+\item{p_label}{Character string specifying label type. Allowed values include
+'p.signif' (shows the significance levels), 'p.format' (shows the formatted
+p-value).}
+
+\item{colors}{Character vector indicating the colors of the different groups
+to compare. Default values are two: black and orange.}
 }
 \value{
-
+Returns ggplot objects showing predicted immune cell populations to
+be compared between or within samples.
 }
 \description{
 module_ic
+}
+\examples{
+module_ic(counts = input_ge_module,
+          genes_id = 'entrezgene_id',
+          biomart = ensembl_biomart_GRCh38_p13,
+          indications = rep('skcm', ncol(tpm)),
+          cibersort = NULL,
+          metadata = metadata_ge_module,
+          response = Response,
+          compare = 'wilcox.test',
+          p_label = 'p.format',
+          colors = c('black', 'orange'))
+
 }

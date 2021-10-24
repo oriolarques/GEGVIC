@@ -7,16 +7,20 @@
 ic_plot_comp_celltypes(df, metadata, response)
 }
 \arguments{
-\item{response}{}
+\item{df}{Output ot ic_deconv function. A data frame containing the predictions
+of the six methods included in the immunedeconv package. First column must
+indicate and be named as cell_type, method and the rest being the numeric
+prediction for each sample.}
+
+\item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{response}{Unquoted name of the variable indicating the groups to analyse.}
 }
 \value{
 Returns a ggplot object.
 }
 \description{
-
-}
-\examples{
-
-
-
+Plots immune cell fractions to be compared within each sample.
+Results from three different methods (CIBERSORT, EPIC and QUANTISEQ) are
+presented by each group of samples.
 }

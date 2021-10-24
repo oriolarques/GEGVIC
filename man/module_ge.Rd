@@ -61,7 +61,9 @@ that a gene is differentially expressed.}
 Returns ggplot objects containing PCA, Volcano plot and GSEA analyses.
 }
 \description{
-
+Analyses differential gene expression from RNA-seq raw counts and
+plots PCA, volcano plots and gene set enrichment analysis (GSEA) for the
+desired comparisons.
 }
 \examples{
 module_ge(counts = input_ge_module,

@@ -14,18 +14,32 @@ ic_plot_comp_samples(
 )
 }
 \arguments{
-\item{colors}{}
+\item{df}{Output ot ic_deconv function. A data frame containing the predictions
+of the six methods included in the immunedeconv package. First column must
+indicate and be named as cell_type, method and the rest being the numeric
+prediction for each sample.}
+
+\item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{response}{Unquoted name of the variable indicating the groups to analyse.}
+
+\item{compare}{A character string indicating which method to be used for
+comparing means. Options are 't.test' and 'wilcox.test' for two groups or
+'anova' and 'kruskal.test' for more groups. Default value is NULL.}
+
+\item{p_label}{Character string specifying label type. Allowed values include
+'p.signif' (shows the significance levels), 'p.format' (shows the formatted
+p-value).}
+
+\item{colors}{Character vector indicating the colors of the different groups
+to compare. Default values are two: black and orange.}
 }
 \value{
 Returns a ggplot object.
 }
 \description{
-
-}
-\examples{
-
-
-
-
-
+Plots predicted immune cell populations to be compared between
+sample groups. Among different immune cells, the following are represented:
+B cells, Macrophages, myeloid Dendritic cells, Neutrophils, Natural Killer,
+T cell CD4+ and T cell CD8+.
 }
