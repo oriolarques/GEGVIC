@@ -1,15 +1,23 @@
 #' @title ic_score
 #'
-#' @description
+#' @description Calculates and plots immunophenogram (IPG) and immunophenoscores
+#' (IPS) for each sample and each group of study.
 #'
-#' @param tpm
-#' @param metadata
-#' @param response
-#' @param compare
-#' @param p_label
-#' @param colors
+#' @param tpm Output from the ic_raw_to_tpm function. This is a matrix
+#' containing expression counts as TPM with HGNC gene symbols as rownames
+#' and samples identifiers as colnames.
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param response Unquoted name of the variable indicating the groups to analyse.
+#' @param compare A character string indicating which method to be used for
+#' comparing means. Options are 't.test' and 'wilcox.test' for two groups or
+#' 'anova' and 'kruskal.test' for more groups. Default value is NULL.
+#' @param p_label Character string specifying label type. Allowed values include
+#' 'p.signif' (shows the significance levels), 'p.format' (shows the formatted
+#' p-value).
+#' @param colors Character vector indicating the colors of the different groups
+#' to compare. Default values are two: black and orange.
 #'
-#' @return
+#' @return Returns ggplot objects.
 #'
 #' @export
 #'
@@ -17,13 +25,20 @@
 #' @import ggplot2
 #' @import rlang
 #' @import grid
-#' @import gridExtra
 #' @import ggpubr
 #' @import patchwork
 #'
 #' @examples
+#' tpm <- ic_raw_to_tpm(counts = input_ge_module,
+#'                      genes_id = 'entrezgene_id',
+#'                      biomart = ensembl_biomart_GRCh38_p13)
 #'
-#'
+#' ic_score(tpm = tpm,
+#'          metadata = metadata_ge_module,
+#'          response = Response,
+#'          compare = 'wilcox.test',
+#'          p_label = 'p.format',
+#'          colors = c('black', 'orange'))
 #'
 ic_score <- function(tpm,
                      metadata,
@@ -267,6 +282,7 @@ ic_score <- function(tpm,
     response <- enquo(response)
     ## Get the levels of response (grouping) variable
     levels.resp <- levels(metadata %>%
+                              dplyr::mutate_all(as.factor) %>%
                               dplyr::select(!!response) %>%
                               pull(.))
     ## Create a list to store the plots for each level in response variable
@@ -318,7 +334,7 @@ ic_score <- function(tpm,
         ggtitle('ImmunophenoScore') +
 
         # Themes
-        theme_linedraw() +
+        theme_bw() +
         theme(text = element_text(size = 15),
               plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
               axis.text.x.bottom = element_blank(),
@@ -344,28 +360,20 @@ ic_score <- function(tpm,
 
     ## Add together IPG from all levels in response variable
     ipg.plots <- patchwork::wrap_plots(list.resp)
-    ipg.legends <- plot_b + plot_c
+    ipg.legends <- patchwork::wrap_plots(plot_b, plot_c)
     layout <- c(
-        area(t = 1, l = 1, b = 5, r = 4),
-        area(t = 2, l = 5, b = 4, r = 5)
+        patchwork::area(t = 1, l = 1, b = 5, r = 4),
+        patchwork::area(t = 2, l = 5, b = 4, r = 5)
     )
 
     ic.score.results[[1]] <- patchwork::wrap_plots(ipg.plots, ipg.legends,
                                                    design = layout)
-    #ic.score.results[[1]] <- ipg.plots + ipg.legends + plot_layout(desing = layout)
-
 
 
     ## Get IPS comparison between samples in different levels of response variable
     ic.score.results[[2]] <- ips.plot
     names(ic.score.results) <- c('immunophenoGram', 'immunophenoScore')
 
-    # CRETE THE FINAL OBJECT
-    #ic.score.results[[1]] <- ipheno_list
-    #ic.score.results[[2]] <- DF
-    #names(ic.score.results) <- c('ipheno_lists', 'IPS_table')
-
-    #return(DF)
 
     return(ic.score.results)
 }

@@ -14,16 +14,42 @@ ic_score(
 )
 }
 \arguments{
-\item{colors}{}
+\item{tpm}{Output from the ic_raw_to_tpm function. This is a matrix
+containing expression counts as TPM with HGNC gene symbols as rownames
+and samples identifiers as colnames.}
+
+\item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{response}{Unquoted name of the variable indicating the groups to analyse.}
+
+\item{compare}{A character string indicating which method to be used for
+comparing means. Options are 't.test' and 'wilcox.test' for two groups or
+'anova' and 'kruskal.test' for more groups. Default value is NULL.}
+
+\item{p_label}{Character string specifying label type. Allowed values include
+'p.signif' (shows the significance levels), 'p.format' (shows the formatted
+p-value).}
+
+\item{colors}{Character vector indicating the colors of the different groups
+to compare. Default values are two: black and orange.}
 }
 \value{
-
+Returns ggplot objects.
 }
 \description{
-
+Calculates and plots immunophenogram (IPG) and immunophenoscores
+(IPS) for each sample and each group of study.
 }
 \examples{
+tpm <- ic_raw_to_tpm(counts = input_ge_module,
+                     genes_id = 'entrezgene_id',
+                     biomart = ensembl_biomart_GRCh38_p13)
 
-
+ic_score(tpm = tpm,
+         metadata = metadata_ge_module,
+         response = Response,
+         compare = 'wilcox.test',
+         p_label = 'p.format',
+         colors = c('black', 'orange'))
 
 }

@@ -75,7 +75,9 @@ Returns ggplot objects showing predicted immune cell populations to
 be compared between or within samples.
 }
 \description{
-module_ic
+Estimates the composition of immune cell composition from RNA-seq
+raw data. Additionally it calculates an immunophenogram and immunophenoscores
+for each sample and groups of study.
 }
 \examples{
 module_ic(counts = input_ge_module,

@@ -1,5 +1,9 @@
 #' @title module_ic
 #'
+#' @description Estimates the composition of immune cell composition from RNA-seq
+#' raw data. Additionally it calculates an immunophenogram and immunophenoscores
+#' for each sample and groups of study.
+#'
 #' @param counts Data frame that contains gene expression data as raw counts.
 #' @param genes_id Name of the column that contains gene identifiers. Should be
 #' one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.
@@ -76,11 +80,15 @@ module_ic <- function(counts,
                       colors = c('black', 'orange')) {
 
     # Obtain TPM from raw counts
+    print('Obtain TPM from raw counts')
+
     tpm <- ic_raw_to_tpm(counts = counts,
                          genes_id = genes_id,
                          biomart = biomart)
 
     # Estimate immune cell fractions
+    print('Estimate immune cell fractions')
+
     ic.pred <- ic_deconv(gene_expression = tpm,
                          indications = indications,
                          cibersort = cibersort,
@@ -94,10 +102,12 @@ module_ic <- function(counts,
     response <- enquo(response)
 
     # Plot a graph comparing immune cell populations between samples group
+    print('Estimate immune cell composition')
+
     ic_plot_comp_samples(df = ic.pred,
                          metadata = metadata,
-                         response = !!response, # unquoted name of grouping variable
-                         compare = compare, # compare method ggpubr: t.test, wilcox.test, anova, kruskal.test
+                         response = !!response,
+                         compare = compare,
                          p_label = p_label,
                          colors = colors)
 
@@ -106,5 +116,15 @@ module_ic <- function(counts,
                           metadata = metadata,
                           response = !!response)
 
+    # Calculate and plot immunophenogram (IPG) and immunophenoscores
+    ## (IPS) for each sample and each group of study.
+    print('Calculate IPG and IPS')
+
+    ic_score(tpm = tpm,
+             metadata = metadata_ge_module,
+             response = Response,
+             compare = compare,
+             p_label = p_label,
+             colors = colors)
 }
 

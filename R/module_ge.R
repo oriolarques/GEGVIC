@@ -72,6 +72,8 @@ module_ge <- function(counts,
                       gsea_pvalue = 0.2) {
 
     # Get data PCA
+    print('PCA')
+
     pca <- ge_pca(counts,
            genes_id,
            metadata,
@@ -81,6 +83,8 @@ module_ge <- function(counts,
     print(pca)
 
     # Run differential gene expression analysis
+    print('Differential gene expression analysis')
+
     results.dds <- ge_diff_exp(counts = counts,
                                genes_id = genes_id,
                                metadata = metadata,
@@ -90,16 +94,22 @@ module_ge <- function(counts,
 
 
     # Annotate gene symbols
+    print('Annotate gene symbols')
+
     annot.res <- ge_annot(results_dds = results.dds,
                           genes_id = genes_id,
                           biomart = biomart)
 
     # Create volcano plot
+    print('Volcano plots')
+
     ge_volcano(annot_res = annot.res,
                fold_change = fold_change,
                p.adj = p.adj)
 
     # Obtain GSEA results
+    print('GSEA')
+
     ge_gsea(annot_res = annot.res,
             gmt = gmt,
             gsea_pvalue = gsea_pvalue)

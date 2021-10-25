@@ -35,7 +35,7 @@ p-value).}
 to compare. Default values are two: black and orange.}
 }
 \value{
-Returns a ggplot object.
+Returns list containing two ggplot objects.
 }
 \description{
 Plots predicted immune cell populations to be compared between
