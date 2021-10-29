@@ -2,7 +2,7 @@
 #'
 #' @description
 #'
-#' @param df
+#' @param muts
 #' @param metadata
 #' @param response
 #' @param compare
@@ -19,7 +19,14 @@
 #' @import ggpubr
 #'
 #' @examples
-gv_mut_load <- function(df,
+#' gv_mut_load(muts = input_gv_module,
+#'             metadata = metadata_ge_module,
+#'             response = Response,
+#'             compare = 'wilcox.test',
+#'             p_label = 'p.format',
+#'             colors = c('black', 'orange'))
+#'
+gv_mut_load <- function(muts,
                         metadata,
                         response,
                         compare = NULL,
@@ -27,7 +34,7 @@ gv_mut_load <- function(df,
                         colors = c('black', 'orange')){
 
     # Get nonsynonymous mutations
-    mut.load <- df %>%
+    mut.load <- muts %>%
         dplyr::filter(grepl('Missense_Mutation|Nonsense_Mutation', Variant_Classification)) %>%
         # Group by patient
         dplyr::group_by(Tumor_Sample_Barcode) %>%

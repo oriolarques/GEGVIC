@@ -5,7 +5,7 @@
 \title{gv_mut_load}
 \usage{
 gv_mut_load(
-  df,
+  muts,
   metadata,
   response,
   compare = NULL,
@@ -20,5 +20,14 @@ gv_mut_load(
 
 }
 \description{
+
+}
+\examples{
+gv_mut_load(muts = input_gv_module,
+            metadata = metadata_ge_module,
+            response = Response,
+            compare = 'wilcox.test',
+            p_label = 'p.format',
+            colors = c('black', 'orange'))
 
 }

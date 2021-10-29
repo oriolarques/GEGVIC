@@ -5,7 +5,7 @@
 \title{gv_mut_summary}
 \usage{
 gv_mut_summary(
-  df,
+  muts,
   metadata,
   response,
   top_genes = 10,
@@ -21,4 +21,14 @@ gv_mut_summary(
 }
 \description{
 gv_mut_summary
+}
+\examples{
+gv_mut_summary(muts = input_gv_module,
+               metadata = metadata_ge_module,
+               response = Response,
+               top_genes = 10,
+               specific_genes = NULL,
+               colors = c('black', 'orange'))
+
+
 }
