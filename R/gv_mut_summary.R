@@ -11,7 +11,9 @@
 #'
 #' @export
 #'
-#' @import maftools
+#' @importFrom maftools read.maf
+#' @importFrom maftools plotmafSummary
+#' @importFrom maftools oncoplot
 #' @import rlang
 #' @import dplyr
 #'

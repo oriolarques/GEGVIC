@@ -9,7 +9,7 @@ gv_mut_signatures(
   metadata,
   response,
   gbuild,
-  mut_sigs = signatures.cosmic,
+  mut_sigs = COSMIC_v3.2_SBS_GRCh37,
   tri.counts.method = "default",
   colors = c("black", "orange")
 )
@@ -29,7 +29,7 @@ gv_mut_signatures(muts = input_gv_module,
                   metadata = metadata_ge_module,
                   response = Response,
                   gbuild = BSgenome.Hsapiens.UCSC.hg19,
-                  mut_sigs = signatures.cosmic,
+                  mut_sigs = COSMIC_v3.2_SBS_GRCh37,
                   tri.counts.method = 'default',
                   colors = c('black', 'orange'))
 

@@ -19,9 +19,8 @@
 #' @import tidyr
 #' @import tibble
 #' @import pheatmap
-#' @import BSgenome.Hsapiens.UCSC.hg19
-#' @import BSgenome.Hsapiens.UCSC.hg38
 #' @import ggplotify
+#' @import rlang
 #'
 #' @examples
 #'
@@ -29,7 +28,7 @@
 #'                   metadata = metadata_ge_module,
 #'                   response = Response,
 #'                   gbuild = BSgenome.Hsapiens.UCSC.hg19,
-#'                   mut_sigs = signatures.cosmic,
+#'                   mut_sigs = COSMIC_v3.2_SBS_GRCh37,
 #'                   tri.counts.method = 'default',
 #'                   colors = c('black', 'orange'))
 #'
@@ -37,12 +36,15 @@ gv_mut_signatures <- function(muts,
                               metadata,
                               response,
                               gbuild,
-                              mut_sigs = signatures.cosmic,
+                              mut_sigs = COSMIC_v3.2_SBS_GRCh37,
                               tri.counts.method = 'default',
                               colors = c('black', 'orange')) {
 
     # Enquote response variable
     response <- rlang::enquo(response)
+
+    # Load genomic build
+    library(gbuild, character.only = TRUE)
 
     # Split the mutations input into SNP and DNP ------------------------------
     mut.sbs <- muts %>%
@@ -61,7 +63,7 @@ gv_mut_signatures <- function(muts,
             pos = 'Start_Position',
             ref = 'Reference_Allele',
             alt = 'Tumor_Seq_Allele2',
-            bsg = gbuild,
+            bsg = get(gbuild),
             sig.type = 'SBS')
     }
     # If dobulet base substitutions are provided
@@ -73,21 +75,22 @@ gv_mut_signatures <- function(muts,
             pos = 'Start_Position',
             ref = 'Reference_Allele',
             alt = 'Tumor_Seq_Allele2',
-            bsg = gbuild,
+            bsg = get(gbuild),
             sig.type = 'DBS')
     }
 
-    # generate ids for all samples ------------------------------------------------
+    # generate ids for all samples --------------------------------------------
     ids_samples <- unique(muts$Tumor_Sample_Barcode)
 
-    # get mutational signature predictions for all samples ------------------------
+    # get mutational signature predictions for all samples --------------------
     # If single base substitutions are provided
+
     if (nrow(mut.sbs != 0)) {
         results_sbs <- sapply(ids_samples,
                               function(x) {
                                   deconstructSigs::whichSignatures(
                                       tumor.ref = sigs.sbs.input,
-                                      signatures.ref = mut_sigs,
+                                      signatures.ref = as.data.frame(mut_sigs),
                                       sample.id = x,
                                       contexts.needed = TRUE,
                                       tri.counts.method = tri.counts.method)
@@ -99,7 +102,7 @@ gv_mut_signatures <- function(muts,
                               function(x) {
                                   deconstructSigs::whichSignatures(
                                       tumor.ref = sigs.dbs.input,
-                                      signatures.ref = mut_sigs,
+                                      signatures.ref = as.data.frame(mut_sigs),
                                       sample.id = x,
                                       contexts.needed = TRUE,
                                       tri.counts.method = tri.counts.method)
