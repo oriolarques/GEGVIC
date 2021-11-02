@@ -122,7 +122,7 @@ module_ic <- function(counts,
 
     ic_score(tpm = tpm,
              metadata = metadata_ge_module,
-             response = Response,
+             response = !!response,
              compare = compare,
              p_label = p_label,
              colors = colors)

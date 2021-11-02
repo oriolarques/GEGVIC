@@ -44,7 +44,7 @@
 #'                      biomart = ensembl_biomart_GRCh38_p13)
 #' ic.pred <- ic_deconv(gene_expression = tpm,
 #'                      indications = rep('skcm', ncol(tpm)),
-#'                      cibersort = 'cibersort/',
+#'                      cibersort = NULL,
 #'                      tumor = TRUE,
 #'                      rmgenes = NULL,
 #'                      scale_mrna = TRUE,

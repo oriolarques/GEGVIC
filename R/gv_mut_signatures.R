@@ -27,16 +27,16 @@
 #' gv_mut_signatures(muts = input_gv_module,
 #'                   metadata = metadata_ge_module,
 #'                   response = Response,
-#'                   gbuild = BSgenome.Hsapiens.UCSC.hg19,
-#'                   mut_sigs = COSMIC_v3.2_SBS_GRCh37,
+#'                   gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+#'                   mut_sigs = COSMIC_v2_SBS_GRCh37,
 #'                   tri.counts.method = 'default',
 #'                   colors = c('black', 'orange'))
 #'
 gv_mut_signatures <- function(muts,
                               metadata,
                               response,
-                              gbuild,
-                              mut_sigs = COSMIC_v3.2_SBS_GRCh37,
+                              gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+                              mut_sigs = COSMIC_v2_SBS_GRCh37,
                               tri.counts.method = 'default',
                               colors = c('black', 'orange')) {
 
@@ -46,100 +46,84 @@ gv_mut_signatures <- function(muts,
     # Load genomic build
     library(gbuild, character.only = TRUE)
 
-    # Split the mutations input into SNP and DNP ------------------------------
-    mut.sbs <- muts %>%
-        dplyr::filter(Variant_type == 'SNP')
+    # Check the type of mutations to use --------------------------------------
 
-    mut.dbs <- muts %>%
-        dplyr::filter(Variant_type == 'DNP')
+    ## Get the name of the mutational signatures files chosen by the user
+    eval.mut.input <- substitute(mut_sigs)
+
+    # If the name of the mutational singatures contains SBS
+    if (grepl('SBS', eval.mut.input, ignore.case = TRUE) == TRUE) {
+        # Filter mutations of SNP type
+        mut.filt <- muts %>%
+            dplyr::filter(Variant_type == 'SNP')
+        # Define sig.type as SBS
+        sig_type <- 'SBS'
+
+    } else if (grepl('DBS', eval.mut.input, ignore.case = TRUE) == TRUE) {
+        # Filter mutations of DNP type
+        mut.filt <- muts %>%
+            dplyr::filter(Variant_type == 'DNP')
+        # Define sig.type as DBS
+        sig_type <- 'DBS'
+
+    } else {
+        # Filter mutations of INS or DEL type
+        mut.filt <- muts %>%
+            dplyr::filter(Variant_type %in% c('INS', 'DEL'))
+        # Define sig.type as SBS
+        sig_type <- 'ID'
+
+    }
+
 
     # Create deconstructSigs inputs -------------------------------------------
-    # If single base substitutions are provided
-    if (nrow(mut.sbs != 0)) {
-        sigs.sbs.input <- deconstructSigs::mut.to.sigs.input(
-            mut.ref = mut.sbs,
-            sample.id = 'Tumor_Sample_Barcode',
-            chr = 'Chromosome',
-            pos = 'Start_Position',
-            ref = 'Reference_Allele',
-            alt = 'Tumor_Seq_Allele2',
-            bsg = get(gbuild),
-            sig.type = 'SBS')
-    }
-    # If dobulet base substitutions are provided
-    if (nrow(mut.dbs != 0)) {
-        sigs.dbs.input <- deconstructSigs::mut.to.sigs.input(
-            mut.ref = mut.dbs,
-            sample.id = 'Tumor_Sample_Barcode',
-            chr = 'Chromosome',
-            pos = 'Start_Position',
-            ref = 'Reference_Allele',
-            alt = 'Tumor_Seq_Allele2',
-            bsg = get(gbuild),
-            sig.type = 'DBS')
-    }
+    sigs.input <- deconstructSigs::mut.to.sigs.input(
+        mut.ref = mut.filt,
+        sample.id = 'Tumor_Sample_Barcode',
+        chr = 'Chromosome',
+        pos = 'Start_Position',
+        ref = 'Reference_Allele',
+        alt = 'Tumor_Seq_Allele2',
+        bsg = get(noquote(gbuild)),
+        sig.type = sig_type)
+
 
     # generate ids for all samples --------------------------------------------
     ids_samples <- unique(muts$Tumor_Sample_Barcode)
 
     # get mutational signature predictions for all samples --------------------
-    # If single base substitutions are provided
-
-    if (nrow(mut.sbs != 0)) {
-        results_sbs <- sapply(ids_samples,
-                              function(x) {
-                                  deconstructSigs::whichSignatures(
-                                      tumor.ref = sigs.sbs.input,
-                                      signatures.ref = as.data.frame(mut_sigs),
-                                      sample.id = x,
-                                      contexts.needed = TRUE,
-                                      tri.counts.method = tri.counts.method)
-                              })
-    }
-    # If dobulet base substitutions are provided
-    if (nrow(mut.dbs != 0)) {
-        results_dbs <- sapply(ids_samples,
-                              function(x) {
-                                  deconstructSigs::whichSignatures(
-                                      tumor.ref = sigs.dbs.input,
-                                      signatures.ref = as.data.frame(mut_sigs),
-                                      sample.id = x,
-                                      contexts.needed = TRUE,
-                                      tri.counts.method = tri.counts.method)
-                              })
-    }
+    results <- sapply(ids_samples,
+                      function(x) {
+                          deconstructSigs::whichSignatures(
+                              tumor.ref = sigs.input,
+                              signatures.ref = as.data.frame(mut_sigs),
+                              sample.id = x,
+                              contexts.needed = TRUE,
+                              tri.counts.method = tri.counts.method)
+                      })
 
     # Analyze results --------------------------------------------------------
-    # If single base substitutions are provided
-    if (nrow(mut.sbs != 0)) {
-        # Extract results from whichSignatures function
-        results_sbs.extr <- gv_extr_mut_sig(results = results_sbs,
+    # Extract results from whichSignatures function
+    results.extr <- GEGVIC::gv_extr_mut_sig(results = results,
                                             ids_samples = ids_samples) %>%
-            # Join predicted mutational signature results with metadata
-            dplyr::left_join(x = .,
-                             y = metadata_ge_module,
-                             by = c('Samples')) %>%
-            # Round predicted mutational signature contribution
-            dplyr::mutate(Value = round(x = Value, digits = 2))
-    }
-    # If dobulet base substitutions are provided
-    if (nrow(mut.dbs != 0)) {
-        # Extract results from whichSignatures function
-        results_dbs.extr <- gv_extr_mut_sig(results = results_dbs,
-                                            ids_samples = ids_samples) %>%
-            # Join predicted mutational signature results with metadata
-            dplyr::left_join(x = .,
-                             y = metadata_ge_module,
-                             by = c('Samples')) %>%
-            # Round predicted mutational signature contribution
-            dplyr::mutate(Value = round(x = Value, digits = 2))
-    }
+        # Join predicted mutational signature results with metadata
+        dplyr::left_join(x = .,
+                         y = metadata_ge_module,
+                         by = c('Samples')) %>%
+        # Round predicted mutational signature contribution
+        dplyr::mutate(Value = round(x = Value, digits = 2))
+
+    # Filter top 4 signatures for barplot
+    top.results.extr <- results.extr %>%
+        dplyr::group_by(Samples) %>%
+        dplyr::top_n(n = 4, wt = Value) %>%
+        droplevels()
 
 
 
     # Plot results ------------------------------------------------------------
     ## Barplot  --------------------------------------------------------------
-    bar.plot <- ggplot(results_sbs.extr, aes(x = Samples,
+    bar.plot <- ggplot(top.results.extr, aes(x = Samples,
                                              y = Value,
                                              fill = as.factor(Signature))) +
 
@@ -147,15 +131,15 @@ gv_mut_signatures <- function(muts,
         geom_bar(stat = 'identity') +
 
         # Define fill colors using the Set1 palette from ggpubr package
-        scale_fill_manual(values = ggpubr::get_palette(palette = 'Set1',
+        scale_fill_manual(values = ggpubr::get_palette(palette = 'simpsons',
                                                        k = length(unique(
-                                                           results_sbs.extr$Value
+                                                           top.results.extr$Signature
                                                        )))) +
         # Expand columns to fill margins
         scale_y_continuous(expand = c(0,0)) +
 
         # Title and labs
-        ggtitle('Mutational signature predictions') +
+        ggtitle('Top 4 Mutational signature predictions per sample') +
         labs(fill = 'Signatures') +
 
         # Themes
@@ -175,7 +159,7 @@ gv_mut_signatures <- function(muts,
 
     ## Heatmap  ------------------------------------------------------------
     # Format signature predictions object in a wide format: Pivot wider
-    wide.results_sbs.extr <- results_sbs.extr %>%
+    wide.results.extr <- results.extr %>%
         dplyr::select(Samples, Signature, Value) %>%
         tidyr::pivot_wider(id_cols = Signature,
                            names_from = Samples,
@@ -209,8 +193,8 @@ gv_mut_signatures <- function(muts,
     names(pheat.anno.color) <- quoted.resp
 
     # Plot pheatmap
-    heat.map <- pheatmap(as.matrix(wide.results_sbs.extr[,
-                                                         order(match(colnames(wide.results_sbs.extr),
+    heat.map <- pheatmap(as.matrix(wide.results.extr[,
+                                                         order(match(colnames(wide.results.extr),
                                                                      rownames(pheat.meta)))]),
                          color = ggpubr::get_palette(palette = 'Purples', k = 10),
                          scale = 'none',
@@ -218,6 +202,7 @@ gv_mut_signatures <- function(muts,
                          cluster_cols = FALSE,
                          annotation_col = pheat.meta,
                          annotation_colors = pheat.anno.color,
+                         main = 'Mutational signature predictions per sample',
                          silent = TRUE)
 
     # Merge the resulting plots -----------------------------------------------

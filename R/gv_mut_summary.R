@@ -1,13 +1,33 @@
 #' @title gv_mut_summary
 #'
-#' @param muts
-#' @param metadata
-#' @param response
-#' @param top_genes
-#' @param specific_genes
-#' @param colors
+#' @description Given a table that contains genetic variants from samples of
+#' interest, it summarises differnt aspects of such mutations and draws an
+#' oncoplot.
 #'
-#' @return
+#' @param muts Data frame containing genetic variations. Necessary columns must
+#' have the following names:
+#' - Hugo_Symbol: Gene symbol from HGNC.
+#' - Chromosome: Affected chromosome.
+#' - Start_Position: Mutation start coordinate.
+#' - End_Position: Mutation end coordinate.
+#' - Reference_Allele: The plus strand reference allele at this position.
+#' Includes the deleted sequence for a deletion or "-" for an insertion.
+#' - Tumor_Seq_Allele2: Tumor sequencing discovery allele.
+#' - Variant_Classification: Translational effect of variant allele. Can be one
+#' of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
+#' In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
+#' Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
+#' - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+#' 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
+#' - Tumor_Sample_Barcode.
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param response Unquoted name of the variable indicating the groups to analyse.
+#' @param top_genes Number of genes to be analysed in the mutational summary.
+#' @param specific_genes Genes that will be plotted in the oncoplot.
+#' @param colors Character vector indicating the colors of the different groups
+#' to compare. Default values are two: black and orange.
+#'
+#' @return Prints two plots: A summary of samples mutations and an oncoplot.
 #'
 #' @export
 #'
@@ -77,6 +97,7 @@ gv_mut_summary <- function(muts,
     maftools::oncoplot(maf = maf,
                        top = top_genes,
                        clinicalFeatures = quoted.resp,
+                       genes = specific_genes,
                        sampleOrder = samples_order,
                        showTumorSampleBarcodes = TRUE,
                        sortByAnnotation = TRUE,

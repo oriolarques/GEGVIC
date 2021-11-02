@@ -1,15 +1,36 @@
 #' @title gv_mut_load
 #'
-#' @description
+#' @description Summarises the total number of mutations per sample and compares
+#' different groups of interest.
 #'
-#' @param muts
-#' @param metadata
-#' @param response
-#' @param compare
-#' @param p_label
-#' @param colors
+#' @param muts Data frame containing genetic variations. Necessary columns must
+#' have the following names:
+#' - Hugo_Symbol: Gene symbol from HGNC.
+#' - Chromosome: Affected chromosome.
+#' - Start_Position: Mutation start coordinate.
+#' - End_Position: Mutation end coordinate.
+#' - Reference_Allele: The plus strand reference allele at this position.
+#' Includes the deleted sequence for a deletion or "-" for an insertion.
+#' - Tumor_Seq_Allele2: Tumor sequencing discovery allele.
+#' - Variant_Classification: Translational effect of variant allele. Can be one
+#' of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
+#' In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
+#' Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
+#' - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+#' 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
+#' - Tumor_Sample_Barcode.
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param response Unquoted name of the variable indicating the groups to analyse.
+#' @param compare A character string indicating which method to be used for
+#' comparing means. Options are 't.test' and 'wilcox.test' for two groups or
+#' 'anova' and 'kruskal.test' for more groups. Default value is NULL.
+#' @param p_label Character string specifying label type. Allowed values include
+#' 'p.signif' (shows the significance levels), 'p.format' (shows the formatted
+#' p-value).
+#' @param colors Character vector indicating the colors of the different groups
+#' to compare. Default values are two: black and orange.
 #'
-#' @return
+#' @return Returns a ggplot object.
 #'
 #' @export
 #'

@@ -34,12 +34,9 @@
 #'                      rmgenes = NULL,
 #'                      scale_mrna = TRUE,
 #'                      expected_cell_types = NULL)
-#' ic_plot_comp_samples(df = ic.pred,
+#' ic_plot_comp_celltypes(df = ic.pred,
 #'                      metadata = metadata_ge_module,
-#'                      response = Response,
-#'                      compare = 'wilcox.test',
-#'                      p_label = 'p.format',
-#'                      colors = c('black', 'orange'))
+#'                      response = Response)
 #'
 ic_plot_comp_celltypes <- function(df,
                                    metadata,

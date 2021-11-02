@@ -64,7 +64,7 @@ gv_extr_mut_sig <- function(results,
     # Fix the numeration of the signature below 10 ----------------------------
     results.sig <- results.sig %>%
         # change signature1 for singature01
-        dplyr::mutate(Signature = gsub(pattern = '^([aA-zZ]+\\.*)([0-9])$',
+        dplyr::mutate(Signature = gsub(pattern = '^([aA-zZ]+\\.*)([0-9][aA-zZ]?)$',
                                        replacement = '\\10\\2',
                                        x = Signature))
 
