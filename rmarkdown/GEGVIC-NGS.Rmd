@@ -6,18 +6,19 @@ output:
     html_document:
         toc: yes
 params:
-    counts: '../../proves_R_tfm/input_ge_module.csv'
+    counts: !r system.file("extdata", "input_ge_module.csv", package = "GEGVIC")
     genes_id: 'entrezgene_id'
-    metadata: '../../proves_R_tfm/metadata_ge_module.csv'
+    metadata: !r system.file("extdata", "metadata_ge_module.csv", package = "GEGVIC")
     colors: !r c('black', 'orange')
     design: 'Response'
     ref_level: !r c('Response', 'Non_Responders')
     shrink: 'none'
     fold_change: 1.5
     p.adj: 0.05
-    gmt: '../../proves_R_tfm/c7.all.v7.2.symbols.gmt'
+    gmt: !r system.file("extdata", "c7.all.v7.2.symbols.gmt", package = "GEGVIC")
     gsea_pvalue: 1
-    biomart: '../../proves_R_tfm/ensembl_biomart_GRCh38_p13.csv'
+    biomart: !r system.file("extdata", "ensembl_biomart_GRCh38_p13.csv", package = "GEGVIC")
+    muts: !r system.file("extdata", "input_gv_module.csv", package = "GEGVIC")
 ---
 
 ```{r setup, include=FALSE}
@@ -33,6 +34,10 @@ counts <- read.csv(params$counts, header = TRUE, sep = ',')
 metadata <- read.csv(params$metadata, header = TRUE, sep = ',')
 gmt <- read.gmt(params$gmt)
 biomart <- read.csv(params$biomart, header = TRUE, sep = ',')
+
+#gv_module
+muts <- read.csv(params$muts, header = TRUE, sep = ',')
+
 ```
 
 
@@ -82,6 +87,18 @@ biomart <- read.csv(params$biomart, header = TRUE, sep = ',')
             gmt = gmt,
             gsea_pvalue = params$gsea_pvalue)
 
+```
+
+
+## GV_module 
+```{r mut_signatures}
+gv_mut_signatures(muts = muts,
+                   metadata = metadata,
+                   response = Response,
+                   gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+                   mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+                   tri.counts.method = 'default',
+                   colors = c('black', 'orange'))
 ```
 
 

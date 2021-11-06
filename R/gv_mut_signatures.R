@@ -4,7 +4,7 @@
 #' @param metadata
 #' @param response
 #' @param gbuild
-#' @param mut_sigs
+#' @param mut_sigs can be COSMIC_v2_SBS_GRCh37, COSMIC_v2_SBS_GRCh38 ...
 #' @param tri.counts.method
 #' @param colors
 #'
@@ -28,7 +28,7 @@
 #'                   metadata = metadata_ge_module,
 #'                   response = Response,
 #'                   gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-#'                   mut_sigs = COSMIC_v2_SBS_GRCh37,
+#'                   mut_sigs = 'COSMIC_v2_SBS_GRCh37',
 #'                   tri.counts.method = 'default',
 #'                   colors = c('black', 'orange'))
 #'
@@ -96,7 +96,7 @@ gv_mut_signatures <- function(muts,
                       function(x) {
                           deconstructSigs::whichSignatures(
                               tumor.ref = sigs.input,
-                              signatures.ref = as.data.frame(mut_sigs),
+                              signatures.ref = as.data.frame(get(noquote(mut_sigs))),
                               sample.id = x,
                               contexts.needed = TRUE,
                               tri.counts.method = tri.counts.method)

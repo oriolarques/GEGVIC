@@ -15,6 +15,8 @@ gv_mut_signatures(
 )
 }
 \arguments{
+\item{mut_sigs}{can be COSMIC_v2_SBS_GRCh37, COSMIC_v2_SBS_GRCh38 ...}
+
 \item{colors}{}
 }
 \value{
@@ -29,7 +31,7 @@ gv_mut_signatures(muts = input_gv_module,
                   metadata = metadata_ge_module,
                   response = Response,
                   gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-                  mut_sigs = COSMIC_v2_SBS_GRCh37,
+                  mut_sigs = 'COSMIC_v2_SBS_GRCh37',
                   tri.counts.method = 'default',
                   colors = c('black', 'orange'))
 

@@ -56,12 +56,16 @@ module_gv <- function(muts,
                       mut_sigs = COSMIC_v2_SBS_GRCh37,
                       tri.counts.method = 'default') {
 
-    response <- enquo(response)
+
+    response <-  rlang::enquo(response)
+
+    resp <- rlang::as_label(response)
+
 
     # Show genetic variations summary
     gv_mut_summary(muts = muts,
                    metadata = metadata,
-                   response = !!response,
+                   response = resp,
                    top_genes = top_genes,
                    specific_genes = specific_genes,
                    colors = colors)
@@ -69,7 +73,7 @@ module_gv <- function(muts,
     # Calculate mutational load
     gv_mut_load(muts = muts,
                 metadata = metadata,
-                response = !!response,
+                response = resp,
                 compare = compare,
                 p_label = p_label,
                 colors = colors)
@@ -77,7 +81,7 @@ module_gv <- function(muts,
     # Extract mutational signature profiles
     gv_mut_signatures(muts = muts,
                       metadata = metadata,
-                      response = !!response,
+                      response = resp,
                       gbuild = gbuild,
                       mut_sigs = mut_sigs,
                       tri.counts.method = tri.counts.method,
