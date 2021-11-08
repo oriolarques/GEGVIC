@@ -2,7 +2,7 @@
 #'
 #' @description Estimates immune cell fractions in RNA-seq expression data using
 #' the following methods QUANTISEQ, TIMER, MCP_COUNTER, XCELL, EPIC and
-#' CIBERSORT (absolute mode). To use the latter, the user need to register on
+#' CIBERSORT. To use the latter, the user need to register on
 #' the CIBERSORT web page (https://cibersort.stanford.edu), obtain a license and
 #' download the source code in form of two files CIBERSORT.R and LM22.txt. Then,
 #' the user need to specify the path to the storage location of such files in

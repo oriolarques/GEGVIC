@@ -86,6 +86,7 @@ module_ic <- function(counts,
                          genes_id = genes_id,
                          biomart = biomart)
 
+
     # Estimate immune cell fractions
     print('Estimate immune cell fractions')
 

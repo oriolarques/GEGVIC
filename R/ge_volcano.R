@@ -25,7 +25,7 @@
 #'                            ref_level = c('Response', 'Non_Responders'),
 #'                            shrink = 'apeglm')
 #' annot.res <- ge_annot(results_dds = results_dds, genes_id = 'entrezgene_id')
-#' ge_volcano(annot_res = annot.results, fold_change = 2, p.adj = 0.05)
+#' ge_volcano(annot_res = annot.res, fold_change = 2, p.adj = 0.05)
 
 ge_volcano <- function(annot_res,
                        fold_change = 2,

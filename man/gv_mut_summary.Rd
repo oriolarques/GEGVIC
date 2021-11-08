@@ -29,7 +29,7 @@ In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
 Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
 - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
-- Tumor_Sample_Barcode.}
+- Tumor_Sample_Barcode: Sample name.}
 
 \item{metadata}{Data frame that contains supporting variables to the data.}
 

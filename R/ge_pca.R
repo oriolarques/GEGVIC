@@ -21,9 +21,12 @@
 #' @import tibble
 #'
 #' @examples
-#' ge_pca <- function(counts = input_ge_module, genes_id = 'entrezgene_id,
-#' metadata = metadata_ge_module, design = 'Response', colors = c('black', 'orange'))
-
+#' ge_pca(counts = input_ge_module,
+#'        genes_id = 'entrezgene_id,
+#'        metadata = metadata_ge_module,
+#'        design = 'Response',
+#'        colors = c('black', 'orange'))
+#'
 ge_pca <- function(counts,
                    genes_id,
                    metadata,

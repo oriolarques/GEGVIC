@@ -18,7 +18,7 @@
 #' Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
 #' - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
 #' 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
-#' - Tumor_Sample_Barcode.
+#' - Tumor_Sample_Barcode: Sample name.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param response Unquoted name of the variable indicating the groups to analyse.
 #' @param compare A character string indicating which method to be used for
