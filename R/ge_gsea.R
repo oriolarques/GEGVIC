@@ -24,7 +24,7 @@
 #'                            metadata = metadata_ge_module,
 #'                            design = 'Response',
 #'                            ref_level = c('Response', 'Non_Responders'),
-#'                            shrink = 'apeglm')
+#'                            shrink = 'none')
 #' annot.res <- ge_annot(results_dds = results_dds,
 #'                       genes_id = 'entrezgene_id',
 #'                       biomart = ensembl_biomart_GRCh38_p13)
