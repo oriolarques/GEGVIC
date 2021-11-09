@@ -5,7 +5,7 @@
 #'
 #' @param counts Data frame that contains gene expression data as raw counts.
 #' @param genes_id Name of the column that contains gene identifiers. Should be
-#' one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.
+#' one of the following:'entrezgene_id', 'ensembl_gene_id' or 'hgnc_symbol'.
 #' @param biomart Data frame containing a biomaRt query with the following
 #' attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
 #' refseq_mrna.

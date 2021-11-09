@@ -5,7 +5,7 @@
 #'
 #' @param counts Data frame that contains gene expression data as raw counts.
 #' @param genes_id Name of the column that contains gene identifiers. Should be
-#' one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.
+#' one of the following:'entrezgene_id', 'ensembl_gene_id' or 'hgnc_symbol'.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param design Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.
 #' @param colors Character vector indicating the colors of the different groups

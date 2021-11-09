@@ -15,7 +15,7 @@
 #' @import tibble
 #'
 #' @examples
-#' counts <- preprocess_ge_counts(counts = input_ge_module, genes_id = 'rentrezgene_id')
+#' counts <- preprocess_ge_counts(counts = input_ge_module, genes_id = 'entrezgene_id')
 #'
 preprocess_ge_counts <- function(counts,
                                  genes_id) {
