@@ -8,7 +8,10 @@
 #' one of the following:'entrezgene_id', 'ensembl_gene_id' or 'hgnc_symbol'.
 #' @param biomart Data frame containing a biomaRt query with the following
 #' attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
-#' refseq_mrna.
+#' refseq_mrna. In the case of mus musculus data, external_gene_name must be
+#' obtained and then change the column name for hgnc_symbol. Uploaded biomaRt
+#' queries in GEGVIC: 'ensembl_biomartGRCh37', ensembl_biomartGRCh38_p13' and
+#' 'ensembl_biomartGRCm38_p6', 'ensembl_biomartGRCm39'.
 #'
 #' @return Returns a matrix containing expression counts as TPM with HGNC gene
 #' symbols as rownames and samples identifiers as colnames.

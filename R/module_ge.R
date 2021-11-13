@@ -20,7 +20,10 @@
 #' "normal" or "none". Use none to skip shrinkage. Default value is "apeglm".
 #' @param biomart Data frame containing a biomaRt query with the following
 #' attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
-#' refseq_mrna.
+#' refseq_mrna. In the case of mus musculus data, external_gene_name must be
+#' obtained and then change the column name for hgnc_symbol. Uploaded biomaRt
+#' queries in GEGVIC: 'ensembl_biomartGRCh37', ensembl_biomartGRCh38_p13' and
+#' 'ensembl_biomartGRCm38_p6', 'ensembl_biomartGRCm39'.
 #' @param fold_change An integer to define the fold change value to consider
 #' that a gene is differentially expressed.
 #' @param p.adjNumeric value to define the maximum adjusted p-value to consider
