@@ -19,6 +19,11 @@
 #'
 preprocess_ge_counts <- function(counts,
                                  genes_id) {
+
+    # Make sure the input does not has rownames
+    counts <- counts
+    rownames(counts) <- c()
+
     # Get gene symbols as rownames
     counts <- counts %>%
         tibble::column_to_rownames(genes_id)
@@ -45,6 +50,11 @@ preprocess_ge_counts <- function(counts,
 #' metadata <- preprocess_ge_meta(metadata = metadata_ge_module)
 
 preprocess_ge_meta <- function(metadata) {
+
+    # Make sure the input does not has rownames
+    metadata <- metadata
+    rownames(metadata) <- c()
+
     # Get patient ID's as rownames
     metadata <- metadata %>%
         dplyr::mutate_all(., as.factor) %>%

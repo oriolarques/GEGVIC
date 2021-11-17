@@ -10,11 +10,14 @@ ic_raw_to_tpm(counts, genes_id, biomart)
 \item{counts}{Data frame that contains gene expression data as raw counts.}
 
 \item{genes_id}{Name of the column that contains gene identifiers. Should be
-one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
+one of the following:'entrezgene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
 
 \item{biomart}{Data frame containing a biomaRt query with the following
 attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
-refseq_mrna.}
+refseq_mrna. In the case of mus musculus data, external_gene_name must be
+obtained and then change the column name for hgnc_symbol. Uploaded biomaRt
+queries in GEGVIC: 'ensembl_biomartGRCh37', ensembl_biomartGRCh38_p13' and
+'ensembl_biomartGRCm38_p6', 'ensembl_biomartGRCm39'.}
 }
 \value{
 Returns a matrix containing expression counts as TPM with HGNC gene

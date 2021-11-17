@@ -10,7 +10,7 @@ ge_pca(counts, genes_id, metadata, design, colors = c("black", "orange"))
 \item{counts}{Data frame that contains gene expression data as raw counts.}
 
 \item{genes_id}{Name of the column that contains gene identifiers. Should be
-one of the following:'entrez_gene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
+one of the following:'entrezgene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
 
 \item{metadata}{Data frame that contains supporting variables to the data.}
 
