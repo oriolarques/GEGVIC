@@ -36,7 +36,7 @@ gv_mut_signatures <- function(muts,
                               metadata,
                               response,
                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-                              mut_sigs = COSMIC_v2_SBS_GRCh37,
+                              mut_sigs = 'COSMIC_v2_SBS_GRCh37',
                               tri.counts.method = 'default',
                               colors = c('black', 'orange')) {
 
