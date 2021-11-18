@@ -80,7 +80,7 @@ ic_plot_comp_celltypes <- function(df,
                             values_to = 'estimation') %>%
         # Add Samples information with the metadata data.frame
         dplyr::inner_join(x = .,
-                          y = metadata_ge_module,
+                          y = metadata,
                           by = 'Samples') %>%
         # Re-separate cell_type and method columns
         tidyr::separate(data = ., col = cell_type, into = c('cell_type', 'method'), sep = '_') %>%
