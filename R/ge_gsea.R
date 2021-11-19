@@ -81,7 +81,7 @@ ge_gsea <- function(annot_res,
                 names(GSEA.res)[i] <- paste0('GSEA_', names(annot_res)[i])
             }
 
-            # Check if GSEA result is empty
+            # Check if GSEA result is empty and print a message
             if (nrow(GSEA.res[[i]]@result) == 0) {
                 print('No gene sets are enriched under specific pvalueCutoff')
             } else {
