@@ -63,7 +63,7 @@ ge_gsea <- function(annot_res,
             names(geneLists)[i] <- paste0('geneList_', names(annot_res)[i])
         }
 
-        # 3. Perform GSEA
+        # 2. Perform GSEA
             ## Create an empty list to store GSEA results
             GSEA.res <- list()
             temp_gsea <- NULL
@@ -81,30 +81,38 @@ ge_gsea <- function(annot_res,
                 names(GSEA.res)[i] <- paste0('GSEA_', names(annot_res)[i])
             }
 
-        # 3. GSEAmining
-            ### Iterate over the annotated results list
-            for (i in seq_along(annot_res)) {
-                # Filter gene sets to analyse the top ones
-                gs.filt <- GSEA.res[[i]]@result %>%
-                    dplyr::arrange(desc(.data$NES)) %>%
-                    dplyr::mutate(group = ifelse(test = .data$NES > 0,
-                                                 yes = 'Positive',
-                                                 no = 'Negative')) %>%
-                    dplyr::group_by(.data$group) %>%
-                    dplyr::filter(.data$p.adjust < gsea_pvalue) %>%
-                    dplyr::top_n(., n = 20, wt = abs(.data$NES)) %>%
-                    dplyr::ungroup(.) %>%
-                    dplyr::select(.data$ID, .data$NES,
-                                  .data$p.adjust, .data$core_enrichment)
+            # Check if GSEA result is empty
+            if (nrow(GSEA.res[[i]]@result) == 0) {
+                print('No gene sets are enriched under specific pvalueCutoff')
+            } else {
 
-                gs.cl <- GSEAmining::gm_clust(df = gs.filt)
+            # 3. GSEAmining
+                ### Iterate over the annotated results list
+                for (i in seq_along(annot_res)) {
+                    # Filter gene sets to analyse the top ones
+                    gs.filt <- GSEA.res[[i]]@result %>%
+                        dplyr::arrange(desc(.data$NES)) %>%
+                        dplyr::mutate(group = ifelse(test = .data$NES > 0,
+                                                     yes = 'Positive',
+                                                     no = 'Negative')) %>%
+                        dplyr::group_by(.data$group) %>%
+                        dplyr::filter(.data$p.adjust < gsea_pvalue) %>%
+                        dplyr::top_n(., n = 20, wt = abs(.data$NES)) %>%
+                        dplyr::ungroup(.) %>%
+                        dplyr::select(.data$ID, .data$NES,
+                                      .data$p.adjust, .data$core_enrichment)
 
-                GSEAmining::gm_dendplot(df = gs.filt,
-                                        hc = gs.cl)
+                    gs.cl <- GSEAmining::gm_clust(df = gs.filt)
 
-                print(GSEAmining::gm_enrichterms(df = gs.filt,
-                                           hc = gs.cl))
+                    GSEAmining::gm_dendplot(df = gs.filt,
+                                            hc = gs.cl)
 
+                    print(GSEAmining::gm_enrichterms(df = gs.filt,
+                                                     hc = gs.cl))
+
+                }
             }
+
+
 
 }
