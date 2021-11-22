@@ -5,7 +5,7 @@ Version: 0.1.0
 Authors@R: person("Oriol", "Arqués", email = "oriol.arques@gmail.com",
                   role = c("aut", "cre")) 
 Description: A workflow to analyse Gene Expression, Genetic Variations and Immune 
-cell Composition of tumour samples using Next Generation Sequencing data. 
+    cell Composition of tumour samples using Next Generation Sequencing data. 
 License: MIT | file LICENSE
 Encoding: UTF-8
 LazyData: true
