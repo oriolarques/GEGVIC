@@ -61,6 +61,7 @@ if(!require(apeglm)) BiocManager::install("apeglm")
 if(!require(maftools)) BiocManager::install("maftools")
 if(!require(clusterProfiler)) BiocManager::install("clusterProfiler")
 if(!require(GSEAmining)) BiocManager::install("GSEAmining")
+if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome")
 if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome.Hsapiens.UCSC.hg19")
 if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
 if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome.Mmusculus.UCSC.mm10")
@@ -69,8 +70,8 @@ if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome.Mmuscul
 
 # Github packages
 remotes::install_github("icbi-lab/immunedeconv")
-devtools::install_github("oriolarques/GEGVIC")
 devtools::install_github('raerose01/deconstructSigs')
+devtools::install_github("oriolarques/GEGVIC")
 ```
 
 ## Input data format
