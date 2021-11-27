@@ -71,9 +71,9 @@ ge_gsea <- function(annot_res,
             ## Execute GSEA
             ### Iterate over the annotated results list
             for (i in seq_along(annot_res)) {
-                temp_gsea <- GSEA(geneList = geneLists[[i]],
-                                  TERM2GENE = gmt,
-                                  pvalueCutoff = gsea_pvalue)
+                temp_gsea <- clusterProfiler::GSEA(geneList = geneLists[[i]],
+                                                   TERM2GENE = gmt,
+                                                   pvalueCutoff = gsea_pvalue)
                 # Delay the next process 0.5 seconds
                 Sys.sleep(0.5)
                 # Save the GSEA results
