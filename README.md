@@ -155,10 +155,12 @@ This module uses the functionalities provided by the `DESeq2`
 First, using the **ge_pca()** function we can perform a PCA to evaluate
 how samples and groups relate to each other. For that, we indicate the
 raw counts file (*input_ge_module*), how the gene identifiers are
-encoded (‘*entrezgene_id*’), the metadata file (metadata_ge_module), the
-design should be a formula that expresses how the counts for each gene
-depend on the variables in the metadata, and finally the colours to
-represent each sample group. The function outputs a plot.
+encoded (‘*entrezgene_id*’), the metadata file (metadata_ge_module) and
+the **unquoted name of the column** that contains the groups of interest
+as the response argument. Then, the design should be a formula that
+expresses how the counts for each gene depend on the variables in the
+metadata, and finally the colours to represent each sample group. The
+function outputs a plot.
 
 ``` r
 ge_pca(counts = input_ge_module,

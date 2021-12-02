@@ -4,7 +4,14 @@
 \alias{ge_pca}
 \title{ge_pca}
 \usage{
-ge_pca(counts, genes_id, metadata, design, colors = c("black", "orange"))
+ge_pca(
+  counts,
+  genes_id,
+  metadata,
+  response,
+  design,
+  colors = c("black", "orange")
+)
 }
 \arguments{
 \item{counts}{Data frame that contains gene expression data as raw counts.}
