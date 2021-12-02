@@ -55,7 +55,7 @@ ge_pca <- function(counts,
 
     ## Enquote response variable
     response <- rlang::enquo(response)
-    # Trick to not use quasiquotation with maftools oncoplot to define annotationColor
+    # Trick to not use quasiquotation in plotPCA intgroup argument
     ## Get the colname of the response variable so it is quoted
     quoted.resp <- metadata %>%
         dplyr::select(!!response) %>%
