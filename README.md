@@ -166,6 +166,7 @@ function outputs a plot.
 ge_pca(counts = input_ge_module,
        genes_id = 'entrezgene_id',
        metadata = metadata_ge_module,
+       response = Response,
        design = 'Response',
        colors = c('black', 'orange'))
 ```
@@ -291,10 +292,10 @@ The genetic variations input (*input_gv_module*) together with samples
 metadata can be used in the function **gv_mut_summary()** to generate
 two plots that will first summarise the mutation types present in the
 samples and second highlight the most common mutations by groups in a
-form of an oncoplot. Users MUST indicate the unquoted name of the column
-that contains the groups of interest. Additionally, the number and which
-genes will appear in the oncoplot and the colours of sample groups can
-be modified.
+form of an oncoplot. Users **MUST** indicate the **unquoted name** of
+the column that contains the groups of interest in the response
+argument. Additionally, the number and which genes will appear in the
+oncoplot and the colours of sample groups can be modified.
 
 ``` r
 gv_mut_summary(muts = input_gv_module,

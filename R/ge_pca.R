@@ -25,6 +25,7 @@
 #' ge_pca(counts = input_ge_module,
 #'        genes_id = 'entrezgene_id,
 #'        metadata = metadata_ge_module,
+#'        response = Response,
 #'        design = 'Response',
 #'        colors = c('black', 'orange'))
 #'
