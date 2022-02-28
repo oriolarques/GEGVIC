@@ -9,6 +9,7 @@
 #' @param genes_idName of the column that contains gene identifiers. Should be
 #' one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.
 #' @param metadata Data frame that contains supporting variables to the data.
+#' @param response Unquoted name of the variable indicating the groups to analyse.
 #' @param design Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
@@ -51,6 +52,7 @@
 #' module_ge(counts = input_ge_module,
 #'           genes_id = 'entrezgene_id',
 #'           metadata = metadata_ge_module,
+#'           response = Response,
 #'           design = 'Response',
 #'           colors = c('black', 'orange'),
 #'           ref_level = c('Response', 'Non_Responders'),
@@ -64,6 +66,7 @@
 module_ge <- function(counts,
                       genes_id,
                       metadata,
+                      response,
                       design,
                       colors = c('black', 'orange'),
                       ref_level,
@@ -77,11 +80,15 @@ module_ge <- function(counts,
     # Get data PCA
     print('PCA')
 
+    ## Enquote response variable
+    response <- rlang::enquo(response)
+
     pca <- ge_pca(counts,
-           genes_id,
-           metadata,
-           design,
-           colors = c('black', 'orange'))
+                  genes_id = genes_id,
+                  metadata = metadata,
+                  response = !!response,
+                  design = design,
+                  colors = colors)
 
     print(pca)
 

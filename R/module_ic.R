@@ -59,7 +59,7 @@
 #' module_ic(counts = input_ge_module,
 #'           genes_id = 'entrezgene_id',
 #'           biomart = ensembl_biomart_GRCh38_p13,
-#'           indications = rep('skcm', ncol(tpm)),
+#'           indications = rep('skcm', ncol(input_ge_module[-1])),
 #'           cibersort = NULL,
 #'           metadata = metadata_ge_module,
 #'           response = Response,
@@ -103,7 +103,7 @@ module_ic <- function(counts,
 
 
     # Quote the argument response to use it in the next functions
-    response <- enquo(response)
+    response <- rlang::enquo(response)
 
     # Plot a graph comparing immune cell populations between samples group
     print('Estimate immune cell composition')

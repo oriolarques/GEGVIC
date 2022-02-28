@@ -99,8 +99,11 @@ ge_gsea <- function(annot_res,
                         dplyr::filter(.data$p.adjust < gsea_pvalue) %>%
                         dplyr::top_n(., n = 20, wt = abs(.data$NES)) %>%
                         dplyr::ungroup(.) %>%
-                        dplyr::select(.data$ID, .data$NES,
-                                      .data$p.adjust, .data$core_enrichment)
+                        dplyr::select(.data$ID,
+                                      .data$NES,
+                                      .data$p.adjust,
+                                      .data$leading_edge,
+                                      .data$core_enrichment)
 
                     gs.cl <- GSEAmining::gm_clust(df = gs.filt)
 

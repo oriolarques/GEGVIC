@@ -102,7 +102,7 @@ gv_mut_signatures <- function(muts,
                               tri.counts.method = tri.counts.method)
                       })
 
-    # Analyze results --------------------------------------------------------
+    # Analyze results ---------------------------------------------------------
     # Extract results from whichSignatures function
     results.extr <- GEGVIC::gv_extr_mut_sig(results = results,
                                             ids_samples = ids_samples) %>%
@@ -122,7 +122,7 @@ gv_mut_signatures <- function(muts,
 
 
     # Plot results ------------------------------------------------------------
-    ## Barplot  --------------------------------------------------------------
+    ## Barplot  ---------------------------------------------------------------
     bar.plot <- ggplot(top.results.extr, aes(x = Samples,
                                              y = Value,
                                              fill = as.factor(Signature))) +
@@ -157,7 +157,7 @@ gv_mut_signatures <- function(muts,
                    scales = 'free_x')
 
 
-    ## Heatmap  ------------------------------------------------------------
+    ## Heatmap  ---------------------------------------------------------------
     # Format signature predictions object in a wide format: Pivot wider
     wide.results.extr <- results.extr %>%
         dplyr::select(Samples, Signature, Value) %>%
