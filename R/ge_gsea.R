@@ -86,35 +86,64 @@ ge_gsea <- function(annot_res,
                 print('No gene sets are enriched under specific pvalueCutoff')
             } else {
 
-            # 3. GSEAmining
-                ### Iterate over the annotated results list
-                for (i in seq_along(annot_res)) {
-                    # Filter gene sets to analyse the top ones
-                    gs.filt <- GSEA.res[[i]]@result %>%
-                        dplyr::arrange(desc(.data$NES)) %>%
-                        dplyr::mutate(group = ifelse(test = .data$NES > 0,
-                                                     yes = 'Positive',
-                                                     no = 'Negative')) %>%
-                        dplyr::group_by(.data$group) %>%
-                        dplyr::filter(.data$p.adjust < gsea_pvalue) %>%
-                        dplyr::top_n(., n = 20, wt = abs(.data$NES)) %>%
-                        dplyr::ungroup(.) %>%
-                        dplyr::select(.data$ID,
-                                      .data$NES,
-                                      .data$p.adjust,
-                                      .data$leading_edge,
-                                      .data$core_enrichment)
+            # 2.1. GSEAmining
+            ### Iterate over the annotated results list
+            for (i in seq_along(annot_res)) {
+                # Filter gene sets to analyse the top ones
+                gs.filt <- GSEA.res[[i]]@result %>%
+                    dplyr::arrange(desc(.data$NES)) %>%
+                    dplyr::mutate(group = ifelse(test = .data$NES > 0,
+                                                 yes = 'Positive',
+                                                 no = 'Negative')) %>%
+                    dplyr::group_by(.data$group) %>%
+                    dplyr::filter(.data$p.adjust < gsea_pvalue) %>%
+                    dplyr::top_n(., n = 20, wt = abs(.data$NES)) %>%
+                    dplyr::ungroup(.) %>%
+                    dplyr::select(.data$ID,
+                                  .data$NES,
+                                  .data$p.adjust,
+                                  .data$leading_edge,
+                                  .data$core_enrichment)
 
-                    gs.cl <- GSEAmining::gm_clust(df = gs.filt)
+                gs.cl <- GSEAmining::gm_clust(df = gs.filt)
 
-                    GSEAmining::gm_dendplot(df = gs.filt,
-                                            hc = gs.cl)
+                GSEAmining::gm_dendplot(df = gs.filt,
+                                        hc = gs.cl)
 
-                    print(GSEAmining::gm_enrichterms(df = gs.filt,
-                                                     hc = gs.cl))
+                print(GSEAmining::gm_enrichterms(df = gs.filt,
+                                                 hc = gs.cl))
 
-                }
+                # 4. Bubble plot
+
+                print(
+                    gs.filt %>%
+                    separate(leading_edge , into= 'tags', sep=',') %>%
+                    separate(tags, into = c('tags', 'core_perc'), sep='=') %>%
+                    separate(core_perc, into = 'core_perc', sep='%') %>%
+                    mutate(core_perc = as.numeric(core_perc)) %>%
+                    dplyr::select(-tags) %>%
+                    ggplot(.,
+                           aes(x= NES,
+                               y=reorder(ID, NES),
+                               size= core_perc,
+                               colour = p.adjust))+
+                    geom_point(alpha=0.5)+
+                    geom_vline(xintercept = 0)+
+                    scale_color_gradient(low = "#FF9900", high = "#FF3300")+
+                    labs(title =  names(annot_res)[i],
+                         size='% of genes in\n leading edge', colour = 'p.adjust')+
+                    theme_bw()+
+                    theme(panel.grid = element_blank(),
+                          axis.text = element_text(size=12, face = "bold"),
+                          axis.title.y = element_blank(),
+                          axis.title.x = element_text(size=15),
+                          axis.text.x = element_text(size=10),
+                          legend.title = element_text(face='bold', size =8),
+                          legend.text = element_text(size =7))
+                    )
             }
+        }
+
 
 
 
