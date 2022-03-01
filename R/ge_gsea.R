@@ -26,9 +26,9 @@
 #' annot.res <- ge_annot(results_dds = results_dds,
 #'                       genes_id = 'entrezgene_id',
 #'                       biomart = ensembl_biomart_GRCh38_p13)
-#' ge_gsea(annot_res = annot.res,
-#'         gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
-#'         gsea_pvalue = 0.2)
+#' gsea.res <- ge_gsea(annot_res = annot.res,
+#'                     gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+#'                     gsea_pvalue = 0.2)
 #'
 ge_gsea <- function(annot_res,
                     gmt,
@@ -62,34 +62,30 @@ ge_gsea <- function(annot_res,
         }
 
         # 2. Perform GSEA
-            ## Create an empty list to store GSEA results
-            GSEA.res <- list()
-            temp_gsea <- NULL
+        ## Create an empty list to store GSEA results
+        GSEA.res <- list()
+        temp_gsea <- NULL
 
-            ## Read the gmt file
-            gmt <- clusterProfiler::read.gmt(gmt)
+        ## Read the gmt file
+        gmt <- clusterProfiler::read.gmt(gmt)
 
-            ## Execute GSEA
-            ### Iterate over the annotated results list
-            for (i in seq_along(annot_res)) {
-                temp_gsea <- clusterProfiler::GSEA(geneList = geneLists[[i]],
-                                                   TERM2GENE = gmt,
-                                                   pvalueCutoff = gsea_pvalue)
-                # Delay the next process 0.5 seconds
-                Sys.sleep(0.5)
-                # Save the GSEA results
-                GSEA.res[[i]] <- temp_gsea
-                names(GSEA.res)[i] <- paste0('GSEA_', names(annot_res)[i])
-            }
+        ## Execute GSEA
+        ### Iterate over the annotated results list
+        for (i in seq_along(annot_res)) {
+            temp_gsea <- clusterProfiler::GSEA(geneList = geneLists[[i]],
+                                               TERM2GENE = gmt,
+                                               pvalueCutoff = gsea_pvalue)
+            # Delay the next process 0.5 seconds
+            Sys.sleep(0.5)
+            # Save the GSEA results
+            GSEA.res[[i]] <- temp_gsea
+            names(GSEA.res)[i] <- paste0('GSEA_', names(annot_res)[i])
 
             # Check if GSEA result is empty and print a message
             if (nrow(GSEA.res[[i]]@result) == 0) {
                 print('No gene sets are enriched under specific pvalueCutoff')
             } else {
-
-            # 2.1. GSEAmining
-            ### Iterate over the annotated results list
-            for (i in seq_along(annot_res)) {
+                # 2.1. GSEAmining
                 # Filter gene sets to analyse the top ones
                 gs.filt <- GSEA.res[[i]]@result %>%
                     dplyr::arrange(desc(.data$NES)) %>%
@@ -106,46 +102,52 @@ ge_gsea <- function(annot_res,
                                   .data$leading_edge,
                                   .data$core_enrichment)
 
+                # 2.2. Bubble plot
+                print(
+                    gs.filt %>%
+                        separate(leading_edge , into= 'tags', sep=',') %>%
+                        separate(tags, into = c('tags', 'core_perc'), sep='=') %>%
+                        separate(core_perc, into = 'core_perc', sep='%') %>%
+                        mutate(core_perc = as.numeric(core_perc)) %>%
+                        dplyr::select(-tags) %>%
+                        ggplot(.,
+                               aes(x= NES,
+                                   y=reorder(ID, NES),
+                                   size= core_perc,
+                                   colour = p.adjust))+
+                        geom_point(alpha=0.5)+
+                        geom_vline(xintercept = 0)+
+                        scale_color_gradient(low = "#FF9900", high = "#FF3300")+
+                        labs(title =  names(annot_res)[i],
+                             size='% of genes in\n leading edge', colour = 'p.adjust')+
+                        theme_bw()+
+                        theme(panel.grid = element_blank(),
+                              axis.text = element_text(size=12, face = "bold"),
+                              axis.title.y = element_blank(),
+                              axis.title.x = element_text(size=15),
+                              axis.text.x = element_text(size=10),
+                              legend.title = element_text(face='bold', size =8),
+                              legend.text = element_text(size =7))
+                )
+
+                # 2.3. Cluster gene sets
                 gs.cl <- GSEAmining::gm_clust(df = gs.filt)
 
+                # Plot cluster
                 GSEAmining::gm_dendplot(df = gs.filt,
                                         hc = gs.cl)
 
+                # 2.4. Plot enriched terms in gene sets names
                 print(GSEAmining::gm_enrichterms(df = gs.filt,
                                                  hc = gs.cl))
 
-                # 4. Bubble plot
+                # 2.5. Plot enriched cores (leading edge analysis)
+                print(GSEAmining::gm_enrichcores(df = gs.filt,
+                                                 hc = gs.cl))
 
-                print(
-                    gs.filt %>%
-                    separate(leading_edge , into= 'tags', sep=',') %>%
-                    separate(tags, into = c('tags', 'core_perc'), sep='=') %>%
-                    separate(core_perc, into = 'core_perc', sep='%') %>%
-                    mutate(core_perc = as.numeric(core_perc)) %>%
-                    dplyr::select(-tags) %>%
-                    ggplot(.,
-                           aes(x= NES,
-                               y=reorder(ID, NES),
-                               size= core_perc,
-                               colour = p.adjust))+
-                    geom_point(alpha=0.5)+
-                    geom_vline(xintercept = 0)+
-                    scale_color_gradient(low = "#FF9900", high = "#FF3300")+
-                    labs(title =  names(annot_res)[i],
-                         size='% of genes in\n leading edge', colour = 'p.adjust')+
-                    theme_bw()+
-                    theme(panel.grid = element_blank(),
-                          axis.text = element_text(size=12, face = "bold"),
-                          axis.title.y = element_blank(),
-                          axis.title.x = element_text(size=15),
-                          axis.text.x = element_text(size=10),
-                          legend.title = element_text(face='bold', size =8),
-                          legend.text = element_text(size =7))
-                    )
-            }
+                }
         }
 
-
-
+        return(GSEA.res)
 
 }
