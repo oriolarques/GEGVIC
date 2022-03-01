@@ -20,6 +20,7 @@
 #' @import dplyr
 #' @import ggplot2
 #' @import tibble
+#' @import rlang
 #'
 #' @examples
 #' ge_pca(counts = input_ge_module,

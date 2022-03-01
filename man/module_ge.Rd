@@ -8,6 +8,7 @@ module_ge(
   counts,
   genes_id,
   metadata,
+  response,
   design,
   colors = c("black", "orange"),
   ref_level,
@@ -23,6 +24,8 @@ module_ge(
 \item{counts}{Data frame that contains gene expression data as raw counts.}
 
 \item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{response}{Unquoted name of the variable indicating the groups to analyse.}
 
 \item{design}{Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.}
 
@@ -72,6 +75,7 @@ desired comparisons.
 module_ge(counts = input_ge_module,
           genes_id = 'entrezgene_id',
           metadata = metadata_ge_module,
+          response = Response,
           design = 'Response',
           colors = c('black', 'orange'),
           ref_level = c('Response', 'Non_Responders'),

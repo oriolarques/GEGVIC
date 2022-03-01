@@ -86,7 +86,7 @@ for each sample and groups of study.
 module_ic(counts = input_ge_module,
           genes_id = 'entrezgene_id',
           biomart = ensembl_biomart_GRCh38_p13,
-          indications = rep('skcm', ncol(tpm)),
+          indications = rep('skcm', ncol(input_ge_module[-1])),
           cibersort = NULL,
           metadata = metadata_ge_module,
           response = Response,

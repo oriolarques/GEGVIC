@@ -4,9 +4,7 @@
 #'
 #' @param annot_res The output of ge_annot. List containing data frames of
 #' differential gene expression results between the different groups.
-#' @param gmt A data frame containg the gene sets to analyse using GSEA. This
-#' object should be obtained with the read.gmt function from the clusterProfiler
-#' package.
+#' @param gmt Path to the gmt file that contain the gene sets of interest.
 #' @param gsea_pvalue Numeric value to define the adjusted pvalue cutoff during
 #' GSEA. Set to 0.2 by default.
 #'
@@ -29,9 +27,9 @@
 #'                       genes_id = 'entrezgene_id',
 #'                       biomart = ensembl_biomart_GRCh38_p13)
 #' ge_gsea(annot_res = annot.res,
-#'         gmt = c7.all.v7.2.symbols.gmt,
+#'         gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
 #'         gsea_pvalue = 0.2)
-
+#'
 ge_gsea <- function(annot_res,
                     gmt,
                     gsea_pvalue = 0.2) {
@@ -67,6 +65,9 @@ ge_gsea <- function(annot_res,
             ## Create an empty list to store GSEA results
             GSEA.res <- list()
             temp_gsea <- NULL
+
+            ## Read the gmt file
+            gmt <- clusterProfiler::read.gmt(gmt)
 
             ## Execute GSEA
             ### Iterate over the annotated results list

@@ -21,6 +21,8 @@ one of the following:'entrezgene_id', 'ensembl_gene_id' or 'hgnc_symbol'.}
 
 \item{metadata}{Data frame that contains supporting variables to the data.}
 
+\item{response}{Unquoted name of the variable indicating the groups to analyse.}
+
 \item{design}{Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.}
 
 \item{colors}{Character vector indicating the colors of the different groups
@@ -32,4 +34,13 @@ Returns a ggplot object.
 \description{
 Creates a PCA plot from gene expression data using the VST
 transformation from the plotPCA function from the DESeq2 package.
+}
+\examples{
+ge_pca(counts = input_ge_module,
+       genes_id = 'entrezgene_id',
+       metadata = metadata_ge_module,
+       response = Response,
+       design = 'Response',
+       colors = c('black', 'orange'))
+
 }

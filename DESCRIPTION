@@ -21,15 +21,17 @@ Imports:
     ggrepel,
     clusterProfiler,
     GSEAmining,
-    deconstructSigs, 
-    ggplotify, 
-    ggpubr, 
-    immunedeconv, 
+    deconstructSigs,
+    ggplotify,
+    ggpubr,
+    immunedeconv,
     maftools,
-    patchwork, 
-    pheatmap, 
-    rlang, 
-    tidyr
+    patchwork,
+    pheatmap,
+    rlang,
+    tidyr,
+    GSVA,
+    GSEABase
 Suggests: 
     rmarkdown,
     knitr

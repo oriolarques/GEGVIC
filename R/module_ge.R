@@ -39,6 +39,7 @@
 #'
 #' @export
 #'
+#' @import rlang
 #' @import DESeq2
 #' @import dplyr
 #' @import ggplot2
