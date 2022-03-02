@@ -14,7 +14,7 @@
 #' obtained and then change the column name for hgnc_symbol. Uploaded biomaRt
 #' queries in GEGVIC: 'ensembl_biomartGRCh37', ensembl_biomartGRCh38_p13' and
 #' 'ensembl_biomartGRCm38_p6', 'ensembl_biomartGRCm39'.
-#' @param gmt Path to the gmt file that contain the gene sets of interest. By
+#' @param gsva_gmt Path to the gmt file that contain the gene sets of interest. By
 #' default the parameter is set to 'hallmark' which provides all HALLMARK gene
 #' sets from MSigDB (version 7.5.1).
 #' @param method Name of the method to perform Gene set variation analysis. The
@@ -46,7 +46,7 @@
 #'                       response = Response,
 #'                       design = 'Response',
 #'                       biomart = ensembl_biomart_GRCh38_p13,
-#'                       gmt = 'hallmark',
+#'                       gsva_gmt = 'hallmark',
 #'                       method = 'gsva',
 #'                       colors = c('black', 'orange'),
 #'                       row.names = TRUE,
@@ -58,7 +58,7 @@ ge_single <- function(counts,
                       response,
                       design,
                       biomart,
-                      gmt = 'hallmark',
+                      gsva_gmt = 'hallmark',
                       method = 'gsva',
                       colors = c('black', 'orange'),
                       row.names = TRUE,
@@ -128,10 +128,10 @@ ge_single <- function(counts,
 
 
     # Read genesets
-    if(gmt == 'hallmark'){
+    if(gsva_gmt == 'hallmark'){
         gmt <- hallmark.gmt
     } else {
-        gmt <- GSEABase::getGmt(gmt)
+        gmt <- GSEABase::getGmt(gsva_gmt)
     }
 
     # Calculate GSVA/ssGSEA

@@ -1,0 +1,112 @@
+---
+title: "GEGVIC-NGS report"
+date: '`r format(Sys.Date(),"%e de %B, %Y")`'
+output: 
+    pdf_document:
+        toc: yes
+params:
+    counts: NULL 
+    genes_id: NULL 
+    metadata: NULL 
+    response: NULL 
+    design: NULL 
+    colors: NULL
+    ref_level: NULL
+    shrink: NULL
+    biomart: NULL 
+    fold_change: NULL
+    p.adj: NULL
+    gmt: NULL 
+    gsea_pvalue: NULL
+    gsva_gmt: NULL
+    method: NULL
+    row.names: NULL
+    col.names: NULL
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# 1. Gene Expression module (GE)
+
+## 1.1. PCA
+```{r pca}
+#response <- rlang::enquo(response)
+
+pca <- ge_pca(counts = params$counts,
+              genes_id = params$genes_id,
+              metadata = params$metadata,
+              response = params$response,
+              design = params$design,
+              colors = params$colors)
+print(pca)
+    
+```
+
+## 1.2. Differential gene expression 
+
+```{r de}
+# Run differential gene expression analysis
+results.dds <- ge_diff_exp(counts = params$counts,
+                           genes_id = params$genes_id,
+                           metadata = params$metadata,
+                           design = params$design,
+                           ref_level = params$ref_level,
+                           shrink = params$shrink)
+```
+
+## 1.3. Gene annotation
+```{r annot}
+# Annotate gene symbols
+annot.res <- ge_annot(results_dds = results.dds,
+                      genes_id = params$genes_id,
+                      biomart = params$biomart)
+
+```
+
+## 1.4. Volcano plot
+```{r volcano}
+# Create volcano plot
+ge_volcano(annot_res = annot.res,
+           fold_change = params$fold_change,
+           p.adj = params$p.adj)
+```
+
+## 1.5. GSEA: Gene Set Enrichment Analysis
+```{r gsea}
+# Obtain GSEA results
+gsea.res <- ge_gsea(annot_res = annot.res,
+                    gmt = params$gmt,
+                    gsea_pvalue = params$gsea_pvalue)
+```
+
+
+```{r gsva}
+gsva.res <- ge_single(counts = params$counts,
+                      metadata = params$metadata,
+                      genes_id = params$genes_id,
+                      response = params$response,
+                      design = params$design,
+                      biomart = params$biomart,
+                      gsva_gmt = params$gsva_gmt,
+                      method = params$method,
+                      colors = params$colors,
+                      row.names = params$row.names,
+                      col.names = params$row.names)
+
+```
+
+
+## GV_module 
+```{r mut_signatures, eval=FALSE}
+gv_mut_signatures(muts = muts,
+                   metadata = metadata,
+                   response = Response,
+                   gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+                   mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+                   tri.counts.method = 'default',
+                   colors = c('black', 'orange'))
+```
+
+

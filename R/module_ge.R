@@ -34,6 +34,15 @@
 #' package.
 #' @param gsea_pvalue Numeric value to define the adjusted pvalue cutoff during
 #' GSEA. Set to 0.2 by default.
+#' @param gsva_gmt Path to the gmt file that contain the gene sets of interest. By
+#' default the parameter is set to 'hallmark' which provides all HALLMARK gene
+#' sets from MSigDB (version 7.5.1).
+#' @param method Name of the method to perform Gene set variation analysis. The
+#' options are: 'gsva', 'ssgea' or 'zscore'. Default value is 'gsva'.
+#' @param row.names Logical value to determine if row-names are shown in the
+#' heatmap.
+#' @param col.names Logical value to determine if column-names are shown in the
+#' heatmap.
 #'
 #' @return Returns ggplot objects containing PCA, Volcano plot and GSEA analyses.
 #'
@@ -48,6 +57,9 @@
 #' @import ggrepel
 #' @import clusterProfiler
 #' @import GSEAmining
+#' @import GSEABase
+#' @import GSVA
+#' @import pheatmap
 #'
 #' @examples
 #' module_ge(counts = input_ge_module,
@@ -61,8 +73,12 @@
 #'           biomart = ensembl_biomart_GRCh38_p13,
 #'           fold_change = 2,
 #'           p.adj = 0.05,
-#'           gmt = c7.all.v7.2.symbols.gmt,
-#'           gsea_pvalue = 0.2)
+#'           gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+#'           gsea_pvalue = 0.2,
+#'           gsva_gmt = 'hallmark',
+#'           method = 'gsva',
+#'           row.names = TRUE,
+#'           col.names = TRUE)
 #'
 module_ge <- function(counts,
                       genes_id,
@@ -76,7 +92,11 @@ module_ge <- function(counts,
                       fold_change = 2,
                       p.adj = 0.05,
                       gmt,
-                      gsea_pvalue = 0.2) {
+                      gsea_pvalue = 0.2,
+                      gsva_gmt = 'hallmark',
+                      method = 'gsva',
+                      row.names = TRUE,
+                      col.names = TRUE) {
 
     # Get data PCA
     print('PCA')
@@ -121,10 +141,21 @@ module_ge <- function(counts,
     # Obtain GSEA results
     print('GSEA')
 
-    ge_gsea(annot_res = annot.res,
-            gmt = gmt,
-            gsea_pvalue = gsea_pvalue)
+    gsea.res <- ge_gsea(annot_res = annot.res,
+                        gmt = gmt,
+                        gsea_pvalue = gsea_pvalue)
 
+    gsva.res <- ge_single(counts = counts,
+                          metadata = metadata,
+                          genes_id = genes_id,
+                          response = !!response,
+                          design = design,
+                          biomart = biomart,
+                          gsva_gmt = 'hallmark',
+                          method = 'gsva',
+                          colors = colors,
+                          row.names = row.names,
+                          col.names = row.names)
 
 }
 

@@ -33,12 +33,12 @@
 #'                      genes_id = 'entrezgene_id',
 #'                      biomart = ensembl_biomart_GRCh38_p13)
 #'
-#' ic_score(tpm = tpm,
-#'          metadata = metadata_ge_module,
-#'          response = Response,
-#'          compare = 'wilcox.test',
-#'          p_label = 'p.format',
-#'          colors = c('black', 'orange'))
+#' ips <- ic_score(tpm = tpm,
+#'                 metadata = metadata_ge_module,
+#'                 response = Response,
+#'                 compare = 'wilcox.test',
+#'                 p_label = 'p.format',
+#'                 colors = c('black', 'orange'))
 #'
 ic_score <- function(tpm,
                      metadata,
