@@ -26,7 +26,7 @@
 #' @param col.names Logical value to determine if column-names are shown in the
 #' heatmap.
 #'
-#' @return Returns a heatmap in a form of a pheatmap object.
+#' @return Returns a heatmap and the expression values in a form of a matrix.
 #'
 #' @export
 #'
@@ -40,17 +40,17 @@
 #'
 #'
 #' @examples
-#' ge_single(counts = input_ge_module,
-#'       metadata = metadata_ge_module,
-#'       genes_id = 'entrezgene_id',
-#'       response = Response,
-#'       design = 'Response',
-#'       biomart = ensembl_biomart_GRCh38_p13,
-#'       gmt = 'hallmark',
-#'       method = 'gsva',
-#'       colors = c('black', 'orange'),
-#'       row.names = FALSE,
-#'       col.names = TRUE)
+#' gsva.res <- ge_single(counts = input_ge_module,
+#'                       metadata = metadata_ge_module,
+#'                       genes_id = 'entrezgene_id',
+#'                       response = Response,
+#'                       design = 'Response',
+#'                       biomart = ensembl_biomart_GRCh38_p13,
+#'                       gmt = 'hallmark',
+#'                       method = 'gsva',
+#'                       colors = c('black', 'orange'),
+#'                       row.names = TRUE,
+#'                       col.names = TRUE)
 #'
 ge_single <- function(counts,
                       metadata,
@@ -171,6 +171,9 @@ ge_single <- function(counts,
              annotation_names_col = FALSE,
              clustering_method = 'ward.D',
              main = paste0('Samples clustering by ', toupper(method)))
+
+    # Return results table
+    return(gsva_temp)
 
 
 }

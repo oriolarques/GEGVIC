@@ -8,7 +8,7 @@
 #' @param gsea_pvalue Numeric value to define the adjusted pvalue cutoff during
 #' GSEA. Set to 0.2 by default.
 #'
-#' @return Returns ggplot objects.
+#' @return Returns ggplot objects and a list of gseaResult objects.
 #'
 #' @export
 #'

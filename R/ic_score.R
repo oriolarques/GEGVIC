@@ -17,7 +17,7 @@
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
 #'
-#' @return Returns ggplot objects.
+#' @return Returns ggplot objects and a data frame.
 #'
 #' @export
 #'
@@ -375,5 +375,6 @@ ic_score <- function(tpm,
     names(ic.score.results) <- c('immunophenoGram', 'immunophenoScore')
 
 
-    return(ic.score.results)
+    print(ic.score.results)
+    return(DF)
 }

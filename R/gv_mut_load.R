@@ -30,7 +30,7 @@
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
 #'
-#' @return Returns a ggplot object.
+#' @return Returns a ggplot object and a data frame.
 #'
 #' @export
 #'
@@ -40,12 +40,12 @@
 #' @import ggpubr
 #'
 #' @examples
-#' gv_mut_load(muts = input_gv_module,
-#'             metadata = metadata_ge_module,
-#'             response = Response,
-#'             compare = 'wilcox.test',
-#'             p_label = 'p.format',
-#'             colors = c('black', 'orange'))
+#' mut.load <- gv_mut_load(muts = input_gv_module,
+#'                         metadata = metadata_ge_module,
+#'                         response = Response,
+#'                         compare = 'wilcox.test',
+#'                         p_label = 'p.format',
+#'                         colors = c('black', 'orange'))
 #'
 gv_mut_load <- function(muts,
                         metadata,
@@ -107,8 +107,11 @@ gv_mut_load <- function(muts,
 
     }
 
-    # Return the plot
+    # Print the plot
     print(p)
+    # Return the table
+    return(mut.load)
+
 }
 
 

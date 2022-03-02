@@ -23,14 +23,13 @@
 #' @import rlang
 #'
 #' @examples
-#'
-#' gv_mut_signatures(muts = input_gv_module,
-#'                   metadata = metadata_ge_module,
-#'                   response = Response,
-#'                   gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-#'                   mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-#'                   tri.counts.method = 'default',
-#'                   colors = c('black', 'orange'))
+#' mut.sigs <- gv_mut_signatures(muts = input_gv_module,
+#'                               metadata = metadata_ge_module,
+#'                               response = Response,
+#'                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+#'                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+#'                               tri.counts.method = 'default',
+#'                               colors = c('black', 'orange'))
 #'
 gv_mut_signatures <- function(muts,
                               metadata,
@@ -206,9 +205,9 @@ gv_mut_signatures <- function(muts,
                          silent = TRUE)
 
     # Merge the resulting plots -----------------------------------------------
-    mut.plot.list <- list(mut_sig_barplot = bar.plot,
-                          mut_sig_heatmap = ggplotify::as.ggplot(heat.map))
+    print(bar.plot)
+    print(ggplotify::as.ggplot(heat.map))
 
-    return(mut.plot.list)
+    return(results.extr)
 
 }
