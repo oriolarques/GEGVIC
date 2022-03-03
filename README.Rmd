@@ -252,7 +252,7 @@ gv_mut_summary(muts = input_gv_module,
 
 ![Oncoplot](vignettes/07_gv_oncoplot.png)
 
-#### 2.4. Mutational load
+#### 2.2. Mutational load
 
 The function **gv_mut_load()** will calculate the total number of mutations per sample. The same inputs as the previous function are required. Also the compare and p_label arguments allow users to decide which method should be used for comparing means and the way the significance is represented. As usual, the function allows to change also the colours of the groups. 
 
@@ -267,7 +267,7 @@ mut.load <- gv_mut_load(muts = input_gv_module,
 
 ![Mutational load](vignettes/08_gv_mutload.png)
 
-#### 2.5. Mutational signatures
+#### 2.3. Mutational signatures
 
 The last function of the package, **gv_mut_signatures()** is used to predict the weight of  mutational signatures contributing to an individual tumour sample. As well as the inputs described before, here the user have to choose the version of the genome to work with. To do so, the gbuild argument should be one of the following:
 

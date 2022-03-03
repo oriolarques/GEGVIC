@@ -2,30 +2,45 @@
 title: "GEGVIC-NGS report"
 date: '`r format(Sys.Date(),"%e de %B, %Y")`'
 output: 
-    pdf_document:
+    html_document:
         toc: yes
 params:
     counts: NULL 
+    metadata: NULL
     genes_id: NULL 
-    metadata: NULL 
     response: NULL 
     design: NULL 
     colors: NULL
     ref_level: NULL
-    shrink: NULL
+    shrink: 'apeglm'
     biomart: NULL 
-    fold_change: NULL
-    p.adj: NULL
+    fold_change: 2
+    p.adj: 0.05
     gmt: NULL 
-    gsea_pvalue: NULL
+    gsea_pvalue: 0.2
     gsva_gmt: NULL
-    method: NULL
-    row.names: NULL
-    col.names: NULL
+    method: 'gsva'
+    row.names: TRUE
+    col.names: TRUE
+    muts: NULL
+    top_genes: 10
+    specific_genes: NULL
+    compare: NULL
+    p_label: NULL
+    gbuild: NULL
+    mut_sigs: NULL
+    tri.counts.method: NULL
+    indications: NULL
+    cibersort: NULL
+    tumor: TRUE
+    rmgenes: NULL
+    scale_mrna: TRUE
+    expected_cell_types: NULL
+    
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, results = "hide", eval = FALSE)
 ```
 
 # 1. Gene Expression module (GE)
@@ -74,7 +89,7 @@ ge_volcano(annot_res = annot.res,
 ```
 
 ## 1.5. GSEA: Gene Set Enrichment Analysis
-```{r gsea}
+```{r gsea, fig.height=15, fig.width=15}
 # Obtain GSEA results
 gsea.res <- ge_gsea(annot_res = annot.res,
                     gmt = params$gmt,
@@ -82,7 +97,7 @@ gsea.res <- ge_gsea(annot_res = annot.res,
 ```
 
 
-```{r gsva}
+```{r gsva, fig.height=15, fig.width=15}
 gsva.res <- ge_single(counts = params$counts,
                       metadata = params$metadata,
                       genes_id = params$genes_id,
@@ -98,15 +113,614 @@ gsva.res <- ge_single(counts = params$counts,
 ```
 
 
-## GV_module 
-```{r mut_signatures, eval=FALSE}
-gv_mut_signatures(muts = muts,
-                   metadata = metadata,
-                   response = Response,
-                   gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-                   mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-                   tri.counts.method = 'default',
-                   colors = c('black', 'orange'))
+# 2. GV_module 
+## 2.1. Mutational summary
+```{r mut_summary}
+gv_mut_summary(muts = params$muts,
+               metadata = params$metadata,
+               response = params$response,
+               top_genes = params$top_genes,
+               specific_genes = params$specific_genes,
+               colors = params$colors)
 ```
+
+## 2.2. Mutational load
+
+```{r mut_load}
+mut.load <- gv_mut_load(muts = params$muts,
+                        metadata = params$metadata,
+                        response = params$response,
+                        compare = params$compare,
+                        p_label = params$p_label,
+                        colors = params$colors)
+```
+
+
+## 2.3. Mutational signatures
+
+```{r mut_signatures}
+library(dplyr)
+library(deconstructSigs)
+library(ggplot2)
+library(ggpubr)
+library(tidyr)
+library(tibble)
+library(pheatmap)
+library(ggplotify)
+library(rlang)
+
+# Extract mutational signature profiles
+    ## the gv_mut_signatures function do not work as a nested function
+    
+        response <- params$response
+        
+        # Load genomic build
+        library(params$gbuild, character.only = TRUE)
+
+        # Check the type of mutations to use
+
+        ## Get the name of the mutational signatures files chosen by the user
+        eval.mut.input <- params$mut_sigs
+
+        # If the name of the mutational singatures contains SBS
+        if (grepl('SBS', eval.mut.input, ignore.case = TRUE) == TRUE) {
+            # Filter mutations of SNP type
+            mut.filt <- params$muts %>%
+                dplyr::filter(Variant_type == 'SNP')
+            # Define sig.type as SBS
+            sig_type <- 'SBS'
+
+        } else if (grepl('DBS', eval.mut.input, ignore.case = TRUE) == TRUE) {
+            # Filter mutations of DNP type
+            mut.filt <- params$muts %>%
+                dplyr::filter(Variant_type == 'DNP')
+            # Define sig.type as DBS
+            sig_type <- 'DBS'
+
+        } else {
+            # Filter mutations of INS or DEL type
+            mut.filt <- params$muts %>%
+                dplyr::filter(Variant_type %in% c('INS', 'DEL'))
+            # Define sig.type as SBS
+            sig_type <- 'ID'
+
+        }
+
+
+        # Create deconstructSigs inputs ----------------------------------------
+        sigs.input <- deconstructSigs::mut.to.sigs.input(
+            mut.ref = mut.filt,
+            sample.id = 'Tumor_Sample_Barcode',
+            chr = 'Chromosome',
+            pos = 'Start_Position',
+            ref = 'Reference_Allele',
+            alt = 'Tumor_Seq_Allele2',
+            bsg = get(noquote(params$gbuild)),
+            sig.type = sig_type)
+
+
+        # generate ids for all samples -----------------------------------------
+        ids_samples <- unique(params$muts$Tumor_Sample_Barcode)
+
+        # get mutational signature predictions for all samples -----------------
+        results <- sapply(ids_samples,
+                          function(x) {
+                              deconstructSigs::whichSignatures(
+                                  tumor.ref = sigs.input,
+                                  signatures.ref = as.data.frame(get(noquote(params$mut_sigs))),
+                                  sample.id = x,
+                                  contexts.needed = TRUE,
+                                  tri.counts.method = params$tri.counts.method)
+                          })
+
+        # Analyze results ------------------------------------------------------
+        # Extract results from whichSignatures function
+        results.extr <- GEGVIC::gv_extr_mut_sig(results = results,
+                                                ids_samples = ids_samples) %>%
+            # Join predicted mutational signature results with metadata
+            dplyr::left_join(x = .,
+                             y = params$metadata,
+                             by = c('Samples')) %>%
+            # Round predicted mutational signature contribution
+            dplyr::mutate(Value = round(x = Value, digits = 2))
+
+        # Filter top 4 signatures for barplot
+        top.results.extr <- results.extr %>%
+            dplyr::group_by(Samples) %>%
+            dplyr::top_n(n = 4, wt = Value) %>%
+            droplevels()
+
+
+
+        # Plot results ---------------------------------------------------------
+        ## Barplot  ------------------------------------------------------------
+        bar.plot <- ggplot(top.results.extr, aes(x = Samples,
+                                                 y = Value,
+                                                 fill = as.factor(Signature))) +
+
+            # Geometric objects
+            geom_bar(stat = 'identity') +
+
+            # Define fill colors using the Set1 palette from ggpubr package
+            scale_fill_manual(values = ggpubr::get_palette(palette = 'simpsons',
+                                                           k = length(unique(
+                                                               top.results.extr$Signature
+                                                           )))) +
+            # Expand columns to fill margins
+            scale_y_continuous(expand = c(0,0)) +
+
+            # Title and labs
+            ggtitle('Top 4 Mutational signature predictions per sample') +
+            labs(fill = 'Signatures') +
+
+            # Themes
+            theme_linedraw() +
+            theme(
+                plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
+                #axis.text.x.bottom = element_blank(),
+                axis.title.x = element_blank(),
+                axis.title.y = element_blank(),
+                axis.text.x = element_text(size = 5, angle = 45, hjust = 1)
+            ) +
+
+            # Faceting
+            facet_wrap(facets = vars(!!response),
+                       scales = 'free_x')
+
+
+        ## Heatmap  ------------------------------------------------------------
+        # Format signature predictions object in a wide format: Pivot wider
+        wide.results.extr <- results.extr %>%
+            dplyr::select(Samples, Signature, Value) %>%
+            tidyr::pivot_wider(id_cols = Signature,
+                               names_from = Samples,
+                               values_from = Value) %>%
+            tibble::column_to_rownames('Signature')
+
+
+
+        # Format the response variable from metadata
+        pheat.meta <- params$metadata %>%
+            dplyr::select(Samples, !!response) %>%
+            dplyr::arrange(!!response) %>%
+            tibble::column_to_rownames('Samples')
+
+        # Define response level group colors in a list
+        temp_color <- params$colors
+
+        resp.levels <- params$metadata %>%
+            dplyr::select(!!response) %>%
+            dplyr::pull(!!response)
+
+        names(temp_color) <- unique(resp.levels)
+
+        # Get the quoted name of the response variable
+        quoted.resp <- params$metadata %>%
+            dplyr::select(!!response) %>%
+            colnames(.)
+
+        pheat.anno.color <- list(temp_color)
+        # Name the list
+        names(pheat.anno.color) <- quoted.resp
+
+        # Plot pheatmap
+        heat.map <- pheatmap(as.matrix(wide.results.extr[,
+                                                         order(match(colnames(wide.results.extr),
+                                                                     rownames(pheat.meta)))]),
+                             color = ggpubr::get_palette(palette = 'Purples', k = 10),
+                             scale = 'none',
+                             cluster_rows = FALSE,
+                             cluster_cols = FALSE,
+                             annotation_col = pheat.meta,
+                             annotation_colors = pheat.anno.color,
+                             main = 'Mutational signature predictions per sample',
+                             silent = TRUE)
+
+        # Merge the resulting plots --------------------------------------------
+        mut.plot.list <- list(mut_sig_barplot = bar.plot,
+                              mut_sig_heatmap = ggplotify::as.ggplot(heat.map))
+
+        return(mut.plot.list)
+
+```
+
+
+# 3. Immune cell Composition module (IC)
+## 3.1 Transform raw counts to TPM
+
+```{r raw_to_tpm, eval = TRUE}
+tpm <- ic_raw_to_tpm(counts = params$counts,
+                     genes_id = params$genes_id,
+                     biomart = params$biomart)
+```
+
+## 3.2. Predict immune cell composition
+
+```{r deconv}
+print(params$indications)
+ic.pred <- ic_deconv(gene_expression = tpm,
+                     indications = params$indications,
+                     cibersort = params$cibersort,
+                     tumor = params$tumor,
+                     rmgenes = params$rmgenes,
+                     scale_mrna = params$scale_mrna,
+                     expected_cell_types = params$expected_cell_types)
+```
+
+
+## 3.3. Plot cell predictions
+
+```{r ic_comp_samples}
+ic_plot_comp_samples(df = ic.pred,
+                     metadata = params$metadata,
+                     response = params$response,
+                     compare = params$compare,
+                     p_label = params$p_label,
+                     colors = params$colors)
+```
+
+```{r ic_comp_celltypes}
+ic_plot_comp_celltypes(df = ic.pred,
+                       metadata = params$metadata,
+                       response = params$response)
+```
+
+
+## 3.4. Calculate Immunophenogram and Immunophenoscores
+
+```{r ips, eval = FALSE}
+ips <- ic_score(tpm = tpm,
+                metadata = params$metadata,
+                response = params$response,
+                compare = params$compare,
+                p_label = params$p_label,
+                colors = params$colors)
+```
+
+
+
+```{r, eval = TRUE}
+library(dplyr)
+library(ggplot2)
+library(rlang)
+library(ggpubr)
+
+library(patchwork)
+library(grid)
+
+# Create a list to store phenograms
+    ipheno_list <- list()
+    # Create a list to store the results
+    ic.score.results <- list()
+
+    # Preliminary functions ---------------------------------------------------
+    ## To calculate Immunophenoscore
+    ipsmap<- function (x) {
+        if (x<=0) {
+            ips<-0
+        } else {
+            if (x>=3) {
+                ips<-10
+            } else {
+                ips<-round(x*10/3, digits=0)
+            }
+        }
+        return(ips)
+    }
+
+    ## To assign colors
+    my_palette <- colorRampPalette(c("blue", "white", "red"))(n = 1000)
+    mapcolors<-function (x) {
+        za<-NULL
+        if (x>=3) {
+            za=1000
+        } else {
+            if (x<=-3) {
+                za=1
+            } else {
+                za=round(166.5*x+500.5,digits=0)
+            }
+        }
+        return(my_palette[za])
+    }
+    my_palette2 <- colorRampPalette(c("black", "white"))(n = 1000)
+    mapbw<-function (x) {
+        za2<-NULL
+        if (x>=2) {
+            za2=1000
+        } else {
+            if (x<=-2) {
+                za2=1
+            } else {
+                za2=round(249.75*x+500.5,digits=0)
+            }
+        }
+        return(my_palette2[za2])
+    }
+
+    # Load and preprocess necessary data --------------------------------------
+
+    ## Transform TPM data into log2(TPM+1)
+    gene_expression <- as.data.frame(log2(tpm + 1))
+    sample_names <- names(gene_expression)
+
+    ## Read IPS genes and corresponding weights from tab-delimited text file "IPS_genes.txt"
+    IPSG <- GEGVIC:::IPS_genes
+    unique_ips_genes <- as.vector(unique(IPSG$NAME))
+
+    ## Create variables
+    IPS <- NULL
+    MHC <- NULL
+    CP <- NULL
+    EC <- NULL
+    SC <- NULL
+    AZ <- NULL
+
+    # Detect missing genes ----------------------------------------------------
+    ## Gene names in expression file
+    #GVEC <- row.names(gene_expression)
+    ## Genes names in IPS genes file
+    #VEC <- as.vector(IPSG$GENE)
+    ## Match IPS genes with genes in expression file
+    #ind <- which(is.na(match(VEC,GVEC)))
+    ## List genes missing or differently named
+    #MISSING_GENES <- VEC[ind]
+    #dat <- IPSG[ind,]
+    #if (length(MISSING_GENES)>0) {
+    #    cat("differently named or missing genes: ",MISSING_GENES,"\n")
+    #}
+    #for (x in 1:length(ind)) {
+    #    print(IPSG[ind,])
+    #}
+
+    # Calculate ImmunoPhenoGram -----------------------------------------------
+    for (i in 1:length(sample_names)) {
+        GE <- gene_expression[[i]]
+        mGE <- mean(GE)
+        sGE <- sd(GE)
+        Z1 <- (gene_expression[as.vector(IPSG$GENE),i]-mGE)/sGE
+        W1 <- IPSG$WEIGHT
+        WEIGHT <- NULL
+        MIG <- NULL
+        k <- 1
+        for (gen in unique_ips_genes) {
+            MIG[k] <- mean(Z1[which (as.vector(IPSG$NAME)==gen)],na.rm=TRUE)
+            WEIGHT[k] <- mean(W1[which (as.vector(IPSG$NAME)==gen)])
+            k <- k+1
+        }
+        WG<-MIG*WEIGHT
+        MHC[i] <- mean(WG[1:10])
+        CP[i] <- mean(WG[11:20])
+        EC[i] <- mean(WG[21:24])
+        SC[i] <- mean(WG[25:26])
+        AZ[i] <- sum(MHC[i],CP[i],EC[i],SC[i])
+        IPS[i] <- ipsmap(AZ[i])
+
+        # Plot Immunophenogram  -----------------------------------------------
+        data_a <-  data.frame(start = c(0,2.5,5,7.5,10,15,seq(20,39),0,10,20,30),
+                              end = c(2.5,5,7.5,10,15,seq(20,40),10,20,30,40),
+                              y1=c(rep(2.6,26),rep(0.4,4)),
+                              y2=c(rep(5.6,26),rep(2.2,4)),
+                              z=c(MIG[c(21:26,11:20,1:10)],
+                                  EC[i],SC[i],CP[i],MHC[i]),
+                              vcol=c(unlist(lapply(MIG[c(21:26,11:20,1:10)],
+                                                   mapcolors)),
+                                     unlist(lapply(c(EC[i],SC[i],CP[i],MHC[i]),
+                                                   mapbw))),
+                              label = c(unique_ips_genes[c(21:26,11:20,1:10)],
+                                        "EC","SC","CP","MHC"))
+
+        data_a$label <- factor(data_a$label,
+                               levels=unique(data_a$label))
+
+        ### Plot IPG per sample
+        plot_a <- ggplot() +
+            geom_rect(data=data_a,
+                      mapping=aes(xmin=start, xmax=end, ymin=y1, ymax=y2, fill=label),
+                      size=0.5,color="black", alpha=1) +
+            coord_polar() +
+            scale_y_continuous(limits = c(0, 6)) +
+            scale_fill_manual(values = as.vector(data_a$vcol),guide='none') +
+            theme_bw() +
+            theme(panel.spacing = unit(0, 'mm'),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  panel.border = element_blank(),
+                  panel.background = element_blank(),
+                  axis.line = element_line(colour = "white"),
+                  axis.text=element_blank(),
+                  axis.ticks= element_blank())
+
+        ### Add Sample name as plot title
+        plot_a <- plot_a  +
+            labs(title = sample_names[i]) +
+            theme(plot.title = element_text(size = 15, vjust = -1, hjust = 0.5),
+                  plot.margin=unit(c(0,0,0,0),"mm"))
+
+        ### Plot Legend sample-wise (averaged) z-scores -----------------------
+        data_b <- data.frame (start = rep(0,23),
+                              end = rep(0.7,23),
+                              y1=seq(0,22,by=1),
+                              y2=seq(1,23,by=1),
+                              z=seq(-3,3,by=6/22),
+                              vcol=c(unlist(lapply(seq(-3,3,by=6/22),mapcolors))),
+                              label = LETTERS[1:23])
+        data_b_ticks <- data.frame(x = rep(1.2, 7),
+                                   value = seq(-3,3, by=1),
+                                   y = seq(0,6, by=1)*(22/6) +0.5)
+        legendtheme <- theme(plot.margin = unit(c(2,0,2,0),"inch"),
+                             panel.spacing = unit(0,"null"),
+                             panel.grid.major = element_blank(),
+                             panel.grid.minor = element_blank(),
+                             panel.border = element_blank(),
+                             panel.background = element_blank(),
+                             axis.line = element_line(colour = "white"),
+                             axis.text=element_blank(),
+                             axis.ticks= element_blank(),
+                             axis.title.x=element_blank())
+
+        plot_b <- ggplot(hjust=0) +
+            geom_rect(data=data_b,
+                      mapping=aes(xmin=start, xmax=end, ymin=y1, ymax=y2, fill=label),
+                      size=0.5,color="black", alpha=1) +
+            scale_x_continuous(limits = c(0, 1.5),
+                               expand = c(0,0)) +
+            scale_fill_manual(values =as.vector(data_b$vcol),
+                              guide='none') +
+            geom_text(data=data_b_ticks,
+                      aes(x=x, y=y, label=value),
+                      hjust="inward",
+                      size=4) +
+            theme_bw() +
+            legendtheme +
+            ylab("Sample-wise (averaged) z-score")
+
+        ### Plot Legend weighted z-scores -------------------------------------
+        data_c <- data.frame (start = rep(0,23),
+                              end = rep(0.7,23),
+                              y1=seq(0,22,by=1),
+                              y2=seq(1,23,by=1),
+                              z=seq(-2,2,by=4/22),
+                              vcol=c(unlist(lapply(seq(-2,2,by=4/22),mapbw))),
+                              label = LETTERS[1:23])
+        data_c_ticks <- data.frame(x = rep(1.2, 5),
+                                   value = seq(-2,2, by=1),
+                                   y = seq(0,4, by=1)*(22/4) +0.5)
+        plot_c<-ggplot() +
+            geom_rect(data=data_c,
+                      mapping=aes(xmin=start, xmax=end, ymin=y1, ymax=y2, fill=label),
+                      size=0.5,color="black",
+                      alpha=1) +
+            scale_x_continuous(limits = c(0, 1.5),
+                               expand = c(0,0)) +
+            scale_fill_manual(values =as.vector(data_c$vcol),
+                              guide='none') +
+            geom_text(data=data_c_ticks,
+                      aes(x=x, y=y, label=value),
+                      hjust="inward",
+                      size=4) +
+            theme_bw() +
+            legendtheme +
+            ylab("Weighted z-score")
+
+        ## Save plot to file (1 pdf file for each sample)
+        #file_name<-paste("IPS_",sample_names[i],".pdf",sep="")
+        #pdf(file_name, width=10, height=8)
+        #grid.arrange(plot_a,plot_b,plot_c, ncol=3, widths=c(0.8,0.1,0.1))
+        #dev.off()
+
+        ## Save each plot for each patient in a list
+        ipheno_list[[i]] <- plot_a
+        ## Indicate the name of the patient in the list
+        names(ipheno_list)[i] <- sample_names[i]
+
+    }
+
+
+    # Plot immunophenogram by group -------------------------------------------
+
+    ## Enquote response variable
+    response <- params$response
+    ## Get the levels of response (grouping) variable
+    levels.resp <- levels(params$metadata %>%
+                              dplyr::mutate_all(as.factor) %>%
+                              dplyr::select(!!response) %>%
+                              pull(.))
+    ## Create a list to store the plots for each level in response variable
+    list.resp <- list()
+
+    ## Iterate over levels in response variable
+    for(i in seq_along(levels.resp)){
+        # Get the sample names that belong to one of the levels in response variable
+        temp_samp.resp <- params$metadata %>%
+            dplyr::filter(!!response == levels.resp[i]) %>%
+            dplyr::select(Samples) %>% pull(.)
+        # Arrange IPG for all samples in one level of response variable
+        list.resp[[i]] <- ggpubr::ggarrange(plotlist = ipheno_list[temp_samp.resp],
+                                            labels = levels.resp[i],
+                                            hjust = -1,
+                                            vjust = 0.5)
+
+
+    }
+
+    # Plot immunophenoscore by group ------------------------------------------
+    ## Create a data frame to store
+    DF<-data.frame(Samples=sample_names, MHC=MHC, EC=EC, SC=SC,
+                   CP=CP, AZ=AZ, IPS=IPS)
+
+    ## Add metadata information
+    DF <- DF %>%
+        dplyr::left_join(x = .,
+                         y = params$metadata,
+                         by = 'Samples') %>%
+        dplyr::group_by(!!response)
+
+
+    #write.table(DF,file="IPS.txt",row.names=FALSE, quote=FALSE,sep="\t")
+
+    ## Plot IPS
+    ips.plot <- ggplot(DF, aes(x = !!response,
+                               y = IPS,
+                               col = !!response)) +
+        # Geometric objects
+        geom_violin() +
+        geom_boxplot(width = 0.1, outlier.shape = NA) +
+        geom_point(alpha = 0.5, position = position_jitter(0.2)) +
+
+        # Define colors
+        scale_color_manual(values = colors) +
+
+        # Title
+        ggtitle('ImmunophenoScore') +
+
+        # Themes
+        theme_bw() +
+        theme(text = element_text(size = 15),
+              plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
+              axis.text.x.bottom = element_blank(),
+              axis.title.x = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_text(angle = 45, hjust = 1),
+              legend.position = 'bottom'
+        )
+    if(is.null(compare) == FALSE){
+        ips.plot <- ips.plot +
+            ggpubr::stat_compare_means(method = params$compare,
+                                       label = params$p_label,
+                                       size = 5,
+                                       label.y.npc = 1,
+                                       label.x.npc = 0.5,
+                                       show.legend = FALSE)
+
+    }
+
+
+
+    # Join IPG and IPS results ------------------------------------------------
+
+    ## Add together IPG from all levels in response variable
+    ipg.plots <- patchwork::wrap_plots(list.resp)
+    ipg.legends <- patchwork::wrap_plots(plot_b, plot_c)
+    layout <- c(
+        patchwork::area(t = 1, l = 1, b = 5, r = 4),
+        patchwork::area(t = 2, l = 5, b = 4, r = 5)
+    )
+
+    ic.score.results[[1]] <- patchwork::wrap_plots(ipg.plots, ipg.legends,
+                                                   design = layout)
+
+
+    ## Get IPS comparison between samples in different levels of response variable
+    ic.score.results[[2]] <- ips.plot
+    names(ic.score.results) <- c('immunophenoGram', 'immunophenoScore')
+
+
+    print(ic.score.results)
+    return(DF)
+```
+
+
+
 
 

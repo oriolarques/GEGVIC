@@ -124,11 +124,11 @@ module_ic <- function(counts,
     ## (IPS) for each sample and each group of study.
     print('Calculate IPG and IPS')
 
-    ic_score(tpm = tpm,
-             metadata = metadata_ge_module,
-             response = !!response,
-             compare = compare,
-             p_label = p_label,
-             colors = colors)
+    ips <-ic_score(tpm = tpm,
+                   metadata = metadata_ge_module,
+                   response = !!response,
+                   compare = compare,
+                   p_label = p_label,
+                   colors = colors)
 }
 

@@ -61,6 +61,9 @@ if(!require(apeglm)) BiocManager::install("apeglm")
 if(!require(maftools)) BiocManager::install("maftools")
 if(!require(clusterProfiler)) BiocManager::install("clusterProfiler")
 if(!require(GSEAmining)) BiocManager::install("GSEAmining")
+if(!require(GSEABase)) BiocManager::install("GSEABase")
+if(!require(GSVA)) BiocManager::install("GSVA")
+if(!require(SummarizedExperiment)) BiocManager::install("SummarizedExperiment")
 if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome")
 if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome.Hsapiens.UCSC.hg19")
 if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
@@ -353,7 +356,7 @@ gv_mut_summary(muts = input_gv_module,
 
 ![Oncoplot](vignettes/07_gv_oncoplot.png)
 
-#### 2.4. Mutational load
+#### 2.2. Mutational load
 
 The function **gv_mut_load()** will calculate the total number of
 mutations per sample. The same inputs as the previous function are
@@ -373,7 +376,7 @@ mut.load <- gv_mut_load(muts = input_gv_module,
 
 ![Mutational load](vignettes/08_gv_mutload.png)
 
-#### 2.5. Mutational signatures
+#### 2.3. Mutational signatures
 
 The last function of the package, **gv_mut_signatures()** is used to
 predict the weight of mutational signatures contributing to an
