@@ -32,6 +32,7 @@
 #'
 #' @import rlang
 #' @import DESeq2
+#' @import SummarizedExperiment
 #' @import dplyr
 #' @import tibble
 #' @import GSEABase
@@ -87,7 +88,7 @@ ge_single <- function(counts,
     vsd <- DESeq2::vst(dds, blind=FALSE)
 
     # Get expression data
-    exprs.mat <- assay(vsd)
+    exprs.mat <- SummarizedExperiment::assay(vsd)
 
     # Annotate results
     ## First evaluate if genes are annotated already as hgnc_symbol

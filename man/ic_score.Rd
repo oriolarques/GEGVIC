@@ -34,7 +34,7 @@ p-value).}
 to compare. Default values are two: black and orange.}
 }
 \value{
-Returns ggplot objects.
+Returns ggplot objects and a data frame.
 }
 \description{
 Calculates and plots immunophenogram (IPG) and immunophenoscores
@@ -45,11 +45,11 @@ tpm <- ic_raw_to_tpm(counts = input_ge_module,
                      genes_id = 'entrezgene_id',
                      biomart = ensembl_biomart_GRCh38_p13)
 
-ic_score(tpm = tpm,
-         metadata = metadata_ge_module,
-         response = Response,
-         compare = 'wilcox.test',
-         p_label = 'p.format',
-         colors = c('black', 'orange'))
+ips <- ic_score(tpm = tpm,
+                metadata = metadata_ge_module,
+                response = Response,
+                compare = 'wilcox.test',
+                p_label = 'p.format',
+                colors = c('black', 'orange'))
 
 }

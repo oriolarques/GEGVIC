@@ -47,18 +47,18 @@ p-value).}
 to compare. Default values are two: black and orange.}
 }
 \value{
-Returns a ggplot object.
+Returns a ggplot object and a data frame.
 }
 \description{
 Summarises the total number of mutations per sample and compares
 different groups of interest.
 }
 \examples{
-gv_mut_load(muts = input_gv_module,
-            metadata = metadata_ge_module,
-            response = Response,
-            compare = 'wilcox.test',
-            p_label = 'p.format',
-            colors = c('black', 'orange'))
+mut.load <- gv_mut_load(muts = input_gv_module,
+                        metadata = metadata_ge_module,
+                        response = Response,
+                        compare = 'wilcox.test',
+                        p_label = 'p.format',
+                        colors = c('black', 'orange'))
 
 }

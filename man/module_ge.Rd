@@ -17,7 +17,11 @@ module_ge(
   fold_change = 2,
   p.adj = 0.05,
   gmt,
-  gsea_pvalue = 0.2
+  gsea_pvalue = 0.2,
+  gsva_gmt = "hallmark",
+  method = "gsva",
+  row.names = TRUE,
+  col.names = TRUE
 )
 }
 \arguments{
@@ -57,6 +61,19 @@ package.}
 \item{gsea_pvalue}{Numeric value to define the adjusted pvalue cutoff during
 GSEA. Set to 0.2 by default.}
 
+\item{gsva_gmt}{Path to the gmt file that contain the gene sets of interest. By
+default the parameter is set to 'hallmark' which provides all HALLMARK gene
+sets from MSigDB (version 7.5.1).}
+
+\item{method}{Name of the method to perform Gene set variation analysis. The
+options are: 'gsva', 'ssgea' or 'zscore'. Default value is 'gsva'.}
+
+\item{row.names}{Logical value to determine if row-names are shown in the
+heatmap.}
+
+\item{col.names}{Logical value to determine if column-names are shown in the
+heatmap.}
+
 \item{genes_idName}{of the column that contains gene identifiers. Should be
 one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
 
@@ -83,7 +100,11 @@ module_ge(counts = input_ge_module,
           biomart = ensembl_biomart_GRCh38_p13,
           fold_change = 2,
           p.adj = 0.05,
-          gmt = c7.all.v7.2.symbols.gmt,
-          gsea_pvalue = 0.2)
+          gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+          gsea_pvalue = 0.2,
+          gsva_gmt = 'hallmark',
+          method = 'gsva',
+          row.names = TRUE,
+          col.names = TRUE)
 
 }

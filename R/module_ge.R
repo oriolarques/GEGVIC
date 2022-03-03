@@ -50,6 +50,7 @@
 #'
 #' @import rlang
 #' @import DESeq2
+#' @import SummarizedExperiment
 #' @import dplyr
 #' @import ggplot2
 #' @import tibble

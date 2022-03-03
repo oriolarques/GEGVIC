@@ -11,7 +11,7 @@ ge_single(
   response,
   design,
   biomart,
-  gmt = "hallmark",
+  gsva_gmt = "hallmark",
   method = "gsva",
   colors = c("black", "orange"),
   row.names = TRUE,
@@ -37,7 +37,7 @@ obtained and then change the column name for hgnc_symbol. Uploaded biomaRt
 queries in GEGVIC: 'ensembl_biomartGRCh37', ensembl_biomartGRCh38_p13' and
 'ensembl_biomartGRCm38_p6', 'ensembl_biomartGRCm39'.}
 
-\item{gmt}{Path to the gmt file that contain the gene sets of interest. By
+\item{gsva_gmt}{Path to the gmt file that contain the gene sets of interest. By
 default the parameter is set to 'hallmark' which provides all HALLMARK gene
 sets from MSigDB (version 7.5.1).}
 
@@ -54,22 +54,22 @@ heatmap.}
 heatmap.}
 }
 \value{
-Returns a heatmap in a form of a pheatmap object.
+Returns a heatmap and the expression values in a form of a matrix.
 }
 \description{
 
 }
 \examples{
-ge_single(counts = input_ge_module,
-      metadata = metadata_ge_module,
-      genes_id = 'entrezgene_id',
-      response = Response,
-      design = 'Response',
-      biomart = ensembl_biomart_GRCh38_p13,
-      gmt = 'hallmark',
-      method = 'gsva',
-      colors = c('black', 'orange'),
-      row.names = FALSE,
-      col.names = TRUE)
+gsva.res <- ge_single(counts = input_ge_module,
+                      metadata = metadata_ge_module,
+                      genes_id = 'entrezgene_id',
+                      response = Response,
+                      design = 'Response',
+                      biomart = ensembl_biomart_GRCh38_p13,
+                      gsva_gmt = 'hallmark',
+                      method = 'gsva',
+                      colors = c('black', 'orange'),
+                      row.names = TRUE,
+                      col.names = TRUE)
 
 }

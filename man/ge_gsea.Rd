@@ -16,7 +16,7 @@ differential gene expression results between the different groups.}
 GSEA. Set to 0.2 by default.}
 }
 \value{
-Returns ggplot objects.
+Returns ggplot objects and a list of gseaResult objects.
 }
 \description{
 
@@ -31,8 +31,8 @@ results_dds <- ge_diff_exp(counts = input_ge_module,
 annot.res <- ge_annot(results_dds = results_dds,
                       genes_id = 'entrezgene_id',
                       biomart = ensembl_biomart_GRCh38_p13)
-ge_gsea(annot_res = annot.res,
-        gmt = inst/extdata/c7.all.v7.2.symbols.gmt,
-        gsea_pvalue = 0.2)
+gsea.res <- ge_gsea(annot_res = annot.res,
+                    gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+                    gsea_pvalue = 0.2)
 
 }

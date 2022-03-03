@@ -31,7 +31,8 @@ Imports:
     rlang,
     tidyr,
     GSVA,
-    GSEABase
+    GSEABase,
+    SummarizedExperiment
 Suggests: 
     rmarkdown,
     knitr

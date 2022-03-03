@@ -26,13 +26,12 @@ gv_mut_signatures(
 Title
 }
 \examples{
-
-gv_mut_signatures(muts = input_gv_module,
-                  metadata = metadata_ge_module,
-                  response = Response,
-                  gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-                  mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-                  tri.counts.method = 'default',
-                  colors = c('black', 'orange'))
+mut.sigs <- gv_mut_signatures(muts = input_gv_module,
+                              metadata = metadata_ge_module,
+                              response = Response,
+                              gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+                              mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+                              tri.counts.method = 'default',
+                              colors = c('black', 'orange'))
 
 }
