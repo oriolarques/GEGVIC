@@ -245,12 +245,19 @@ ge_volcano(annot_res = annot.res,
 
 #### 1.5. GSEA: Gene Set Enrichment Analysis
 
-The last function of the module, **ge_gsea()**, permits to perform Gene
-Set Enrichment Analysis (GSEA) using the `clusterProfiler`
+One of the last functions of the module, **ge_gsea()**, permits to
+perform Gene Set Enrichment Analysis (GSEA) using the `clusterProfiler`
 [package](https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html)
-functionalities. The resulting top 20 regulated gene sets are grouped by
-similarity and plotted using the `GSEAmining`
+functionalities. The resulting top 20 regulated gene sets are shown in a
+bubble plot where Normalized Enrichment Score (NES) is shown. The size
+of the bubbles are determined by the percentage of genes in the gene set
+that belong to the leading edge (core). Then, the same gene sets are
+grouped by similarity and plotted using the `GSEAmining`
 [package](https://bioconductor.org/packages/release/bioc/html/GSEAmining.html).
+Three plots are generated, first a cluster of gene sets and, per each
+cluster, a wordcloud of biological terms enriched in each case and the
+top 3 genes in the leading edge of the different gene sets present in
+that cluster.
 
 To use this function the user has to provide a collection of gene sets
 to evaluate in a form of a *gmt file*. This can be downloaded from the
@@ -259,10 +266,9 @@ Molecular Signatures Database,
 created following the corresponding \[guidelines\]
 (<https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats>).
 In the case of working with mouse data gmt files can be found
-[here](https://bioinf.wehi.edu.au/MSigDB/). A gmt file can be read in R
-using the *read.gmt()* function from the `clusterProfiler` package.
-`GEGVIC` provides the *c7: immunologic signature gene sets* under the
-following name **c7.all.v7.2.symbols.gmt**.
+[here](https://bioinf.wehi.edu.au/MSigDB/). The *C7: Immunologic
+signature gene sets* was downloaded (**c7.all.v7.2.symbols.gmt** file)
+and used to create this example.
 
 Additionally, users can define the adjusted p-value cut-off to be more
 or less restrictive when performing GSEA. The function generates two
@@ -270,14 +276,47 @@ plots, one dendrogram and one wordcloud with the most enriched name
 terms in each cluster in the dendrogram.
 
 ``` r
-ge_gsea(annot_res = annot.res,
-         gmt = c7.all.v7.2.symbols.gmt,
-         gsea_pvalue = 0.2)
+gsea.res <- ge_gsea(annot_res = annot.res,
+                    gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+                    gsea_pvalue = 0.2)
 ```
+
+![GSEA: Bubble plot](vignettes/03_bubble_plot.png)
 
 ![GSEA: Gene sets clustering](vignettes/03_gsea_clust.png)
 
 ![GSEA: Gene set name Wordclouds](vignettes/03_gsea_wordclouds.png)
+
+![GSEA: Leading edge](vignettes/03_gsea_leading_edge.png)
+
+Finally, the **ge_single()** allows to perform Gene Set Variation
+Analysis (GSVA) or single sample GSEA (ssGSEA) to cluster samples using
+the `GSVA`
+[package](https://bioconductor.org/packages/release/bioc/html/GSVA.html).
+In order to do that, the user has to define the method and also indicate
+the gene set collection of interest. By default, the `HALLMARK`
+collection from the MSigDB will be used if the location of a different
+.gmt file is not provided.
+
+Results are shown as a heatmap. Users can define the color of the sample
+groups and also if gene set names and/or sample names should be plotted
+or not.
+
+``` r
+gsva.res <- ge_single(counts = input_ge_module,
+                      metadata = metadata_ge_module,
+                      genes_id = 'entrezgene_id',
+                      response = Response,
+                      design = 'Response',
+                      biomart = ensembl_biomart_GRCh38_p13,
+                      gsva_gmt = 'hallmark',
+                      method = 'gsva',
+                      colors = c('black', 'orange'),
+                      row.names = TRUE,
+                      col.names = TRUE)
+```
+
+![GSVA](vignettes/03_gsva.png)
 
 ### 2. Genetic Variations module (GV)
 
@@ -320,12 +359,12 @@ significance is represented. As usual, the function allows to change
 also the colours of the groups.
 
 ``` r
-gv_mut_load(muts = input_gv_module,
-            metadata = metadata_ge_module,
-            response = Response,
-            compare = 'wilcox.test',
-            p_label = 'p.format',
-            colors = c('black', 'orange'))
+mut.load <- gv_mut_load(muts = input_gv_module,
+                        metadata = metadata_ge_module,
+                        response = Response,
+                        compare = 'wilcox.test',
+                        p_label = 'p.format',
+                        colors = c('black', 'orange'))
 ```
 
 ![Mutational load](vignettes/08_gv_mutload.png)
@@ -368,13 +407,13 @@ literature, the second plot can be helpful, especially when many
 mutational signatures are present in many samples.
 
 ``` r
-gv_mut_signatures(muts = input_gv_module,
-                  metadata = metadata_ge_module,
-                  response = Response,
-                  gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-                  mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-                  tri.counts.method = 'default',
-                  colors = c('black', 'orange'))
+mut.sigs <- gv_mut_signatures(muts = input_gv_module,
+                              metadata = metadata_ge_module,
+                              response = Response,
+                              gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+                              mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+                              tri.counts.method = 'default',
+                              colors = c('black', 'orange'))
 ```
 
 ![Mutational signatures](vignettes/09_gv_mutsig.png)
@@ -479,12 +518,12 @@ possible the comparison between samples. For further interpretation
 please visit <https://tcia.at/tools/toolsMain>.
 
 ``` r
-ic_score(tpm = tpm,
-         metadata = metadata_ge_module,
-         response = Response,
-         compare = 'wilcox.test',
-         p_label = 'p.format',
-         colors = c('black', 'orange'))
+ips <- ic_score(tpm = tpm,
+                metadata = metadata_ge_module,
+                response = Response,
+                compare = 'wilcox.test',
+                p_label = 'p.format',
+                colors = c('black', 'orange'))
 ```
 
 ![Immunophenograms](vignettes/06_ic_ipg.png)
