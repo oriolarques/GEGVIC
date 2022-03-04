@@ -40,19 +40,19 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, results = "hide", eval = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, results = "hide")
 ```
 
 # 1. Gene Expression module (GE)
 
 ## 1.1. PCA
 ```{r pca}
-#response <- rlang::enquo(response)
+response <- rlang::sym(params$response)
 
 pca <- ge_pca(counts = params$counts,
               genes_id = params$genes_id,
               metadata = params$metadata,
-              response = params$response,
+              response = !!response,
               design = params$design,
               colors = params$colors)
 print(pca)
@@ -81,7 +81,7 @@ annot.res <- ge_annot(results_dds = results.dds,
 ```
 
 ## 1.4. Volcano plot
-```{r volcano}
+```{r volcano, fig.height=10, fig.width=10}
 # Create volcano plot
 ge_volcano(annot_res = annot.res,
            fold_change = params$fold_change,
@@ -89,7 +89,7 @@ ge_volcano(annot_res = annot.res,
 ```
 
 ## 1.5. GSEA: Gene Set Enrichment Analysis
-```{r gsea, fig.height=15, fig.width=15}
+```{r gsea, results = 'show', fig.height=8, fig.width=12}
 # Obtain GSEA results
 gsea.res <- ge_gsea(annot_res = annot.res,
                     gmt = params$gmt,
@@ -97,11 +97,11 @@ gsea.res <- ge_gsea(annot_res = annot.res,
 ```
 
 
-```{r gsva, fig.height=15, fig.width=15}
+```{r gsva, fig.height=10, fig.width=15}
 gsva.res <- ge_single(counts = params$counts,
                       metadata = params$metadata,
                       genes_id = params$genes_id,
-                      response = params$response,
+                      response =!!response,
                       design = params$design,
                       biomart = params$biomart,
                       gsva_gmt = params$gsva_gmt,
@@ -110,15 +110,18 @@ gsva.res <- ge_single(counts = params$counts,
                       row.names = params$row.names,
                       col.names = params$row.names)
 
-```
+print(gsva.res)
 
+```
 
 # 2. GV_module 
 ## 2.1. Mutational summary
 ```{r mut_summary}
+response <- rlang::sym(params$response)
+
 gv_mut_summary(muts = params$muts,
                metadata = params$metadata,
-               response = params$response,
+               response = !!response,
                top_genes = params$top_genes,
                specific_genes = params$specific_genes,
                colors = params$colors)
@@ -129,7 +132,7 @@ gv_mut_summary(muts = params$muts,
 ```{r mut_load}
 mut.load <- gv_mut_load(muts = params$muts,
                         metadata = params$metadata,
-                        response = params$response,
+                        response = !!response,
                         compare = params$compare,
                         p_label = params$p_label,
                         colors = params$colors)
@@ -138,7 +141,7 @@ mut.load <- gv_mut_load(muts = params$muts,
 
 ## 2.3. Mutational signatures
 
-```{r mut_signatures}
+```{r mut_signatures, fig.height=10, fig.width=15}
 library(dplyr)
 library(deconstructSigs)
 library(ggplot2)
@@ -152,7 +155,7 @@ library(rlang)
 # Extract mutational signature profiles
     ## the gv_mut_signatures function do not work as a nested function
     
-        response <- params$response
+        #response <- params$response
         
         # Load genomic build
         library(params$gbuild, character.only = TRUE)
@@ -320,15 +323,16 @@ library(rlang)
         mut.plot.list <- list(mut_sig_barplot = bar.plot,
                               mut_sig_heatmap = ggplotify::as.ggplot(heat.map))
 
-        return(mut.plot.list)
+        mut.plot.list
 
 ```
+
 
 
 # 3. Immune cell Composition module (IC)
 ## 3.1 Transform raw counts to TPM
 
-```{r raw_to_tpm, eval = TRUE}
+```{r raw_to_tpm}
 tpm <- ic_raw_to_tpm(counts = params$counts,
                      genes_id = params$genes_id,
                      biomart = params$biomart)
@@ -350,41 +354,26 @@ ic.pred <- ic_deconv(gene_expression = tpm,
 
 ## 3.3. Plot cell predictions
 
-```{r ic_comp_samples}
+```{r ic_comp_samples, fig.height=15, fig.width=15}
 ic_plot_comp_samples(df = ic.pred,
                      metadata = params$metadata,
-                     response = params$response,
+                     response = !!response,
                      compare = params$compare,
                      p_label = params$p_label,
                      colors = params$colors)
 ```
 
-```{r ic_comp_celltypes}
+```{r ic_comp_celltypes, fig.height=10, fig.width=15}
 ic_plot_comp_celltypes(df = ic.pred,
                        metadata = params$metadata,
-                       response = params$response)
+                       response = !!response)
 ```
 
 
 ## 3.4. Calculate Immunophenogram and Immunophenoscores
 
-```{r ips, eval = FALSE}
-ips <- ic_score(tpm = tpm,
-                metadata = params$metadata,
-                response = params$response,
-                compare = params$compare,
-                p_label = params$p_label,
-                colors = params$colors)
-```
 
-
-
-```{r, eval = TRUE}
-library(dplyr)
-library(ggplot2)
-library(rlang)
-library(ggpubr)
-
+```{r ips, fig.height=10, fig.width=15}
 library(patchwork)
 library(grid)
 
@@ -615,12 +604,10 @@ library(grid)
         names(ipheno_list)[i] <- sample_names[i]
 
     }
-
-
-    # Plot immunophenogram by group -------------------------------------------
+# Plot immunophenogram by group -------------------------------------------
 
     ## Enquote response variable
-    response <- params$response
+    #response <- sym(params$response)
     ## Get the levels of response (grouping) variable
     levels.resp <- levels(params$metadata %>%
                               dplyr::mutate_all(as.factor) %>%
@@ -669,7 +656,7 @@ library(grid)
         geom_point(alpha = 0.5, position = position_jitter(0.2)) +
 
         # Define colors
-        scale_color_manual(values = colors) +
+        scale_color_manual(values = params$colors) +
 
         # Title
         ggtitle('ImmunophenoScore') +
@@ -684,7 +671,7 @@ library(grid)
               axis.text.x = element_text(angle = 45, hjust = 1),
               legend.position = 'bottom'
         )
-    if(is.null(compare) == FALSE){
+    if(is.null(params$compare) == FALSE){
         ips.plot <- ips.plot +
             ggpubr::stat_compare_means(method = params$compare,
                                        label = params$p_label,
