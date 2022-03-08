@@ -42,7 +42,7 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(eval = FALSE, echo = FALSE, warning = FALSE, message = FALSE, results = "hide")
+knitr::opts_chunk$set(eval = TRUE, echo = FALSE, warning = FALSE, message = FALSE, results = "hide")
 ```
 
 ```{r packages}
@@ -77,7 +77,7 @@ print(pca)
     
 ```
 
-## 1.2. Differential gene expression & Gene Annotation
+## 1.2. Differential gene expression
 
 ```{r de, eval = TRUE}
 # Run differential gene expression analysis
@@ -96,30 +96,7 @@ annot.res <- ge_annot(results_dds = results.dds,
                       biomart = params$biomart)
 ```
 
-```{r}
-
-for(i in seq_along(annot.res)){
-    for(j in 1:nrow(annot.res[[i]])){
-        cat('##',j,' \n')
-        print(knitr::kable(list_lm[[j]]$coefficients)) 
-
-    }
-}
-
-
-```
-
-```{r, eval = FALSE, results='asis'}
-knitr::kable(annot.res, 
-             format = "html", 
-             caption = 'Comparison of algortihm perfomances sorted', 
-             booktabs = T) %>% 
-    kableExtra::kable_styling(bootstrap_options = "striped",
-                            position = "left") %>% 
-    kableExtra::scroll_box(width = "500px", height = "200px")
-```
-
-## 1.3. Volcano plot
+### 1.2.1. Volcano plot
 ```{r volcano, fig.height=8, fig.width=8}
 # Create volcano plot
 ge_volcano(annot_res = annot.res,
@@ -127,7 +104,7 @@ ge_volcano(annot_res = annot.res,
            p.adj = params$p.adj)
 ```
 
-## 1.4. GSEA: Gene Set Enrichment Analysis
+### 1.2.2. GSEA: Gene Set Enrichment Analysis
 ```{r gsea, results = 'show', fig.height=8, fig.width=12}
 # Obtain GSEA results
 gsea.res <- ge_gsea(annot_res = annot.res,
@@ -135,6 +112,7 @@ gsea.res <- ge_gsea(annot_res = annot.res,
                     gsea_pvalue = params$gsea_pvalue)
 ```
 
+### 1.2.3. Gene Set Variation Analysis 
 
 ```{r gsva, fig.height=10, fig.width=15}
 gsva.res <- ge_single(counts = params$counts,
@@ -359,15 +337,13 @@ mut.load <- gv_mut_load(muts = params$muts,
 
 
 # 3. Immune cell Composition module (IC)
-## 3.1 Transform raw counts to TPM
+## 3.1. Cell predictions
 
 ```{r raw_to_tpm, eval = TRUE}
 tpm <- ic_raw_to_tpm(counts = params$counts,
                      genes_id = params$genes_id,
                      biomart = params$biomart)
 ```
-
-## 3.2. Predict immune cell composition
 
 ```{r deconv}
 print(params$indications)
@@ -379,9 +355,6 @@ ic.pred <- ic_deconv(gene_expression = tpm,
                      scale_mrna = params$scale_mrna,
                      expected_cell_types = params$expected_cell_types)
 ```
-
-
-## 3.3. Plot cell predictions
 
 ```{r ic_comp_samples, fig.height=15, fig.width=15}
 ic_plot_comp_samples(df = ic.pred,
@@ -399,7 +372,7 @@ ic_plot_comp_celltypes(df = ic.pred,
 ```
 
 
-## 3.4. Calculate Immunophenogram and Immunophenoscores
+## 3.1.2 Immunophenogram and Immunophenoscores
 
 
 ```{r ips, fig.height=10, fig.width=15}

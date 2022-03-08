@@ -3,7 +3,6 @@ title: "GEGVIC-NGS report"
 output: 
     flexdashboard::flex_dashboard:
       vertical_layout: scroll
-      theme: cosmo
 runtime: shiny
 params:
     counts: NULL 
@@ -80,7 +79,7 @@ print(pca)
 
 
 
-### Differential gene expression & Gene Annotation
+### Differential gene expression & Gene Annotation {.tabset}
 
 ```{r de, eval = TRUE}
 # Run differential gene expression analysis
@@ -97,20 +96,53 @@ results.dds <- ge_diff_exp(counts = params$counts,
 annot.res <- ge_annot(results_dds = results.dds,
                       genes_id = params$genes_id,
                       biomart = params$biomart)
+
+
+
+
 ```
 
-```{r, eval = TRUE}
+```{r, eval = T}
 for(i in seq_along(annot.res)){
+    
+    cat(paste0('#### ', names(annot.res)[i], '\n'))
+
     DT::datatable(
-    annot.res[[i]] %>% 
-        dplyr::mutate_if(is.numeric, function(x) round(x, 4)),
-    options = list(scrollX = TRUE,
-                   pageLength = 10,
-                   width=200))
+        annot.res[[i]] %>% 
+            dplyr::mutate_if(is.numeric, function(x) round(x, 4)),
+        options = list(scrollX = TRUE,
+                       pageLength = 10))
+    
 }
 
 
+```
 
+
+```{r, eval = F}
+lapply(seq_along(annot.res), function(x){
+    # Store the names of the comparisons
+    n <- names(annot.res)[x]
+    ## Create a tab for each comparison with the appropriate name
+    
+    cat(paste0('#### ', names(annot.res)[x], '\n'))
+
+    
+    # Generate Output: Differential gene expression table
+    print(htmltools::tagList(
+    
+    DT::datatable(
+        annot.res[[x]] %>% 
+            dplyr::mutate_if(is.numeric, function(x) round(x, 4)),
+        options = list(scrollX = TRUE,
+                       pageLength = 10)
+    )
+    ))
+    
+
+})
+
+    
 ```
 
 
