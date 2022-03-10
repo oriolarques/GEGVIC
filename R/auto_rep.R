@@ -1,15 +1,19 @@
 #' auto_rep
 #'
+#' @param ge_module
+#' @param gv_module
+#' @param ic_module
+#' @param out_dir
 #' @param counts
 #' @param genes_id
 #' @param metadata
 #' @param muts
-#' @param response
+#' @param response Quoted!!!!
 #' @param design
 #' @param colors
 #' @param ref_level
 #' @param shrink
-#' @param biomart
+#' @param biomart No quoted!
 #' @param fold_change
 #' @param p.adj
 #' @param gmt
@@ -36,39 +40,47 @@
 #' @export
 #'
 #' @examples
-#' prova(counts = input_ge_module,
-#'       genes_id = 'entrezgene_id',
-#'       metadata = met,
-#'       response = 'Response',
-#'       design = 'Response',
-#'       colors = c('black', 'orange', 'purple'),
-#'       ref_level = c('Response', 'Non_Responders'),
-#'       shrink = 'none',
-#'       biomart = ensembl_biomart_GRCh38_p13,
-#'       fold_change = 2,
-#'       p.adj = 0.05,
-#'       gmt = 'c7.all.v7.2.symbols.gmt',
-#'       gsea_pvalue = 0.2,
-#'       gsva_gmt = 'hallmark',
-#'       method = 'gsva',
-#'       row.names = TRUE,
-#'       col.names = TRUE,
-#'       muts = input_gv_module,
-#'       top_genes = 10,
-#'       specific_genes = NULL,
-#'       compare = 'wilcox.test',
-#'       p_label = 'p.format',
-#'       gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-#'       mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-#'       tri.counts.method = 'default',
-#'       indications = rep('skcm', ncol(input_ge_module[-1])),
-#'       cibersort = NULL,
-#'       tumor = TRUE,
-#'       rmgenes = NULL,
-#'       scale_mrna = TRUE,
-#'       expected_cell_types = NULL)
+#' auto_rep(ge_module = TRUE,
+#'          gv_module = TRUE,
+#'          ic_module = TRUE,
+#'          out_dir = NULL,
+#'          counts = input_ge_module,
+#'          genes_id = 'entrezgene_id',
+#'          metadata = metadata_ge_module,
+#'          response = 'Response',
+#'          design = 'Response',
+#'          colors = c('black', 'orange'),
+#'          ref_level = c('Response', 'Non_Responders'),
+#'          shrink = 'apeglm',
+#'          biomart = ensembl_biomart_GRCh38_p13,
+#'          fold_change = 2,
+#'          p.adj = 0.05,
+#'          gmt = 'c7.all.v7.2.symbols.gmt',
+#'          gsea_pvalue = 0.2,
+#'          gsva_gmt = 'hallmark',
+#'          method = 'gsva',
+#'          row.names = TRUE,
+#'          col.names = TRUE,
+#'          muts = input_gv_module,
+#'          top_genes = 10,
+#'          specific_genes = NULL,
+#'          compare = 'wilcox.test',
+#'          p_label = 'p.format',
+#'          gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+#'          mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+#'          tri.counts.method = 'default',
+#'          indications = rep('skcm', ncol(input_ge_module[-1])),
+#'          cibersort = NULL,
+#'          tumor = TRUE,
+#'          rmgenes = NULL,
+#'          scale_mrna = TRUE,
+#'          expected_cell_types = NULL)
 #'
-auto_rep <- function(counts,
+auto_rep <- function(ge_module = TRUE,
+                     gv_module = TRUE,
+                     ic_module = TRUE,
+                     out_dir = NULL,
+                     counts,
                      genes_id,
                      metadata,
                      muts,
@@ -104,11 +116,19 @@ auto_rep <- function(counts,
     input <-  paste0(system.file('extdata/', package = 'GEGVIC'),
                      '/GEGVIC_auto_report.Rmd')
 
-    out_dir <- getwd()
+    if(is.null(out_dir) == TRUE){
+        out_dir <- getwd()
+    } else {
+        out_dir <- out_dir
+    }
+
 
     rmarkdown::render(input = input,
                       output_dir = out_dir,
-                      params = list("counts" = counts,
+                      params = list("ge_module" = ge_module,
+                                    "gv_module" = gv_module,
+                                    "ic_module" = ic_module,
+                                    "counts" = counts,
                                     "genes_id" = genes_id,
                                     "metadata" = metadata,
                                     "response" = response,

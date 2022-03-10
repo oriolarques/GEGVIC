@@ -7,6 +7,9 @@ output:
         toc_float: yes
         theme: flatly
 params:
+    ge_module: NULL
+    gv_module: NULL
+    ic_module: NULL
     counts: NULL 
     metadata: NULL
     genes_id: NULL 
@@ -42,7 +45,7 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(eval = TRUE, echo = FALSE, warning = FALSE, message = FALSE, results = "hide")
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, results = "hide")
 ```
 
 ```{r packages}
@@ -64,7 +67,7 @@ library(kableExtra)
 # 1. Gene Expression module (GE)
 
 ## 1.1. PCA
-```{r pca, eval = TRUE}
+```{r pca, eval = params$ge_module}
 response <- rlang::sym(params$response)
 
 pca <- ge_pca(counts = params$counts,
@@ -79,7 +82,7 @@ print(pca)
 
 ## 1.2. Differential gene expression
 
-```{r de, eval = TRUE}
+```{r de, eval = params$ge_module}
 # Run differential gene expression analysis
 results.dds <- ge_diff_exp(counts = params$counts,
                            genes_id = params$genes_id,
@@ -89,7 +92,7 @@ results.dds <- ge_diff_exp(counts = params$counts,
                            shrink = params$shrink)
 ```
 
-```{r annot, eval = TRUE, results='asis'}
+```{r annot, eval = params$ge_module, results='asis'}
 # Annotate gene symbols
 annot.res <- ge_annot(results_dds = results.dds,
                       genes_id = params$genes_id,
@@ -97,7 +100,7 @@ annot.res <- ge_annot(results_dds = results.dds,
 ```
 
 ### 1.2.1. Volcano plot
-```{r volcano, fig.height=8, fig.width=8}
+```{r volcano, eval = params$ge_module, fig.height=8, fig.width=8}
 # Create volcano plot
 ge_volcano(annot_res = annot.res,
            fold_change = params$fold_change,
@@ -105,7 +108,7 @@ ge_volcano(annot_res = annot.res,
 ```
 
 ### 1.2.2. GSEA: Gene Set Enrichment Analysis
-```{r gsea, results = 'show', fig.height=8, fig.width=12}
+```{r gsea, eval = params$ge_module, results = 'show', fig.height=8, fig.width=12}
 # Obtain GSEA results
 gsea.res <- ge_gsea(annot_res = annot.res,
                     gmt = params$gmt,
@@ -114,7 +117,7 @@ gsea.res <- ge_gsea(annot_res = annot.res,
 
 ### 1.2.3. Gene Set Variation Analysis 
 
-```{r gsva, fig.height=10, fig.width=15}
+```{r gsva, eval = params$ge_module, fig.height=10, fig.width=15}
 gsva.res <- ge_single(counts = params$counts,
                       metadata = params$metadata,
                       genes_id = params$genes_id,
@@ -133,7 +136,7 @@ print(gsva.res)
 
 # 2. Genetic Variations module (GV)
 ## 2.1. Mutational summary
-```{r mut_summary}
+```{r mut_summary, eval = params$gv_module}
 response <- rlang::sym(params$response)
 
 gv_mut_summary(muts = params$muts,
@@ -146,7 +149,7 @@ gv_mut_summary(muts = params$muts,
 
 ## 2.2. Mutational load
 
-```{r mut_load}
+```{r mut_load, eval = params$gv_module}
 mut.load <- gv_mut_load(muts = params$muts,
                         metadata = params$metadata,
                         response = !!response,
@@ -158,7 +161,7 @@ mut.load <- gv_mut_load(muts = params$muts,
 
 ## 2.3. Mutational signatures
 
-```{r mut_signatures, fig.height=10, fig.width=15}
+```{r mut_signatures, eval = params$gv_module, fig.height=10, fig.width=15}
 # Extract mutational signature profiles
     ## the gv_mut_signatures function do not work as a nested function
     
@@ -339,13 +342,13 @@ mut.load <- gv_mut_load(muts = params$muts,
 # 3. Immune cell Composition module (IC)
 ## 3.1. Cell predictions
 
-```{r raw_to_tpm, eval = TRUE}
+```{r raw_to_tpm, eval = params$ic_module}
 tpm <- ic_raw_to_tpm(counts = params$counts,
                      genes_id = params$genes_id,
                      biomart = params$biomart)
 ```
 
-```{r deconv}
+```{r deconv, eval = params$ic_module}
 print(params$indications)
 ic.pred <- ic_deconv(gene_expression = tpm,
                      indications = params$indications,
@@ -356,7 +359,7 @@ ic.pred <- ic_deconv(gene_expression = tpm,
                      expected_cell_types = params$expected_cell_types)
 ```
 
-```{r ic_comp_samples, fig.height=15, fig.width=15}
+```{r ic_comp_samples, eval = params$ic_module, fig.height=15, fig.width=15}
 ic_plot_comp_samples(df = ic.pred,
                      metadata = params$metadata,
                      response = !!response,
@@ -365,7 +368,7 @@ ic_plot_comp_samples(df = ic.pred,
                      colors = params$colors)
 ```
 
-```{r ic_comp_celltypes, fig.height=10, fig.width=15}
+```{r ic_comp_celltypes, eval = params$ic_module, fig.height=10, fig.width=15}
 ic_plot_comp_celltypes(df = ic.pred,
                        metadata = params$metadata,
                        response = !!response)
@@ -375,7 +378,7 @@ ic_plot_comp_celltypes(df = ic.pred,
 ## 3.1.2 Immunophenogram and Immunophenoscores
 
 
-```{r ips, fig.height=10, fig.width=15}
+```{r ips, eval = params$ic_module, fig.height=10, fig.width=15}
 # Create a list to store phenograms
     ipheno_list <- list()
     # Create a list to store the results
@@ -476,6 +479,16 @@ ic_plot_comp_celltypes(df = ic.pred,
             WEIGHT[k] <- mean(W1[which (as.vector(IPSG$NAME)==gen)])
             k <- k+1
         }
+        
+        ## Chunk added to avoid problems with data coming from mouse
+        ## such as genes missing in the process of finding orthologs
+        # In case there is an element as NA due to missing genes in data
+        for(x in seq_along(MIG)){
+            if(is.na(MIG[x])){
+                MIG[x]<-0
+            }
+        }
+
         WG<-MIG*WEIGHT
         MHC[i] <- mean(WG[1:10])
         CP[i] <- mean(WG[11:20])
