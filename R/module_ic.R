@@ -125,7 +125,7 @@ module_ic <- function(counts,
     print('Calculate IPG and IPS')
 
     ips <-ic_score(tpm = tpm,
-                   metadata = metadata_ge_module,
+                   metadata = metadata,
                    response = !!response,
                    compare = compare,
                    p_label = p_label,

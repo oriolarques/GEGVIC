@@ -30,43 +30,84 @@ ic_raw_to_tpm <- function(counts,
                           genes_id,
                           biomart) {
 
-    # Get the length (in Kb) for each gene
-    # Filter transcripts that have refseq_mrna ID in BiomaRt object
-    biomart_length <- biomart %>%
-        # filter genes that have refseq Id and gene symbol
-        dplyr::filter(refseq_mrna != '' & hgnc_symbol != '') %>%
-        # group_by gene symbol
-        dplyr::group_by(hgnc_symbol) %>%
-        # Calculate median length in Kb for each gene
-        dplyr::summarise(median_kb_transcript_length = median(transcript_length) / 1000)
+    if('human_ortholog' %in% colnames(biomart) == FALSE){
 
-    # If data is annotated with entrezgene_id convert them to character
-    if (genes_id == 'entrezgene_id'){
-        raw.count <- counts %>%
-            dplyr::mutate(entrezgene_id = as.character(entrezgene_id))
+        # Get the length (in Kb) for each gene
+        # Filter transcripts that have refseq_mrna ID in BiomaRt object
+        biomart_length <- biomart %>%
+            # filter genes that have refseq Id and gene symbol
+            dplyr::filter(refseq_mrna != '' & hgnc_symbol != '') %>%
+            # group_by gene symbol
+            dplyr::group_by(hgnc_symbol) %>%
+            # Calculate median length in Kb for each gene
+            dplyr::summarise(median_kb_transcript_length = median(transcript_length) / 1000)
+
+        # If data is annotated with entrezgene_id convert them to character
+        if (genes_id == 'entrezgene_id'){
+            raw.count <- counts %>%
+                dplyr::mutate(entrezgene_id = as.character(entrezgene_id))
+        } else {
+            raw.count <- counts
+        }
+
+        # Process the raw.counts
+        raw.count <- raw.count %>%
+                # Join the data frame with the biomaRt table
+            dplyr::inner_join(x = .,
+                              y = biomart %>%
+                                  mutate(entrezgene_id = as.character(entrezgene_id)),
+                              by = genes_id) %>%
+            # From all annotation columns keep only hgnc symbol column
+            dplyr::select(hgnc_symbol,
+                          transcript_length,
+                          everything(),
+                          -c(entrezgene_id, ensembl_gene_id,
+                             transcript_length, refseq_mrna)) %>%
+            # Filter those missing gene symbols
+            dplyr::filter(hgnc_symbol != '') %>%
+            # Remove duplicated genes
+            dplyr::distinct(hgnc_symbol, .keep_all = TRUE) %>%
+            # Get the rows that are present in the biomart_length object
+            dplyr::semi_join(., biomart_length, by = 'hgnc_symbol')
+
     } else {
-        raw.count <- counts
-    }
+        # Get the length (in Kb) for each gene
+        # Filter transcripts that have refseq_mrna ID in BiomaRt object
+        biomart_length <- biomart %>%
+            # Substitute mouse gene symbol with the human homolog symbol
+            dplyr::mutate(hgnc_symbol = human_ortholog) %>%
+            # filter genes that have refseq Id and gene symbol
+            dplyr::filter(refseq_mrna != '' & hgnc_symbol != '') %>%
+            # group_by gene symbol
+            dplyr::group_by(hgnc_symbol) %>%
+            # Calculate median length in Kb for each gene
+            dplyr::summarise(median_kb_transcript_length = median(transcript_length) / 1000)
 
-    # Process the raw.counts
-    raw.count <- raw.count %>%
+        # If samples come from mouse (by the presence of one extra column)
+        ## Substitute mouse gene symbol by human gene symbol
+        raw.count <- counts %>%
             # Join the data frame with the biomaRt table
-        dplyr::inner_join(x = .,
-                          y = biomart %>%
-                              mutate(entrezgene_id = as.character(entrezgene_id)),
-                          by = genes_id) %>%
-        # From all annotation columns keep only hgnc symbol column
-        dplyr::select(hgnc_symbol,
-                      transcript_length,
-                      everything(),
-                      -c(entrezgene_id, ensembl_gene_id,
-                         transcript_length, refseq_mrna)) %>%
-        # Filter those missing gene symbols
-        dplyr::filter(hgnc_symbol != '') %>%
-        # Remove duplicated genes
-        dplyr::distinct(hgnc_symbol, .keep_all = TRUE) %>%
-        # Get the rows that are present in the biomart_length object
-        dplyr::semi_join(., biomart_length, by = 'hgnc_symbol')
+            dplyr::inner_join(x = .,
+                              y = biomart %>%
+                                  mutate(entrezgene_id = as.character(entrezgene_id)),
+                              by = genes_id) %>%
+            # Substitute mouse gene symbol with the human homolog symbol
+            dplyr::mutate(hgnc_symbol = human_ortholog) %>%
+            # From all annotation columns keep only hgnc symbol column
+            dplyr::select(hgnc_symbol,
+                          transcript_length,
+                          everything(),
+                          -c(entrezgene_id, ensembl_gene_id,
+                             transcript_length, refseq_mrna,
+                             human_ortholog)) %>%
+            # Filter those missing gene symbols
+            dplyr::filter(hgnc_symbol != '') %>%
+            # Remove duplicated genes
+            dplyr::distinct(hgnc_symbol, .keep_all = TRUE) %>%
+            # Get the rows that are present in the biomart_length object
+            dplyr::semi_join(., biomart_length, by = 'hgnc_symbol')
+
+    }
 
     # Get also for biomart_length object those genes in raw.counts so we can
     ## can join both objects

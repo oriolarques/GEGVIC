@@ -34,6 +34,22 @@ ge_gsea <- function(annot_res,
                     gmt,
                     gsea_pvalue = 0.2) {
 
+    # 0. If samples come from mouse (by the presence of one extra column)
+    if('human_ortholog' %in% colnames(annot_res[[1]]) == TRUE){
+        # Iterate over annotated results list
+        for (i in seq_along(annot_res)){
+            # By each data frame in annot_res
+            annot_res[[i]] <- annot_res[[i]] %>%
+                # Substitute mouse gene symbol with the human homolog symbol
+                dplyr::mutate(hgnc_symbol = human_ortholog) %>%
+                # Filter those missing gene symbols
+                dplyr::filter(hgnc_symbol != '') %>%
+                # Remove duplicated genes
+                dplyr::distinct(hgnc_symbol, .keep_all = TRUE)
+        }
+
+    }
+
     # 1. Obtain geneLists
         ## Create a list to store as many geneList as conditions
         geneLists <- list()

@@ -127,6 +127,22 @@ ge_single <- function(counts,
             tibble::column_to_rownames('hgnc_symbol')
     }
 
+    # If samples come from mouse (by the presence of one extra column)
+    if('human_ortholog' %in% colnames(exprs.mat.annot) == TRUE){
+        exprs.mat.annot <- exprs.mat.annot %>%
+            # Rownames to column with the name indicated in the genes_id parameter
+            tibble::rownames_to_column('hgnc_symbol') %>%
+            # Substitute mouse gene symbol with the human homolog symbol
+            dplyr::mutate(hgnc_symbol = human_ortholog) %>%
+            # Filter those missing gene symbols
+            dplyr::filter(hgnc_symbol != '') %>%
+            # Remove duplicated genes
+            dplyr::distinct(hgnc_symbol, .keep_all = TRUE) %>%
+            # Remove ortholog column
+            dplyr::select(-human_ortholog) %>%
+            # Return hgnc_symbol column as rownames
+            tibble::column_to_rownames('hgnc_symbol')
+    }
 
     # Read genesets
     if(gsva_gmt == 'hallmark'){
