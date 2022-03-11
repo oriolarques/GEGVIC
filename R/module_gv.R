@@ -3,13 +3,18 @@
 #' @description
 #'
 #' @param muts
-#' @param metadata
-#' @param response
-#' @param top_genes
-#' @param specific_genes
-#' @param colors
-#' @param compare
-#' @param p_label
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param response Unquoted name of the variable indicating the groups to analyse.
+#' @param top_genes Number of genes to be analysed in the mutational summary.
+#' @param specific_genes Genes that will be plotted in the oncoplot.
+#' @param colors Character vector indicating the colors of the different groups
+#' to compare. Default values are two: black and orange.
+#' @param compare A character string indicating which method to be used for
+#' comparing means. Options are 't.test' and 'wilcox.test' for two groups or
+#' 'anova' and 'kruskal.test' for more groups. Default value is NULL.
+#' @param p_label Character string specifying label type. Allowed values include
+#' 'p.signif' (shows the significance levels), 'p.format' (shows the formatted
+#' p-value).
 #' @param gbuild
 #' @param mut_sigs
 #' @param tri.counts.method
@@ -32,17 +37,17 @@
 #' @import ggplotify
 #'
 #' @examples
-#' module_gv(muts = input_gv_module,
-#'           metadata = metadata_ge_module,
-#'           response = Response,
-#'           top_genes = 10,
-#'           specific_genes = NULL,
-#'           colors = c('black' ,'orange'),
-#'           compare = 'wilcox.test',
-#'           p_label = 'p.format',
-#'           gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-#'           mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-#'           tri.counts.method = 'default')
+#' tables_module_gv <- module_gv(muts = input_gv_module,
+#'                               metadata = metadata_ge_module,
+#'                               response = Response,
+#'                               top_genes = 10,
+#'                               specific_genes = NULL,
+#'                               colors = c('black' ,'orange'),
+#'                               compare = 'wilcox.test',
+#'                               p_label = 'p.format',
+#'                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+#'                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+#'                               tri.counts.method = 'default')
 #'
 module_gv <- function(muts,
                       metadata,
@@ -243,11 +248,11 @@ module_gv <- function(muts,
                              main = 'Mutational signature predictions per sample',
                              silent = TRUE)
 
-        # Merge the resulting plots --------------------------------------------
-        mut.plot.list <- list(mut_sig_barplot = bar.plot,
-                              mut_sig_heatmap = ggplotify::as.ggplot(heat.map))
+        # Print plots --------------------------------------------
+        print(bar.plot)
+        print(ggplotify::as.ggplot(heat.map))
 
-        return(mut.plot.list)
-
+        # Return mutational signatures prediction data -----------
+        return(results.extr)
 
 }

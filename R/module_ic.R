@@ -43,7 +43,8 @@
 #' to compare. Default values are two: black and orange.
 #'
 #' @return Returns ggplot objects showing predicted immune cell populations to
-#' be compared between or within samples.
+#' be compared between or within samples. Also it returns a list of tables with
+#' the data necessary to produce the plots.
 #'
 #' @export
 #'
@@ -56,16 +57,16 @@
 #' @import rlang
 #'
 #' @examples
-#' module_ic(counts = input_ge_module,
-#'           genes_id = 'entrezgene_id',
-#'           biomart = ensembl_biomart_GRCh38_p13,
-#'           indications = rep('skcm', ncol(input_ge_module[-1])),
-#'           cibersort = NULL,
-#'           metadata = metadata_ge_module,
-#'           response = Response,
-#'           compare = 'wilcox.test',
-#'           p_label = 'p.format',
-#'           colors = c('black', 'orange'))
+#' tables_module_ic <- module_ic(counts = input_ge_module,
+#'                               genes_id = 'entrezgene_id',
+#'                               biomart = ensembl_biomart_GRCh38_p13,
+#'                               indications = rep('skcm', ncol(input_ge_module[-1])),
+#'                               cibersort = NULL,
+#'                               metadata = metadata_ge_module,
+#'                               response = Response,
+#'                               compare = 'wilcox.test',
+#'                               p_label = 'p.format',
+#'                               colors = c('black', 'orange'))
 #'
 module_ic <- function(counts,
                       genes_id,
@@ -130,5 +131,13 @@ module_ic <- function(counts,
                    compare = compare,
                    p_label = p_label,
                    colors = colors)
+
+    # Return tables generated as a list
+    tables_module_ic <- list(tpm = tpm,
+                             ic.pred = ic.pred,
+                             ips = ips)
+
+    return(tables_module_ic)
+
 }
 

@@ -1,7 +1,7 @@
 #' @title gv_mut_summary
 #'
 #' @description Given a table that contains genetic variants from samples of
-#' interest, it summarises differnt aspects of such mutations and draws an
+#' interest, it summarises different aspects of such mutations and draws an
 #' oncoplot.
 #'
 #' @param muts Data frame containing genetic variations. Necessary columns must

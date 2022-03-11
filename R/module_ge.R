@@ -2,11 +2,10 @@
 #'
 #' @description Analyses differential gene expression from RNA-seq raw counts and
 #' plots PCA, volcano plots and gene set enrichment analysis (GSEA) for the
-#' desired comparisons.
-#'
+#' desired comparisons. This last analysis include also Gene Set Variation Analysis.
 #'
 #' @param counts Data frame that contains gene expression data as raw counts.
-#' @param genes_idName of the column that contains gene identifiers. Should be
+#' @param genes_id Name of the column that contains gene identifiers. Should be
 #' one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param response Unquoted name of the variable indicating the groups to analyse.
@@ -27,7 +26,7 @@
 #' 'ensembl_biomartGRCm38_p6', 'ensembl_biomartGRCm39'.
 #' @param fold_change An integer to define the fold change value to consider
 #' that a gene is differentially expressed.
-#' @param p.adjNumeric value to define the maximum adjusted p-value to consider
+#' @param p.adj Numeric value to define the maximum adjusted p-value to consider
 #' that a gene is differentially expressed.
 #' @param gmt A data frame containg the gene sets to analyse using GSEA. This
 #' object should be obtained with the read.gmt function from the clusterProfiler

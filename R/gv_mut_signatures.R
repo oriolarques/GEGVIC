@@ -1,12 +1,30 @@
-#' Title
+#' @title gv_mut_signatures
 #'
-#' @param muts
-#' @param metadata
-#' @param response
+#' @description
+#'
+#' @param muts Data frame containing genetic variations. Necessary columns must
+#' have the following names:
+#' - Hugo_Symbol: Gene symbol from HGNC.
+#' - Chromosome: Affected chromosome.
+#' - Start_Position: Mutation start coordinate.
+#' - End_Position: Mutation end coordinate.
+#' - Reference_Allele: The plus strand reference allele at this position.
+#' Includes the deleted sequence for a deletion or "-" for an insertion.
+#' - Tumor_Seq_Allele2: Tumor sequencing discovery allele.
+#' - Variant_Classification: Translational effect of variant allele. Can be one
+#' of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
+#' In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
+#' Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
+#' - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+#' 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
+#' - Tumor_Sample_Barcode: Sample name.
+#' @param metadata Data frame that contains supporting variables to the data.
+#' @param response Unquoted name of the variable indicating the groups to analyse.
 #' @param gbuild
 #' @param mut_sigs can be COSMIC_v2_SBS_GRCh37, COSMIC_v2_SBS_GRCh38 ...
 #' @param tri.counts.method
-#' @param colors
+#' @param colors Character vector indicating the colors of the different groups
+#' to compare. Default values are two: black and orange.
 #'
 #' @return
 #'
