@@ -47,7 +47,7 @@ p-value).}
 to compare. Default values are two: black and orange.}
 }
 \value{
-Returns a ggplot object and a data frame.
+Returns a ggplot object and a data frame with the data.
 }
 \description{
 Summarises the total number of mutations per sample and compares

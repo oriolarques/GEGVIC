@@ -1,6 +1,6 @@
 #' @title ge_gsea
 #'
-#' @description
+#' @description Performs Gene Set Enrichment Analysis using gene sets specified by the user.
 #'
 #' @param annot_res The output of ge_annot. List containing data frames of
 #' differential gene expression results between the different groups.

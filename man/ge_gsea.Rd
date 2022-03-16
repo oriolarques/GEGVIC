@@ -19,7 +19,7 @@ GSEA. Set to 0.2 by default.}
 Returns ggplot objects and a list of gseaResult objects.
 }
 \description{
-
+Performs Gene Set Enrichment Analysis using gene sets specified by the user.
 }
 \examples{
 results_dds <- ge_diff_exp(counts = input_ge_module,

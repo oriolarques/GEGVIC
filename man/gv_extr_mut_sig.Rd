@@ -7,11 +7,16 @@
 gv_extr_mut_sig(results, ids_samples)
 }
 \arguments{
-\item{ids_samples}{}
+\item{results}{Data frame containing the results of whichSignatures function
+from the deconstructSigs package.}
+
+\item{ids_samples}{Name of the samples of interest.}
 }
 \value{
-
+Returns a data frame with the contribution of each mutational signature
+studied in each sample in a long format.
 }
 \description{
-
+Extracts mutational signatures contribution prediction from the
+deconstrucSigs package in a legible format.
 }

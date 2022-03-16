@@ -1,6 +1,6 @@
 #' @title gv_mut_signatures
 #'
-#' @description
+#' @description Predicts the contribution of known mutational processes to the samples.
 #'
 #' @param muts Data frame containing genetic variations. Necessary columns must
 #' have the following names:
@@ -20,13 +20,35 @@
 #' - Tumor_Sample_Barcode: Sample name.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param response Unquoted name of the variable indicating the groups to analyse.
-#' @param gbuild
-#' @param mut_sigs can be COSMIC_v2_SBS_GRCh37, COSMIC_v2_SBS_GRCh38 ...
-#' @param tri.counts.method
+#' @param gbuild Version of the genome to work with. It can be one of the following:
+#' - ‘BSgenome.Hsapiens.UCSC.hg19’
+#' - ‘BSgenome.Hsapiens.UCSC.hg38’
+#' - ‘BSgenome.Mmusculus.UCSC.mm10’
+#' - ‘BSgenome.Mmusculus.UCSC.mm39’
+#' @param mut_sigs Mutational signature matrices containing the frequencies of
+#' all nucleotide changes per signature need to be indicated. GEGVIC contains the
+#' matrices from COSMIC for single and double base substitutions. To choose one,
+#' the user has to indicate ’COSMIC_v{XX}_{YY}BS_GRCh{ZZ}’ in the mut_sigs argument.
+#' The XX is the version, that can be v2 or v3.2. YY indicates if mutations are
+#' single (S) or double (D) base substitutions, while the ZZ is for the genome
+#' assembly, either GRCh37 or GRCh38 for human data and mm9 or mm10 for mouse data.
+#' @param tri.counts.method Normalization method. Needs to be set to either:
+#' - 'default' – no further normalization.
+#' - 'exome' – normalized by number of times each trinucleotide context is
+#' observed in the exome.
+#' - 'genome' – normalized by number of times each trinucleotide context is
+#' observed in the genome.
+#' - 'exome2genome' – multiplied by a ratio of that trinucleotide's occurence in
+#' the genome to the trinucleotide's occurence in the exome.
+#' - 'genome2exome' – multiplied by a ratio of that trinucleotide's occurence in
+#' the exome to the trinucleotide's occurence in the genome.
+#' - data frame containing user defined scaling factor – count data for each
+#' trinucleotide context is multiplied by the corresponding value given in the
+#' data frame.
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
 #'
-#' @return
+#' @return Returns ggplot objects and the results table in a form of a data frame.
 #'
 #' @export
 #'

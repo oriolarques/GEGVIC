@@ -27,7 +27,7 @@
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
 #'
-#' @return Prints two plots: A summary of samples mutations and an oncoplot.
+#' @return Prints two plots: A summary of sample mutations and an oncoplot.
 #'
 #' @export
 #'

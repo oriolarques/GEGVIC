@@ -75,7 +75,8 @@ to compare. Default values are two: black and orange.}
 }
 \value{
 Returns ggplot objects showing predicted immune cell populations to
-be compared between or within samples.
+be compared between or within samples. Also it returns a list of tables with
+the data necessary to produce the plots.
 }
 \description{
 Estimates the composition of immune cell composition from RNA-seq
@@ -83,15 +84,15 @@ raw data. Additionally it calculates an immunophenogram and immunophenoscores
 for each sample and groups of study.
 }
 \examples{
-module_ic(counts = input_ge_module,
-          genes_id = 'entrezgene_id',
-          biomart = ensembl_biomart_GRCh38_p13,
-          indications = rep('skcm', ncol(input_ge_module[-1])),
-          cibersort = NULL,
-          metadata = metadata_ge_module,
-          response = Response,
-          compare = 'wilcox.test',
-          p_label = 'p.format',
-          colors = c('black', 'orange'))
+tables_module_ic <- module_ic(counts = input_ge_module,
+                              genes_id = 'entrezgene_id',
+                              biomart = ensembl_biomart_GRCh38_p13,
+                              indications = rep('skcm', ncol(input_ge_module[-1])),
+                              cibersort = NULL,
+                              metadata = metadata_ge_module,
+                              response = Response,
+                              compare = 'wilcox.test',
+                              p_label = 'p.format',
+                              colors = c('black', 'orange'))
 
 }
