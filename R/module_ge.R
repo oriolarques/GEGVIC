@@ -43,7 +43,8 @@
 #' @param col.names Logical value to determine if column-names are shown in the
 #' heatmap.
 #'
-#' @return Returns ggplot objects containing PCA, Volcano plot and GSEA analyses.
+#' @return Returns ggplot objects (containing PCA, Volcano plot and GSEA analyses)
+#' and a list of data frames containing the results data.
 #'
 #' @export
 #'
@@ -62,23 +63,23 @@
 #' @import pheatmap
 #'
 #' @examples
-#' module_ge(counts = input_ge_module,
-#'           genes_id = 'entrezgene_id',
-#'           metadata = metadata_ge_module,
-#'           response = Response,
-#'           design = 'Response',
-#'           colors = c('black', 'orange'),
-#'           ref_level = c('Response', 'Non_Responders'),
-#'           shrink = 'apeglm',
-#'           biomart = ensembl_biomart_GRCh38_p13,
-#'           fold_change = 2,
-#'           p.adj = 0.05,
-#'           gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
-#'           gsea_pvalue = 0.2,
-#'           gsva_gmt = 'hallmark',
-#'           method = 'gsva',
-#'           row.names = TRUE,
-#'           col.names = TRUE)
+#' tables_module_ge <- module_ge(counts = input_ge_module,
+#'                               genes_id = 'entrezgene_id',
+#'                               metadata = metadata_ge_module,
+#'                               response = Response,
+#'                               design = 'Response',
+#'                               colors = c('black', 'orange'),
+#'                               ref_level = c('Response', 'Non_Responders'),
+#'                               shrink = 'apeglm',
+#'                               biomart = ensembl_biomart_GRCh38_p13,
+#'                               fold_change = 2,
+#'                               p.adj = 0.05,
+#'                               gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+#'                               gsea_pvalue = 0.2,
+#'                               gsva_gmt = 'hallmark',
+#'                               method = 'gsva',
+#'                               row.names = TRUE,
+#'                               col.names = TRUE)
 #'
 module_ge <- function(counts,
                       genes_id,
@@ -156,6 +157,13 @@ module_ge <- function(counts,
                           colors = colors,
                           row.names = row.names,
                           col.names = row.names)
+
+    tables_module_ge <- list(results.dds = results.dds,
+                             annot.res =  annot.res,
+                             gsea.res = gsea.res,
+                             gsva.res = gsva.res)
+
+    return(tables_module_ge)
 
 }
 

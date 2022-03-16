@@ -1,8 +1,24 @@
-#' @titlte module_gv
+#' @title module_gv
 #'
-#' @description
+#' @description Summarises genetic variations, calculates mutational load and
+#' predicts mutational signatures in samples of interest.
 #'
-#' @param muts
+#' @param muts Data frame containing genetic variations. Necessary columns must
+#' have the following names:
+#' - Hugo_Symbol: Gene symbol from HGNC.
+#' - Chromosome: Affected chromosome.
+#' - Start_Position: Mutation start coordinate.
+#' - End_Position: Mutation end coordinate.
+#' - Reference_Allele: The plus strand reference allele at this position.
+#' Includes the deleted sequence for a deletion or "-" for an insertion.
+#' - Tumor_Seq_Allele2: Tumor sequencing discovery allele.
+#' - Variant_Classification: Translational effect of variant allele. Can be one
+#' of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
+#' In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
+#' Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
+#' - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+#' 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
+#' - Tumor_Sample_Barcode: Sample name.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param response Unquoted name of the variable indicating the groups to analyse.
 #' @param top_genes Number of genes to be analysed in the mutational summary.
@@ -15,11 +31,35 @@
 #' @param p_label Character string specifying label type. Allowed values include
 #' 'p.signif' (shows the significance levels), 'p.format' (shows the formatted
 #' p-value).
-#' @param gbuild
-#' @param mut_sigs
-#' @param tri.counts.method
+#' @param gbuild Version of the genome to work with. It can be one of the following:
+#' - ‘BSgenome.Hsapiens.UCSC.hg19’
+#' - ‘BSgenome.Hsapiens.UCSC.hg38’
+#' - ‘BSgenome.Mmusculus.UCSC.mm10’
+#' - ‘BSgenome.Mmusculus.UCSC.mm39’
+#' @param mut_sigs Mutational signature matrices containing the frequencies of
+#' all nucleotide changes per signature need to be indicated. GEGVIC contains the
+#' matrices from COSMIC for single and double base substitutions. To choose one,
+#' the user has to indicate ’COSMIC_v{XX}_{YY}BS_GRCh{ZZ}’ in the mut_sigs argument.
+#' The XX is the version, that can be v2 or v3.2. YY indicates if mutations are
+#' single (S) or double (D) base substitutions, while the ZZ is for the genome
+#' assembly, either GRCh37 or GRCh38 for human data and mm9 or mm10 for mouse data.
+#' @param tri.counts.method Normalization method. Needs to be set to either:
+#' - 'default' – no further normalization
+#' - 'exome' – normalized by number of times each trinucleotide context is
+#' observed in the exome
+#' - 'genome' – normalized by number of times each trinucleotide context is
+#' observed in the genome
+#' - 'exome2genome' – multiplied by a ratio of that trinucleotide's occurence in
+#' the genome to the trinucleotide's occurence in the exome
+#' - 'genome2exome' – multiplied by a ratio of that trinucleotide's occurence in
+#' the exome to the trinucleotide's occurence in the genome
+#' - data frame containing user defined scaling factor – count data for each
+#' trinucleotide context is multiplied by the corresponding value given in the
+#' data frame.
 #'
-#' @return
+#' @return Returns plot and ggplot objects to summarise sample mutations, mutational
+#' load and mutational signatures. Also it returns a list of data frames with
+#' the data necessary to generate the plots.
 #'
 #' @export
 #'
@@ -76,12 +116,12 @@ module_gv <- function(muts,
                    colors = colors)
 
     # Calculate mutational load
-    gv_mut_load(muts = muts,
-                metadata = metadata,
-                response = !!response,
-                compare = compare,
-                p_label = p_label,
-                colors = colors)
+    mut.load <- gv_mut_load(muts = muts,
+                            metadata = metadata,
+                            response = !!response,
+                            compare = compare,
+                            p_label = p_label,
+                            colors = colors)
 
     # Extract mutational signature profiles
     ## the gv_mut_signatures function do not work as a nested function
@@ -252,7 +292,9 @@ module_gv <- function(muts,
         print(bar.plot)
         print(ggplotify::as.ggplot(heat.map))
 
-        # Return mutational signatures prediction data -----------
-        return(results.extr)
+        # Return mutational load and mutational signatures data -----------
+        tables_module_gv <- list(mut.load = mut.load,
+                                 mut.sigs = results.extr)
+        return(tables_module_gv)
 
 }

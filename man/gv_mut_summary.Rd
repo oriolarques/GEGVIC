@@ -43,11 +43,11 @@ Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
 to compare. Default values are two: black and orange.}
 }
 \value{
-Prints two plots: A summary of samples mutations and an oncoplot.
+Prints two plots: A summary of sample mutations and an oncoplot.
 }
 \description{
 Given a table that contains genetic variants from samples of
-interest, it summarises differnt aspects of such mutations and draws an
+interest, it summarises different aspects of such mutations and draws an
 oncoplot.
 }
 \examples{

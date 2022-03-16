@@ -1,11 +1,14 @@
 #' @title gv_extr_mut_sig
 #'
-#' @description
+#' @description Extracts mutational signatures contribution prediction from the
+#' deconstrucSigs package in a legible format.
 #'
-#' @param results
-#' @param ids_samples
+#' @param results Data frame containing the results of whichSignatures function
+#' from the deconstructSigs package.
+#' @param ids_samples Name of the samples of interest.
 #'
-#' @return
+#' @return Returns a data frame with the contribution of each mutational signature
+#' studied in each sample in a long format.
 #'
 #' @export
 #'

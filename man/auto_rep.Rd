@@ -5,10 +5,13 @@
 \title{auto_rep}
 \usage{
 auto_rep(
+  ge_module = TRUE,
+  gv_module = TRUE,
+  ic_module = TRUE,
+  out_dir = NULL,
   counts,
   genes_id,
   metadata,
-  muts,
   response,
   design,
   colors = c("black", "orange"),
@@ -23,6 +26,7 @@ auto_rep(
   method = "gsva",
   row.names = TRUE,
   col.names = TRUE,
+  muts,
   top_genes = 10,
   specific_genes = NULL,
   compare = "wilcox.test",
@@ -39,45 +43,150 @@ auto_rep(
 )
 }
 \arguments{
-\item{expected_cell_types}{}
+\item{counts}{Data frame that contains gene expression data as raw counts.}
+
+\item{genes_id}{Name of the column that contains gene identifiers. Should be
+one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
+
+\item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{response}{QUOTED Name of the variable indicating the groups to analyse.}
+
+\item{design}{Variables in the design formula in the form of: 'Var1 + Var2 + ... Var_n'.}
+
+\item{colors}{Character vector indicating the colors of the different groups
+to compare. Default values are two: black and orange.}
+
+\item{ref_level}{Character vector where the first element is the column name
+where the reference level is located and a second element indicating the name
+of level to be used as a reference when calculating differential gene
+expression.}
+
+\item{shrink}{Name of the shrinkage method to apply: "apeglm", "ashr",
+"normal" or "none". Use none to skip shrinkage. Default value is "apeglm".}
+
+\item{biomart}{Data frame containing a biomaRt query with the following
+attributes: ensembl_gene_id, hgnc_symbol, entrezgene_id, transcript_length,
+refseq_mrna. In the case of mus musculus data, external_gene_name must be
+obtained and then change the column name for hgnc_symbol. Uploaded biomaRt
+queries in GEGVIC: 'ensembl_biomartGRCh37', ensembl_biomartGRCh38_p13' and
+'ensembl_biomartGRCm38_p6', 'ensembl_biomartGRCm39'.}
+
+\item{fold_change}{An integer to define the fold change value to consider
+that a gene is differentially expressed.}
+
+\item{p.adj}{Numeric value to define the maximum adjusted p-value to consider
+that a gene is differentially expressed.}
+
+\item{gmt}{A data frame containg the gene sets to analyse using GSEA. This
+object should be obtained with the read.gmt function from the clusterProfiler
+package.}
+
+\item{gsea_pvalue}{Numeric value to define the adjusted pvalue cutoff during
+GSEA. Set to 0.2 by default.}
+
+\item{gsva_gmt}{Path to the gmt file that contain the gene sets of interest. By
+default the parameter is set to 'hallmark' which provides all HALLMARK gene
+sets from MSigDB (version 7.5.1).}
+
+\item{method}{Name of the method to perform Gene set variation analysis. The
+options are: 'gsva', 'ssgea' or 'zscore'. Default value is 'gsva'.}
+
+\item{row.names}{Logical value to determine if row-names are shown in the
+heatmap.}
+
+\item{col.names}{Logical value to determine if column-names are shown in the
+heatmap.}
+
+\item{muts}{Data frame containing genetic variations. Necessary columns must
+have the following names:
+- Hugo_Symbol: Gene symbol from HGNC.
+- Chromosome: Affected chromosome.
+- Start_Position: Mutation start coordinate.
+- End_Position: Mutation end coordinate.
+- Reference_Allele: The plus strand reference allele at this position.
+Includes the deleted sequence for a deletion or "-" for an insertion.
+- Tumor_Seq_Allele2: Tumor sequencing discovery allele.
+- Variant_Classification: Translational effect of variant allele. Can be one
+of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
+In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
+Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
+- Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
+- Tumor_Sample_Barcode: Sample name.}
+
+\item{top_genes}{Number of genes to be analysed in the mutational summary.}
+
+\item{specific_genes}{Genes that will be plotted in the oncoplot.}
+
+\item{compare}{A character string indicating which method to be used for
+comparing means. Options are 't.test' and 'wilcox.test' for two groups or
+'anova' and 'kruskal.test' for more groups. Default value is NULL.}
+
+\item{p_label}{Character string specifying label type. Allowed values include
+'p.signif' (shows the significance levels), 'p.format' (shows the formatted
+p-value).}
+
+\item{cibersort}{Path to the CIBERSORT.R and LM22.txt files. Default value is
+NULL.}
+
+\item{tumor}{Logical value to define if samples are tumors. If so EPIC and
+quanTIseq use a signature matrix/procedure optimized for tumor samples.
+Default value is TRUE.}
+
+\item{rmgenes}{A character vector of gene symbols. Exclude these genes from
+the analysis. Use this to exclude e.g. noisy genes.}
+
+\item{scale_mrna}{Logical. If FALSE, disable correction for mRNA content of
+different cell types. This is supported by methods that compute an absolute
+score (EPIC and quanTIseq). Default value is TRUE.}
+
+\item{expected_cell_types}{Limit the analysis to the cell types given in this
+list. If the cell types present in the sample are known a priori, setting
+this can improve results for xCell
+(see https://github.com/grst/immunedeconv/issues/1).}
 }
 \value{
 
 }
 \description{
-auto_rep
+
 }
 \examples{
-prova(counts = input_ge_module,
-      genes_id = 'entrezgene_id',
-      metadata = met,
-      response = 'Response',
-      design = 'Response',
-      colors = c('black', 'orange', 'purple'),
-      ref_level = c('Response', 'Non_Responders'),
-      shrink = 'none',
-      biomart = ensembl_biomart_GRCh38_p13,
-      fold_change = 2,
-      p.adj = 0.05,
-      gmt = 'c7.all.v7.2.symbols.gmt',
-      gsea_pvalue = 0.2,
-      gsva_gmt = 'hallmark',
-      method = 'gsva',
-      row.names = TRUE,
-      col.names = TRUE,
-      muts = input_gv_module,
-      top_genes = 10,
-      specific_genes = NULL,
-      compare = 'wilcox.test',
-      p_label = 'p.format',
-      gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-      mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-      tri.counts.method = 'default',
-      indications = rep('skcm', ncol(input_ge_module[-1])),
-      cibersort = NULL,
-      tumor = TRUE,
-      rmgenes = NULL,
-      scale_mrna = TRUE,
-      expected_cell_types = NULL)
+auto_rep(ge_module = TRUE,
+         gv_module = TRUE,
+         ic_module = TRUE,
+         out_dir = NULL,
+         counts = input_ge_module,
+         genes_id = 'entrezgene_id',
+         metadata = metadata_ge_module,
+         response = 'Response',
+         design = 'Response',
+         colors = c('black', 'orange'),
+         ref_level = c('Response', 'Non_Responders'),
+         shrink = 'apeglm',
+         biomart = ensembl_biomart_GRCh38_p13,
+         fold_change = 2,
+         p.adj = 0.05,
+         gmt = 'c7.all.v7.2.symbols.gmt',
+         gsea_pvalue = 0.2,
+         gsva_gmt = 'hallmark',
+         method = 'gsva',
+         row.names = TRUE,
+         col.names = TRUE,
+         muts = input_gv_module,
+         top_genes = 10,
+         specific_genes = NULL,
+         compare = 'wilcox.test',
+         p_label = 'p.format',
+         gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
+         mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+         tri.counts.method = 'default',
+         indications = rep('skcm', ncol(input_ge_module[-1])),
+         cibersort = NULL,
+         tumor = TRUE,
+         rmgenes = NULL,
+         scale_mrna = TRUE,
+         expected_cell_types = NULL)
 
 }

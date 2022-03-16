@@ -30,7 +30,7 @@
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
 #'
-#' @return Returns a ggplot object and a data frame.
+#' @return Returns a ggplot object and a data frame with the data.
 #'
 #' @export
 #'

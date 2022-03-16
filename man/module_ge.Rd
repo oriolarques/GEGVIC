@@ -27,6 +27,9 @@ module_ge(
 \arguments{
 \item{counts}{Data frame that contains gene expression data as raw counts.}
 
+\item{genes_id}{Name of the column that contains gene identifiers. Should be
+one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
+
 \item{metadata}{Data frame that contains supporting variables to the data.}
 
 \item{response}{Unquoted name of the variable indicating the groups to analyse.}
@@ -54,6 +57,9 @@ queries in GEGVIC: 'ensembl_biomartGRCh37', ensembl_biomartGRCh38_p13' and
 \item{fold_change}{An integer to define the fold change value to consider
 that a gene is differentially expressed.}
 
+\item{p.adj}{Numeric value to define the maximum adjusted p-value to consider
+that a gene is differentially expressed.}
+
 \item{gmt}{A data frame containg the gene sets to analyse using GSEA. This
 object should be obtained with the read.gmt function from the clusterProfiler
 package.}
@@ -73,38 +79,33 @@ heatmap.}
 
 \item{col.names}{Logical value to determine if column-names are shown in the
 heatmap.}
-
-\item{genes_idName}{of the column that contains gene identifiers. Should be
-one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.}
-
-\item{p.adjNumeric}{value to define the maximum adjusted p-value to consider
-that a gene is differentially expressed.}
 }
 \value{
-Returns ggplot objects containing PCA, Volcano plot and GSEA analyses.
+Returns ggplot objects (containing PCA, Volcano plot and GSEA analyses)
+and a list of data frames containing the results data.
 }
 \description{
 Analyses differential gene expression from RNA-seq raw counts and
 plots PCA, volcano plots and gene set enrichment analysis (GSEA) for the
-desired comparisons.
+desired comparisons. This last analysis include also Gene Set Variation Analysis.
 }
 \examples{
-module_ge(counts = input_ge_module,
-          genes_id = 'entrezgene_id',
-          metadata = metadata_ge_module,
-          response = Response,
-          design = 'Response',
-          colors = c('black', 'orange'),
-          ref_level = c('Response', 'Non_Responders'),
-          shrink = 'apeglm',
-          biomart = ensembl_biomart_GRCh38_p13,
-          fold_change = 2,
-          p.adj = 0.05,
-          gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
-          gsea_pvalue = 0.2,
-          gsva_gmt = 'hallmark',
-          method = 'gsva',
-          row.names = TRUE,
-          col.names = TRUE)
+tables_module_ge <- module_ge(counts = input_ge_module,
+                              genes_id = 'entrezgene_id',
+                              metadata = metadata_ge_module,
+                              response = Response,
+                              design = 'Response',
+                              colors = c('black', 'orange'),
+                              ref_level = c('Response', 'Non_Responders'),
+                              shrink = 'apeglm',
+                              biomart = ensembl_biomart_GRCh38_p13,
+                              fold_change = 2,
+                              p.adj = 0.05,
+                              gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+                              gsea_pvalue = 0.2,
+                              gsva_gmt = 'hallmark',
+                              method = 'gsva',
+                              row.names = TRUE,
+                              col.names = TRUE)
 
 }
