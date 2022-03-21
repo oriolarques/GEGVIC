@@ -268,10 +268,10 @@ Molecular Signatures Database,
 [MSigDB](http://www.gsea-msigdb.org/gsea/downloads.jsp) or be customly
 created following the corresponding \[guidelines\]
 (<https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats>).
-In the case of working with mouse data gmt files can be found
-[here](https://bioinf.wehi.edu.au/MSigDB/). The *C7: Immunologic
-signature gene sets* was downloaded (**c7.all.v7.2.symbols.gmt** file)
-and used to create this example.
+In the case of working with mouse data, gene symbols are automatically
+transformed to human orthologs so the same gene sets from MSigDB can be
+used. The *C7: Immunologic signature gene sets* was downloaded
+(**c7.all.v7.2.symbols.gmt** file) and used to create this example.
 
 Additionally, users can define the adjusted p-value cut-off to be more
 or less restrictive when performing GSEA. The function generates two
