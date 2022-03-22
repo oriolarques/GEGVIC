@@ -195,7 +195,7 @@ To use this function the user has to provide a collection of gene sets to evalua
 
 Additionally, users can define the adjusted p-value cut-off to be more or less restrictive when performing GSEA. The function generates two plots, one dendrogram and one wordcloud with the most enriched name terms in each cluster in the dendrogram.
 
-*Note: There are two ways to access to the results table. (1) Call the object results object as gsea.res$table_name@result or (2) as.data.frame(gsea.res)*. 
+*Note: There are two ways to access to the results table. (1) Call the object results object as* `gsea.res$table_name@result` *or (2)* `as.data.frame(gsea.res)`. 
 
 ``` r
 gsea.res <- ge_gsea(annot_res = annot.res,

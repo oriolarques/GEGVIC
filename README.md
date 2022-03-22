@@ -279,8 +279,8 @@ plots, one dendrogram and one wordcloud with the most enriched name
 terms in each cluster in the dendrogram.
 
 *Note: There are two ways to access to the results table. (1) Call the
-object results object as <gsea.res$table_name@result> or (2)
-as.data.frame(gsea.res)*.
+object results object as* `gsea.res$table_name@result` *or (2)*
+`as.data.frame(gsea.res)`.
 
 ``` r
 gsea.res <- ge_gsea(annot_res = annot.res,
