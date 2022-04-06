@@ -329,7 +329,50 @@ ic_score <- function(tpm,
 
     #write.table(DF,file="IPS.txt",row.names=FALSE, quote=FALSE,sep="\t")
 
-    ## Plot IPS
+    ## Plot IPS and subplots
+    ### Define the titles of the subplots
+    plot_names <- c('MHC' = 'MHC: MHC molecules',
+                    'CP' = 'CP: Immunomodulators',
+                    'EC' = 'EC: Effector cells',
+                    'SC' = 'SC: Suppressor cells')
+    ### Subplots
+    subplots <- DF %>%
+        # Reshape the data to long format
+        dplyr::select(Samples, MHC, EC, SC, CP, !!response) %>% # Do not include AZ or IPS
+        tidyr::pivot_longer(cols = -c(Samples, !!response),
+                            names_to = 'Cell_type',
+                            values_to = 'Score') %>%
+        dplyr::group_by(Cell_type) %>%
+        # Plot
+        ggplot(., aes(x = !!response,
+                      y = Score,
+                      col = !!response)) +
+        # Geometric objects
+        geom_violin() +
+        geom_boxplot(width = 0.1, outlier.shape = NA) +
+        geom_point(alpha = 0.5, position = position_jitter(0.2)) +
+
+        # Define colors
+        scale_color_manual(values = colors) +
+
+        # Themes
+        theme_bw() +
+        theme(text = element_text(size = 15),
+              plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
+              axis.text.x.bottom = element_blank(),
+              axis.title.x = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_text(angle = 45, hjust = 1),
+              legend.position = 'bottom',
+              strip.background = element_rect(
+                  color="black", fill="black", size=1.5, linetype="solid"),
+              strip.text = element_text(color = 'white')) +
+        facet_wrap(~ Cell_type,
+                   scales = 'free_y',
+                   ncol = 2,
+                   labeller = as_labeller(plot_names))
+
+    ### IPS plot
     ips.plot <- ggplot(DF, aes(x = !!response,
                                y = IPS,
                                col = !!response)) +
@@ -355,6 +398,13 @@ ic_score <- function(tpm,
               legend.position = 'bottom'
         )
     if(is.null(compare) == FALSE){
+        subplots <- subplots +
+            ggpubr::stat_compare_means(method = compare,
+                                       label = p_label,
+                                       #size = 5,
+                                       label.y.npc = 1,
+                                       label.x.npc = 0.5,
+                                       show.legend = FALSE)
         ips.plot <- ips.plot +
             ggpubr::stat_compare_means(method = compare,
                                        label = p_label,
@@ -365,6 +415,12 @@ ic_score <- function(tpm,
 
     }
 
+    ### Add subplots and IPS plot together
+    final.ips.plot <- ggpubr::ggarrange(plotlist = list(subplots, ips.plot),
+                                        hjust = -1,
+                                        vjust = 0.5,
+                                        common.legend	= TRUE,
+                                        legend = 'bottom')
 
 
     # Join IPG and IPS results ------------------------------------------------
@@ -382,7 +438,7 @@ ic_score <- function(tpm,
 
 
     ## Get IPS comparison between samples in different levels of response variable
-    ic.score.results[[2]] <- ips.plot
+    ic.score.results[[2]] <- final.ips.plot
     names(ic.score.results) <- c('immunophenoGram', 'immunophenoScore')
 
 

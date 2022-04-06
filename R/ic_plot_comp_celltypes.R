@@ -122,13 +122,16 @@ ic_plot_comp_celltypes <- function(df,
         ggtitle('Immune composition:\nWithin sample comparison of cell types') +
 
         # Themes
-        theme_linedraw() +
+        theme_bw() +
         theme(
             plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
             axis.text.x.bottom = element_blank(),
             axis.title.x = element_blank(),
             axis.title.y = element_blank(),
-            axis.text.x = element_text(size = 5, angle = 45, hjust = 1)
+            axis.text.x = element_text(size = 5, angle = 45, hjust = 1),
+            strip.background = element_rect(
+                color="black", fill="black", size=1.5, linetype="solid"),
+            strip.text = element_text(color = 'white')
         ) +
 
         # Faceting

@@ -131,14 +131,17 @@ ic_plot_comp_samples <- function(df,
         ggtitle('Immune composition:\nBetween groups comparison per population') +
 
         # Themes
-        theme_linedraw() +
+        theme_bw() +
         theme(
             plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
             axis.text.x.bottom = element_blank(),
             axis.title.x = element_blank(),
             axis.title.y = element_blank(),
             axis.text.x = element_text(angle = 45, hjust = 1),
-            legend.position = 'bottom'
+            legend.position = 'bottom',
+            strip.background = element_rect(
+                color="black", fill="black", size=1.5, linetype="solid"),
+            strip.text = element_text(color = 'white')
         ) +
 
         # Faceting
