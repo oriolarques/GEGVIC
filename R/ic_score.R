@@ -342,6 +342,9 @@ ic_score <- function(tpm,
         tidyr::pivot_longer(cols = -c(Samples, !!response),
                             names_to = 'Cell_type',
                             values_to = 'Score') %>%
+        # Re-order the levels
+        dplyr::mutate(Cell_type = factor(Cell_type, levels = c('EC', 'SC',
+                                                               'CP', 'MHC'))) %>%
         dplyr::group_by(Cell_type) %>%
         # Plot
         ggplot(., aes(x = !!response,
