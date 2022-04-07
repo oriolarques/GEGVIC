@@ -19,6 +19,7 @@
 #' p-value).
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
+#' @param points Logical value to decide if points are added to the plot
 #'
 #' @return Returns list containing two ggplot objects.
 #'
@@ -47,14 +48,16 @@
 #'                      response = Response,
 #'                      compare = 'wilcox.test',
 #'                      p_label = 'p.format',
-#'                      colors = c('black', 'orange'))
+#'                      colors = c('black', 'orange'),
+#'                      points = TRUE)
 
 ic_plot_comp_samples <- function(df,
                                  metadata,
                                  response,
                                  compare = NULL,
                                  p_label = 'p.format',
-                                 colors = c('black', 'orange')) {
+                                 colors = c('black', 'orange'),
+                                 points = TRUE) {
 
     # Create an object to process the data
     temp_df <- NULL
@@ -122,7 +125,6 @@ ic_plot_comp_samples <- function(df,
         # Geometric objects
         geom_violin() +
         geom_boxplot(width = 0.1, outlier.shape = NA) +
-        geom_point(alpha = 0.5, position = position_jitter(0.2)) +
 
         # Define colors
         scale_color_manual(values = colors) +
@@ -158,6 +160,12 @@ ic_plot_comp_samples <- function(df,
                                        label.x.npc = 0.3,
                                        show.legend = FALSE)
 
+    }
+
+    # Add points to the plot
+    if(points == TRUE){
+        p <- p +
+            geom_point(alpha = 0.5, position = position_jitter(0.2))
     }
 
     # Return the plot

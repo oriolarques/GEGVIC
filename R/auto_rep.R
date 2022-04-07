@@ -86,6 +86,7 @@
 #' list. If the cell types present in the sample are known a priori, setting
 #' this can improve results for xCell
 #' (see https://github.com/grst/immunedeconv/issues/1).
+#' @param points Logical value to decide if points are added to the plot
 #'
 #' @return
 #'
@@ -126,7 +127,8 @@
 #'          tumor = TRUE,
 #'          rmgenes = NULL,
 #'          scale_mrna = TRUE,
-#'          expected_cell_types = NULL)
+#'          expected_cell_types = NULL,
+#'          points = TRUE)
 #'
 auto_rep <- function(ge_module = TRUE,
                      gv_module = TRUE,
@@ -162,7 +164,8 @@ auto_rep <- function(ge_module = TRUE,
                      tumor = TRUE,
                      rmgenes = NULL,
                      scale_mrna = TRUE,
-                     expected_cell_types = NULL) {
+                     expected_cell_types = NULL,
+                     points = TRUE) {
 
 
     input <-  paste0(system.file('extdata/', package = 'GEGVIC'),
@@ -210,7 +213,8 @@ auto_rep <- function(ge_module = TRUE,
                                     "tumor" = tumor,
                                     "rmgenes" = rmgenes,
                                     "scale_mrna" = scale_mrna,
-                                    "expected_cell_types" = expected_cell_types))
+                                    "expected_cell_types" = expected_cell_types,
+                                    "points" = points))
 
 
 }

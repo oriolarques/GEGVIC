@@ -41,6 +41,7 @@
 #' p-value).
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
+#' @param points Logical value to decide if points are added to the plot
 #'
 #' @return Returns ggplot objects showing predicted immune cell populations to
 #' be compared between or within samples. Also it returns a list of tables with
@@ -66,7 +67,8 @@
 #'                               response = Response,
 #'                               compare = 'wilcox.test',
 #'                               p_label = 'p.format',
-#'                               colors = c('black', 'orange'))
+#'                               colors = c('black', 'orange'),
+#'                               points = TRUE)
 #'
 module_ic <- function(counts,
                       genes_id,
@@ -81,7 +83,8 @@ module_ic <- function(counts,
                       response,
                       compare = NULL,
                       p_label = 'p.format',
-                      colors = c('black', 'orange')) {
+                      colors = c('black', 'orange'),
+                      points = TRUE) {
 
     # Obtain TPM from raw counts
     print('Obtain TPM from raw counts')
@@ -114,7 +117,8 @@ module_ic <- function(counts,
                          response = !!response,
                          compare = compare,
                          p_label = p_label,
-                         colors = colors)
+                         colors = colors,
+                         points = points)
 
     # Plot a graph comparing immune cell populations within samples
     ic_plot_comp_celltypes(df = ic.pred,

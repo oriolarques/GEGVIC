@@ -332,7 +332,7 @@ ic.pred <- ic_deconv(gene_expression = tpm,
 
 #### 3.3. Plot cell predictions
 
-With the **ic_plot_comp_samples()** function we can plot a graph comparing each immune cell populations between sample groups per method. For that, the name of column where lies the grouping variable must be written **WITHOUT** quotes in the response argument. The compare argument allow users to decide which method should be used for comparing means. Options are 't.test' and 'wilcox.test' for two groups or 'anova' and 'kruskal.test' for more groups. Also, the p_label argument permits to choose the way the significance is represented, being either 'p.signif' (shows the significance levels) or 'p.format' (shows the formatted p-value). The function allows to change also the colours of the groups.
+With the **ic_plot_comp_samples()** function we can plot a graph comparing each immune cell populations between sample groups per method. For that, the name of column where lies the grouping variable must be written **WITHOUT** quotes in the response argument. The compare argument allow users to decide which method should be used for comparing means. Options are 't.test' and 'wilcox.test' for two groups or 'anova' and 'kruskal.test' for more groups. Also, the p_label argument permits to choose the way the significance is represented, being either 'p.signif' (shows the significance levels) or 'p.format' (shows the formatted p-value). The function allows to change also the colours of the groups and decide if points are added to the plot.
 
 ``` r
 ic_plot_comp_samples(df = ic.pred,
@@ -340,7 +340,8 @@ ic_plot_comp_samples(df = ic.pred,
                      response = Response,
                      compare = 'wilcox.test',
                      p_label = 'p.format',
-                     colors = c('black', 'orange'))
+                     colors = c('black', 'orange'),
+                     points = TRUE)
 ```
 
 ![Immune cell populations between samples](vignettes/04_ic_samples.png)

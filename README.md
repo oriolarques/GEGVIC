@@ -489,7 +489,7 @@ and ‘kruskal.test’ for more groups. Also, the p_label argument permits
 to choose the way the significance is represented, being either
 ‘p.signif’ (shows the significance levels) or ‘p.format’ (shows the
 formatted p-value). The function allows to change also the colours of
-the groups.
+the groups and decide if points are added to the plot.
 
 ``` r
 ic_plot_comp_samples(df = ic.pred,
@@ -497,7 +497,8 @@ ic_plot_comp_samples(df = ic.pred,
                      response = Response,
                      compare = 'wilcox.test',
                      p_label = 'p.format',
-                     colors = c('black', 'orange'))
+                     colors = c('black', 'orange'),
+                     points = TRUE)
 ```
 
 ![Immune cell populations between samples](vignettes/04_ic_samples.png)

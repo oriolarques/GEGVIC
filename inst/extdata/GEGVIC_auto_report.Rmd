@@ -41,6 +41,7 @@ params:
     rmgenes: NULL
     scale_mrna: TRUE
     expected_cell_types: NULL
+    points: TRUE
     
 ---
 
@@ -365,7 +366,8 @@ ic_plot_comp_samples(df = ic.pred,
                      response = !!response,
                      compare = params$compare,
                      p_label = params$p_label,
-                     colors = params$colors)
+                     colors = params$colors,
+                     points = params$points)
 ```
 
 ```{r ic_comp_celltypes, eval = params$ic_module, fig.height=10, fig.width=15}
