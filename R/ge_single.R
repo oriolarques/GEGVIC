@@ -73,7 +73,8 @@ ge_single <- function(counts,
                                    genes_id = genes_id)
 
     # Preprocess metadata
-    metadata <- preprocess_ge_meta(metadata = metadata) %>%
+    metadata <- preprocess_ge_meta(metadata = metadata,
+                                   counts = counts) %>%
         dplyr::select(!!response)
 
     # Create DESeq2Dataset object

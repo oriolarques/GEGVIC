@@ -70,6 +70,7 @@ preprocess_ge_meta <- function(metadata,
             dplyr::mutate_all(., as.factor) %>%
             # Get patient ID's as rownames
             tibble::column_to_rownames('Samples')
+
     }
 
     return(metadata)
