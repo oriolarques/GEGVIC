@@ -48,7 +48,6 @@ preprocess_ge_counts <- function(counts,
 #' @import tibble
 #'
 #' @examples
-#' counts <- preprocess_ge_counts(counts = input_ge_module, genes_id = 'entrezgene_id')
 #' metadata <- preprocess_ge_meta(metadata = metadata_ge_module,
 #'                                counts = counts)
 
