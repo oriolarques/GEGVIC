@@ -17,7 +17,7 @@
 #' @import dplyr
 #'
 #' @examples
-#' mut.sbs <- input_gv_module %>% dplyr::filter(Variant_type == 'SNP')
+#' mut.sbs <- input_gv_module %>% dplyr::filter(Variant_Type == 'SNP')
 #' sigs.sbs.input <- deconstructSigs::mut.to.sigs.input(
 #'                                           mut.ref = mut.sbs,
 #'                                           sample.id = 'Tumor_Sample_Barcode',

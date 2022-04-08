@@ -57,7 +57,7 @@
 #' of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
 #' In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
 #' Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
-#' - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+#' - Variant_Type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
 #' 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
 #' - Tumor_Sample_Barcode: Sample name.
 #' @param top_genes Number of genes to be analysed in the mutational summary.

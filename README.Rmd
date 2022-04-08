@@ -94,7 +94,7 @@ GEGVIC requires three main input data:
     - Reference_Allele: The plus strand reference allele at this position. Includes the deleted sequence for a deletion or "-" for an insertion.
     - Tumor_Seq_Allele2: Tumor sequencing discovery allele.
     - Variant_Classification: Translational effect of variant allele. Can be one of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del, In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site, Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
-    - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism), 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
+    - Variant_Type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism), 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
     - Tumor_Sample_Barcode: Sample name.
 
 ![input_muts](vignettes/input_muts.png)

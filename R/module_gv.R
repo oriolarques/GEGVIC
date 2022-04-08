@@ -16,7 +16,7 @@
 #' of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
 #' In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
 #' Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
-#' - Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+#' - Variant_Type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
 #' 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
 #' - Tumor_Sample_Barcode: Sample name.
 #' @param metadata Data frame that contains supporting variables to the data.
@@ -138,21 +138,21 @@ module_gv <- function(muts,
         if (grepl('SBS', eval.mut.input, ignore.case = TRUE) == TRUE) {
             # Filter mutations of SNP type
             mut.filt <- muts %>%
-                dplyr::filter(Variant_type == 'SNP')
+                dplyr::filter(Variant_Type == 'SNP')
             # Define sig.type as SBS
             sig_type <- 'SBS'
 
         } else if (grepl('DBS', eval.mut.input, ignore.case = TRUE) == TRUE) {
             # Filter mutations of DNP type
             mut.filt <- muts %>%
-                dplyr::filter(Variant_type == 'DNP')
+                dplyr::filter(Variant_Type == 'DNP')
             # Define sig.type as DBS
             sig_type <- 'DBS'
 
         } else {
             # Filter mutations of INS or DEL type
             mut.filt <- muts %>%
-                dplyr::filter(Variant_type %in% c('INS', 'DEL'))
+                dplyr::filter(Variant_Type %in% c('INS', 'DEL'))
             # Define sig.type as SBS
             sig_type <- 'ID'
 

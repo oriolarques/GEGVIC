@@ -180,21 +180,21 @@ mut.load <- gv_mut_load(muts = params$muts,
         if (grepl('SBS', eval.mut.input, ignore.case = TRUE) == TRUE) {
             # Filter mutations of SNP type
             mut.filt <- params$muts %>%
-                dplyr::filter(Variant_type == 'SNP')
+                dplyr::filter(Variant_Type == 'SNP')
             # Define sig.type as SBS
             sig_type <- 'SBS'
 
         } else if (grepl('DBS', eval.mut.input, ignore.case = TRUE) == TRUE) {
             # Filter mutations of DNP type
             mut.filt <- params$muts %>%
-                dplyr::filter(Variant_type == 'DNP')
+                dplyr::filter(Variant_Type == 'DNP')
             # Define sig.type as DBS
             sig_type <- 'DBS'
 
         } else {
             # Filter mutations of INS or DEL type
             mut.filt <- params$muts %>%
-                dplyr::filter(Variant_type %in% c('INS', 'DEL'))
+                dplyr::filter(Variant_Type %in% c('INS', 'DEL'))
             # Define sig.type as SBS
             sig_type <- 'ID'
 
