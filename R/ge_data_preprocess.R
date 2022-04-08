@@ -38,6 +38,7 @@ preprocess_ge_counts <- function(counts,
 #' @description Prepares metadata file for posterior analysis using DESeq2.
 #'
 #' @param metadata Data frame that contains supporting variables to the data.
+#' @param counts Data frame that contains gene expression data as raw counts.
 #'
 #' @return Generates a data frame.
 #'
@@ -47,18 +48,27 @@ preprocess_ge_counts <- function(counts,
 #' @import tibble
 #'
 #' @examples
-#' metadata <- preprocess_ge_meta(metadata = metadata_ge_module)
+#' counts <- preprocess_ge_counts(counts = input_ge_module, genes_id = 'entrezgene_id')
+#' metadata <- preprocess_ge_meta(metadata = metadata_ge_module,
+#'                                counts = counts)
 
-preprocess_ge_meta <- function(metadata) {
+preprocess_ge_meta <- function(metadata,
+                               counts = NULL) {
 
     # Make sure the input does not has rownames
     metadata <- metadata
     rownames(metadata) <- c()
 
     # Get patient ID's as rownames
-    metadata <- metadata %>%
+
         dplyr::mutate_all(., as.factor) %>%
         tibble::column_to_rownames('Samples')
+
+    # Reorder the metadata so the Samples are in the same order as in counts
+    if(is.null(counts) == FALSE){
+        metadata <- metadata %>%
+            dplyr::arrange(match(Samples, colnames(counts)[-1]))
+    }
 
     return(metadata)
 
