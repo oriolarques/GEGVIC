@@ -1,8 +1,8 @@
 Package: GEGVIC
 Type: Package
-Title: GEGVIC: A workflow to analyse Gene Expression, Genetic Variations and Immune cell 
+Title: A workflow to analyse Gene Expression, Genetic Variations and Immune cell 
     Composition of tumour samples using Next Generation Sequencing data.
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: person("Oriol", "Arqués", email = "oriol.arques@gmail.com",
                   role = c("aut", "cre")) 
 Description: A workflow to analyse Gene Expression, Genetic Variations and Immune 

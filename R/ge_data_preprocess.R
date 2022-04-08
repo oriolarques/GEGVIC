@@ -59,14 +59,14 @@ preprocess_ge_meta <- function(metadata,
     rownames(metadata) <- c()
 
     # Get patient ID's as rownames
-
+    metadata <- metadata %>%
         dplyr::mutate_all(., as.factor) %>%
         tibble::column_to_rownames('Samples')
 
     # Reorder the metadata so the Samples are in the same order as in counts
     if(is.null(counts) == FALSE){
         metadata <- metadata %>%
-            dplyr::arrange(match(Samples, colnames(counts)[-1]))
+            dplyr::arrange(match(rownames(.), colnames(counts)[-1]))
     }
 
     return(metadata)
