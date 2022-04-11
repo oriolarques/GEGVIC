@@ -165,7 +165,7 @@ ge_single <- function(counts,
         dplyr::select(!!response) %>%
         dplyr::pull(!!response)
 
-    names(temp_color) <- unique(resp.levels)
+    names(temp_color) <- levels(resp.levels)
 
     # Get the quoted name of the response variable
     quoted.resp <- metadata %>%
