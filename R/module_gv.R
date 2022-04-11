@@ -56,6 +56,8 @@
 #' - data frame containing user defined scaling factor – count data for each
 #' trinucleotide context is multiplied by the corresponding value given in the
 #' data frame.
+#' @param col.names Logical value to determine if tumour names s are shown in the
+#' heatmap.
 #'
 #' @return Returns plot and ggplot objects to summarise sample mutations, mutational
 #' load and mutational signatures. Also it returns a list of data frames with
@@ -87,7 +89,8 @@
 #'                               p_label = 'p.format',
 #'                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
 #'                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-#'                               tri.counts.method = 'default')
+#'                               tri.counts.method = 'default',
+#'                               col.names = TRUE)
 #'
 module_gv <- function(muts,
                       metadata,
@@ -99,7 +102,8 @@ module_gv <- function(muts,
                       p_label = 'p.format',
                       gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
                       mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-                      tri.counts.method = 'default') {
+                      tri.counts.method = 'default',
+                      col.names = TRUE) {
 
 
     response <-  rlang::enquo(response)
@@ -113,6 +117,7 @@ module_gv <- function(muts,
                    response = !!response,
                    top_genes = top_genes,
                    specific_genes = specific_genes,
+                   col.names = col.names,
                    colors = colors)
 
     # Calculate mutational load
@@ -238,7 +243,10 @@ module_gv <- function(muts,
             # Faceting
             facet_wrap(facets = vars(!!response),
                        scales = 'free_x')
-
+        ## Eliminate sample names if the user decides so
+        if(col.names == FALSE){
+            bar.plot <- bar.plot + theme(axis.text.x = element_blank())
+        }
 
         ## Heatmap  ------------------------------------------------------------
         # Format signature predictions object in a wide format: Pivot wider
@@ -281,6 +289,7 @@ module_gv <- function(muts,
                                                                      rownames(pheat.meta)))]),
                              color = ggpubr::get_palette(palette = 'Purples', k = 10),
                              scale = 'none',
+                             show_colnames = col.names,
                              cluster_rows = FALSE,
                              cluster_cols = FALSE,
                              annotation_col = pheat.meta,

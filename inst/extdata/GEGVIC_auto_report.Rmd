@@ -129,7 +129,7 @@ gsva.res <- ge_single(counts = params$counts,
                       method = params$method,
                       colors = params$colors,
                       row.names = params$row.names,
-                      col.names = params$row.names)
+                      col.names = params$col.names)
 
 print(gsva.res)
 
@@ -145,6 +145,7 @@ gv_mut_summary(muts = params$muts,
                response = !!response,
                top_genes = params$top_genes,
                specific_genes = params$specific_genes,
+               col.names = params$col.names,
                colors = params$colors)
 ```
 
@@ -281,7 +282,11 @@ mut.load <- gv_mut_load(muts = params$muts,
             facet_wrap(facets = vars(!!response),
                        scales = 'free_x')
 
-
+            ## Eliminate sample names if the user decides so
+            if(params$col.names == FALSE){
+                bar.plot <- bar.plot + theme(axis.text.x = element_blank())
+            }
+        
         ## Heatmap  ------------------------------------------------------------
         # Format signature predictions object in a wide format: Pivot wider
         wide.results.extr <- results.extr %>%
@@ -323,6 +328,7 @@ mut.load <- gv_mut_load(muts = params$muts,
                                                                      rownames(pheat.meta)))]),
                              color = ggpubr::get_palette(palette = 'Purples', k = 10),
                              scale = 'none',
+                             show_colnames = params$col.names,
                              cluster_rows = FALSE,
                              cluster_cols = FALSE,
                              annotation_col = pheat.meta,
@@ -653,14 +659,60 @@ ic_plot_comp_celltypes(df = ic.pred,
     ## Add metadata information
     DF <- DF %>%
         dplyr::left_join(x = .,
-                         y = params$metadata,
+                         y = metadata,
                          by = 'Samples') %>%
         dplyr::group_by(!!response)
 
 
     #write.table(DF,file="IPS.txt",row.names=FALSE, quote=FALSE,sep="\t")
 
-    ## Plot IPS
+    ## Plot IPS and subplots
+    ### Define the titles of the subplots
+    plot_names <- c('MHC' = 'MHC: MHC molecules',
+                    'CP' = 'CP: Immunomodulators',
+                    'EC' = 'EC: Effector cells',
+                    'SC' = 'SC: Suppressor cells')
+    ### Subplots
+    subplots <- DF %>%
+        # Reshape the data to long format
+        dplyr::select(Samples, MHC, EC, SC, CP, !!response) %>% # Do not include AZ or IPS
+        tidyr::pivot_longer(cols = -c(Samples, !!response),
+                            names_to = 'Cell_type',
+                            values_to = 'Score') %>%
+        # Re-order the levels
+        dplyr::mutate(Cell_type = factor(Cell_type, levels = c('EC', 'SC',
+                                                               'CP', 'MHC'))) %>%
+        dplyr::group_by(Cell_type) %>%
+        # Plot
+        ggplot(., aes(x = !!response,
+                      y = Score,
+                      col = !!response)) +
+        # Geometric objects
+        geom_violin() +
+        geom_boxplot(width = 0.1, outlier.shape = NA) +
+        geom_point(alpha = 0.5, position = position_jitter(0.2)) +
+
+        # Define colors
+        scale_color_manual(values = colors) +
+
+        # Themes
+        theme_bw() +
+        theme(text = element_text(size = 15),
+              plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
+              axis.text.x.bottom = element_blank(),
+              axis.title.x = element_blank(),
+              axis.title.y = element_blank(),
+              axis.text.x = element_text(angle = 45, hjust = 1),
+              legend.position = 'bottom',
+              strip.background = element_rect(
+                  color="black", fill="black", size=1.5, linetype="solid"),
+              strip.text = element_text(color = 'white')) +
+        facet_wrap(~ Cell_type,
+                   scales = 'free_y',
+                   ncol = 2,
+                   labeller = as_labeller(plot_names))
+
+    ### IPS plot
     ips.plot <- ggplot(DF, aes(x = !!response,
                                y = IPS,
                                col = !!response)) +
@@ -670,7 +722,7 @@ ic_plot_comp_celltypes(df = ic.pred,
         geom_point(alpha = 0.5, position = position_jitter(0.2)) +
 
         # Define colors
-        scale_color_manual(values = params$colors) +
+        scale_color_manual(values = colors) +
 
         # Title
         ggtitle('ImmunophenoScore') +
@@ -685,10 +737,17 @@ ic_plot_comp_celltypes(df = ic.pred,
               axis.text.x = element_text(angle = 45, hjust = 1),
               legend.position = 'bottom'
         )
-    if(is.null(params$compare) == FALSE){
+    if(is.null(compare) == FALSE){
+        subplots <- subplots +
+            ggpubr::stat_compare_means(method = compare,
+                                       label = p_label,
+                                       #size = 5,
+                                       label.y.npc = 1,
+                                       label.x.npc = 0.5,
+                                       show.legend = FALSE)
         ips.plot <- ips.plot +
-            ggpubr::stat_compare_means(method = params$compare,
-                                       label = params$p_label,
+            ggpubr::stat_compare_means(method = compare,
+                                       label = p_label,
                                        size = 5,
                                        label.y.npc = 1,
                                        label.x.npc = 0.5,
@@ -696,6 +755,12 @@ ic_plot_comp_celltypes(df = ic.pred,
 
     }
 
+    ### Add subplots and IPS plot together
+    final.ips.plot <- ggpubr::ggarrange(plotlist = list(subplots, ips.plot),
+                                        hjust = -1,
+                                        vjust = 0.5,
+                                        common.legend	= TRUE,
+                                        legend = 'bottom')
 
 
     # Join IPG and IPS results ------------------------------------------------
@@ -713,7 +778,7 @@ ic_plot_comp_celltypes(df = ic.pred,
 
 
     ## Get IPS comparison between samples in different levels of response variable
-    ic.score.results[[2]] <- ips.plot
+    ic.score.results[[2]] <- final.ips.plot
     names(ic.score.results) <- c('immunophenoGram', 'immunophenoScore')
 
 

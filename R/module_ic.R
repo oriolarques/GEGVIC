@@ -41,7 +41,7 @@
 #' p-value).
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
-#' @param points Logical value to decide if points are added to the plot
+#' @param points Logical value to decide if points are added to the plot.
 #'
 #' @return Returns ggplot objects showing predicted immune cell populations to
 #' be compared between or within samples. Also it returns a list of tables with

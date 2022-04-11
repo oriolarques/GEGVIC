@@ -47,6 +47,7 @@
 #' data frame.
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
+#' @param col.names Logical value to determine if tumour are shown in plots.
 #'
 #' @return Returns ggplot objects and the results table in a form of a data frame.
 #'
@@ -69,7 +70,8 @@
 #'                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
 #'                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
 #'                               tri.counts.method = 'default',
-#'                               colors = c('black', 'orange'))
+#'                               colors = c('black', 'orange'),
+#'                               col.names = TRUE)
 #'
 gv_mut_signatures <- function(muts,
                               metadata,
@@ -77,7 +79,8 @@ gv_mut_signatures <- function(muts,
                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
                               tri.counts.method = 'default',
-                              colors = c('black', 'orange')) {
+                              colors = c('black', 'orange'),
+                              col.names = TRUE) {
 
     # Enquote response variable
     response <- rlang::enquo(response)
@@ -182,19 +185,26 @@ gv_mut_signatures <- function(muts,
         labs(fill = 'Signatures') +
 
         # Themes
-        theme_linedraw() +
+        theme_bw() +
         theme(
             plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
             #axis.text.x.bottom = element_blank(),
             axis.title.x = element_blank(),
             axis.title.y = element_blank(),
-            axis.text.x = element_text(size = 5, angle = 45, hjust = 1)
+            axis.text.x = element_text(size = 5, angle = 45, hjust = 1),
+            strip.background = element_rect(
+                color="black", fill="black", size=1.5, linetype="solid"),
+            strip.text = element_text(color = 'white')
         ) +
 
         # Faceting
         facet_wrap(facets = vars(!!response),
                    scales = 'free_x')
 
+    ## Eliminate sample names if the user decides so
+    if(col.names == FALSE){
+        bar.plot <- bar.plot + theme(axis.text.x = element_blank())
+    }
 
     ## Heatmap  ---------------------------------------------------------------
     # Format signature predictions object in a wide format: Pivot wider
@@ -236,6 +246,7 @@ gv_mut_signatures <- function(muts,
                                                          order(match(colnames(wide.results.extr),
                                                                      rownames(pheat.meta)))]),
                          color = ggpubr::get_palette(palette = 'Purples', k = 10),
+                         show_colnames = col.names,
                          scale = 'none',
                          cluster_rows = FALSE,
                          cluster_cols = FALSE,

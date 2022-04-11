@@ -24,6 +24,7 @@
 #' @param response Unquoted name of the variable indicating the groups to analyse.
 #' @param top_genes Number of genes to be analysed in the mutational summary.
 #' @param specific_genes Genes that will be plotted in the oncoplot.
+#' @param col.names Logical value to decide if tumour names are added to the plot.
 #' @param colors Character vector indicating the colors of the different groups
 #' to compare. Default values are two: black and orange.
 #'
@@ -43,6 +44,7 @@
 #'                response = Response,
 #'                top_genes = 10,
 #'                specific_genes = NULL,
+#'                col.names = TRUE,
 #'                colors = c('black', 'orange'))
 #'
 #'
@@ -51,6 +53,7 @@ gv_mut_summary <- function(muts,
                            response,
                            top_genes = 10,
                            specific_genes = NULL,
+                           col.names = TRUE,
                            colors = c('black' ,'orange')){
 
     # Process input as MAF file -----------------------------------------------
@@ -99,7 +102,7 @@ gv_mut_summary <- function(muts,
                        clinicalFeatures = quoted.resp,
                        genes = specific_genes,
                        sampleOrder = samples_order,
-                       showTumorSampleBarcodes = TRUE,
+                       showTumorSampleBarcodes = col.names,
                        sortByAnnotation = TRUE,
                        annotationColor = cols.list)
     par(mfrow = c(1,1))
