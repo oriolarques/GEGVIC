@@ -15,7 +15,8 @@ module_gv(
   p_label = "p.format",
   gbuild = "BSgenome.Hsapiens.UCSC.hg19",
   mut_sigs = "COSMIC_v2_SBS_GRCh37",
-  tri.counts.method = "default"
+  tri.counts.method = "default",
+  col.names = TRUE
 )
 }
 \arguments{
@@ -32,7 +33,7 @@ Includes the deleted sequence for a deletion or "-" for an insertion.
 of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
 In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
 Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
-- Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+- Variant_Type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
 - Tumor_Sample_Barcode: Sample name.}
 
@@ -82,6 +83,9 @@ the exome to the trinucleotide's occurence in the genome
 - data frame containing user defined scaling factor – count data for each
 trinucleotide context is multiplied by the corresponding value given in the
 data frame.}
+
+\item{col.names}{Logical value to determine if tumour names s are shown in the
+heatmap.}
 }
 \value{
 Returns plot and ggplot objects to summarise sample mutations, mutational
@@ -103,6 +107,7 @@ tables_module_gv <- module_gv(muts = input_gv_module,
                               p_label = 'p.format',
                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
-                              tri.counts.method = 'default')
+                              tri.counts.method = 'default',
+                              col.names = TRUE)
 
 }

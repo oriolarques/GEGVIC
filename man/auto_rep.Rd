@@ -39,7 +39,8 @@ auto_rep(
   tumor = TRUE,
   rmgenes = NULL,
   scale_mrna = TRUE,
-  expected_cell_types = NULL
+  expected_cell_types = NULL,
+  points = TRUE
 )
 }
 \arguments{
@@ -111,7 +112,7 @@ Includes the deleted sequence for a deletion or "-" for an insertion.
 of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
 In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
 Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
-- Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+- Variant_Type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
 - Tumor_Sample_Barcode: Sample name.}
 
@@ -145,6 +146,8 @@ score (EPIC and quanTIseq). Default value is TRUE.}
 list. If the cell types present in the sample are known a priori, setting
 this can improve results for xCell
 (see https://github.com/grst/immunedeconv/issues/1).}
+
+\item{points}{Logical value to decide if points are added to the plot.}
 }
 \value{
 
@@ -187,6 +190,7 @@ auto_rep(ge_module = TRUE,
          tumor = TRUE,
          rmgenes = NULL,
          scale_mrna = TRUE,
-         expected_cell_types = NULL)
+         expected_cell_types = NULL,
+         points = TRUE)
 
 }

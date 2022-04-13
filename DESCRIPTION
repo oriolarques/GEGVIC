@@ -33,7 +33,8 @@ Imports:
     tidyr,
     GSVA,
     GSEABase,
-    SummarizedExperiment
+    SummarizedExperiment,
+    gridExtra
 Suggests: 
     rmarkdown,
     knitr

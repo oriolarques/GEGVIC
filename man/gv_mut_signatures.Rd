@@ -11,7 +11,8 @@ gv_mut_signatures(
   gbuild = "BSgenome.Hsapiens.UCSC.hg19",
   mut_sigs = "COSMIC_v2_SBS_GRCh37",
   tri.counts.method = "default",
-  colors = c("black", "orange")
+  colors = c("black", "orange"),
+  col.names = TRUE
 )
 }
 \arguments{
@@ -28,7 +29,7 @@ Includes the deleted sequence for a deletion or "-" for an insertion.
 of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
 In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
 Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
-- Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+- Variant_Type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
 - Tumor_Sample_Barcode: Sample name.}
 
@@ -66,6 +67,8 @@ data frame.}
 
 \item{colors}{Character vector indicating the colors of the different groups
 to compare. Default values are two: black and orange.}
+
+\item{col.names}{Logical value to determine if tumour are shown in plots.}
 }
 \value{
 Returns ggplot objects and the results table in a form of a data frame.
@@ -80,6 +83,7 @@ mut.sigs <- gv_mut_signatures(muts = input_gv_module,
                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
                               tri.counts.method = 'default',
-                              colors = c('black', 'orange'))
+                              colors = c('black', 'orange'),
+                              col.names = TRUE)
 
 }

@@ -33,9 +33,10 @@
 #'                          deconstructSigs::whichSignatures(
 #'                          tumor.ref = sigs.sbs.input,
 #'                          signatures.ref = signatures.cosmic,
-#'                                  sample.id = x,
-#'                                  contexts.needed = TRUE,
-#'                                  tri.counts.method = 'default')#'
+#'                          sample.id = x,
+#'                          contexts.needed = TRUE,
+#'                          tri.counts.method = 'default')
+#'                      })
 #'
 #' results_sbs.extr <- gv_extr_mut_sig(results_sbs)
 #'

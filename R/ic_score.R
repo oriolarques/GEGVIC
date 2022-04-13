@@ -27,6 +27,8 @@
 #' @import grid
 #' @import ggpubr
 #' @import patchwork
+#' @import ggplotify
+#' @importFrom gridExtra marrangeGrob
 #'
 #' @examples
 #' tpm <- ic_raw_to_tpm(counts = input_ge_module,
@@ -132,6 +134,10 @@ ic_score <- function(tpm,
     #    print(IPSG[ind,])
     #}
 
+    ## Enquote response variable
+    response <- enquo(response)
+
+
     # Calculate ImmunoPhenoGram -----------------------------------------------
     for (i in 1:length(sample_names)) {
         GE <- gene_expression[[i]]
@@ -201,10 +207,17 @@ ic_score <- function(tpm,
                   axis.text=element_blank(),
                   axis.ticks= element_blank())
 
+        # Get the Response name for the sample
+        samp.resp <- metadata %>%
+            filter(Samples == sample_names[i]) %>%
+            pull(!!response)
+
         ### Add Sample name as plot title
         plot_a <- plot_a  +
-            labs(title = sample_names[i]) +
+            labs(title = sample_names[i],
+                 subtitle = samp.resp) +
             theme(plot.title = element_text(size = 15, vjust = -1, hjust = 0.5),
+                  plot.subtitle = element_text(size = 15, vjust = -1, hjust = 0.5),
                   plot.margin=unit(c(0,0,0,0),"mm"))
 
         ### Plot Legend sample-wise (averaged) z-scores -----------------------
@@ -279,40 +292,47 @@ ic_score <- function(tpm,
         #grid.arrange(plot_a,plot_b,plot_c, ncol=3, widths=c(0.8,0.1,0.1))
         #dev.off()
 
-        ## Save each plot for each patient in a list
-        ipheno_list[[i]] <- plot_a
+        ## Save each patchwork IPG plot for each patient in a list
+        ipheno_list[[i]] <- (plot_a + plot_b + plot_c) +
+            patchwork::plot_layout(widths = c(1,0.5,0.5))
         ## Indicate the name of the patient in the list
         names(ipheno_list)[i] <- sample_names[i]
 
     }
 
+    # Save a pdf report with each IPG per sample
+    report <- lapply(ipheno_list, function(x) ggplotify::as.ggplot(plot = x,
+                                                                   scale = 1.1))
+    report <- marrangeGrob(grobs = report, ncol = 1, nrow = 1)
 
-    # Plot immunophenogram by group -------------------------------------------
+    ggsave('immunophenogram_report.pdf', report)
 
-    ## Enquote response variable
-    response <- enquo(response)
-    ## Get the levels of response (grouping) variable
-    levels.resp <- levels(metadata %>%
-                              dplyr::mutate_all(as.factor) %>%
-                              dplyr::select(!!response) %>%
-                              pull(.))
-    ## Create a list to store the plots for each level in response variable
-    list.resp <- list()
-
-    ## Iterate over levels in response variable
-    for(i in seq_along(levels.resp)){
-        # Get the sample names that belong to one of the levels in response variable
-        temp_samp.resp <- metadata %>%
-            dplyr::filter(!!response == levels.resp[i]) %>%
-            dplyr::select(Samples) %>% pull(.)
-        # Arrange IPG for all samples in one level of response variable
-        list.resp[[i]] <- ggpubr::ggarrange(plotlist = ipheno_list[temp_samp.resp],
-                                            labels = levels.resp[i],
-                                            hjust = -1,
-                                            vjust = 0.5)
-
-
-    }
+    # # Plot immunophenogram by group -------------------------------------------
+    #
+    # ## Enquote response variable
+    # response <- enquo(response)
+    # ## Get the levels of response (grouping) variable
+    # levels.resp <- levels(metadata %>%
+    #                           dplyr::mutate_all(as.factor) %>%
+    #                           dplyr::select(!!response) %>%
+    #                           pull(.))
+    # ## Create a list to store the plots for each level in response variable
+    # list.resp <- list()
+    #
+    # ## Iterate over levels in response variable
+    # for(i in seq_along(levels.resp)){
+    #     # Get the sample names that belong to one of the levels in response variable
+    #     temp_samp.resp <- metadata %>%
+    #         dplyr::filter(!!response == levels.resp[i]) %>%
+    #         dplyr::select(Samples) %>% pull(.)
+    #     # Arrange IPG for all samples in one level of response variable
+    #     list.resp[[i]] <- ggpubr::ggarrange(plotlist = ipheno_list[temp_samp.resp],
+    #                                         labels = levels.resp[i],
+    #                                         hjust = -1,
+    #                                         vjust = 0.5)
+    #
+    #
+    # }
 
     # Plot immunophenoscore by group ------------------------------------------
     ## Create a data frame to store
@@ -426,25 +446,27 @@ ic_score <- function(tpm,
                                         legend = 'bottom')
 
 
-    # Join IPG and IPS results ------------------------------------------------
+    # Plot IPS results ------------------------------------------------
 
     ## Add together IPG from all levels in response variable
-    ipg.plots <- patchwork::wrap_plots(list.resp)
-    ipg.legends <- patchwork::wrap_plots(plot_b, plot_c)
-    layout <- c(
-        patchwork::area(t = 1, l = 1, b = 5, r = 4),
-        patchwork::area(t = 2, l = 5, b = 4, r = 5)
-    )
-
-    ic.score.results[[1]] <- patchwork::wrap_plots(ipg.plots, ipg.legends,
-                                                   design = layout)
-
+    # ipg.plots <- patchwork::wrap_plots(list.resp)
+    # ipg.legends <- patchwork::wrap_plots(plot_b, plot_c)
+    # layout <- c(
+    #     patchwork::area(t = 1, l = 1, b = 5, r = 4),
+    #     patchwork::area(t = 2, l = 5, b = 4, r = 5)
+    # )
+    #
+    # ic.score.results[[1]] <- patchwork::wrap_plots(ipg.plots, ipg.legends,
+    #                                                design = layout)
+    #
 
     ## Get IPS comparison between samples in different levels of response variable
-    ic.score.results[[2]] <- final.ips.plot
-    names(ic.score.results) <- c('immunophenoGram', 'immunophenoScore')
+    # ic.score.results[[2]] <- final.ips.plot
+    # names(ic.score.results) <- c('immunophenoGram', 'immunophenoScore')
+    #print(ic.score.results)
 
+    print(final.ips.plot)
 
-    print(ic.score.results)
+    # Return results data frame
     return(DF)
 }

@@ -56,6 +56,10 @@
 #' @import ggplot2
 #' @import ggpubr
 #' @import rlang
+#' @import grid
+#' @import patchwork
+#' @import ggplotify
+#' @importFrom gridExtra marrangeGrob
 #'
 #' @examples
 #' tables_module_ic <- module_ic(counts = input_ge_module,

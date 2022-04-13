@@ -20,3 +20,28 @@ studied in each sample in a long format.
 Extracts mutational signatures contribution prediction from the
 deconstrucSigs package in a legible format.
 }
+\examples{
+mut.sbs <- input_gv_module \%>\% dplyr::filter(Variant_Type == 'SNP')
+sigs.sbs.input <- deconstructSigs::mut.to.sigs.input(
+                                          mut.ref = mut.sbs,
+                                          sample.id = 'Tumor_Sample_Barcode',
+                                          chr = 'Chromosome',
+                                          pos = 'Start_Position',
+                                          ref = 'Reference_Allele',
+                                          alt = 'Tumor_Seq_Allele2',
+                                          bsg = BSgenome.Hsapiens.UCSC.hg19,
+                                          sig.type = 'SBS')
+ids_samples <- unique(input_gv_module$Tumor_Sample_Barcode)
+results_sbs <- sapply(ids_samples,
+                      function(x) {
+                         deconstructSigs::whichSignatures(
+                         tumor.ref = sigs.sbs.input,
+                         signatures.ref = signatures.cosmic,
+                         sample.id = x,
+                         contexts.needed = TRUE,
+                         tri.counts.method = 'default')
+                     })
+
+results_sbs.extr <- gv_extr_mut_sig(results_sbs)
+
+}

@@ -18,7 +18,8 @@ module_ic(
   response,
   compare = NULL,
   p_label = "p.format",
-  colors = c("black", "orange")
+  colors = c("black", "orange"),
+  points = TRUE
 )
 }
 \arguments{
@@ -72,6 +73,8 @@ p-value).}
 
 \item{colors}{Character vector indicating the colors of the different groups
 to compare. Default values are two: black and orange.}
+
+\item{points}{Logical value to decide if points are added to the plot.}
 }
 \value{
 Returns ggplot objects showing predicted immune cell populations to
@@ -93,6 +96,7 @@ tables_module_ic <- module_ic(counts = input_ge_module,
                               response = Response,
                               compare = 'wilcox.test',
                               p_label = 'p.format',
-                              colors = c('black', 'orange'))
+                              colors = c('black', 'orange'),
+                              points = TRUE)
 
 }

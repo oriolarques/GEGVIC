@@ -4,10 +4,12 @@
 \alias{preprocess_ge_meta}
 \title{preprocess_ge_meta}
 \usage{
-preprocess_ge_meta(metadata)
+preprocess_ge_meta(metadata, counts = NULL)
 }
 \arguments{
 \item{metadata}{Data frame that contains supporting variables to the data.}
+
+\item{counts}{Data frame that contains gene expression data as raw counts.}
 }
 \value{
 Generates a data frame.
@@ -16,5 +18,6 @@ Generates a data frame.
 Prepares metadata file for posterior analysis using DESeq2.
 }
 \examples{
-metadata <- preprocess_ge_meta(metadata = metadata_ge_module)
+metadata <- preprocess_ge_meta(metadata = metadata_ge_module,
+                               counts = input_ge_module[,-1])
 }

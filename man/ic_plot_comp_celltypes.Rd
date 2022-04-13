@@ -24,3 +24,19 @@ Plots immune cell fractions to be compared within each sample.
 Results from three different methods (CIBERSORT, EPIC and QUANTISEQ) are
 presented by each group of samples.
 }
+\examples{
+tpm <- ic_raw_to_tpm(counts = input_ge_module,
+                     genes_id = 'entrezgene_id',
+                     biomart = ensembl_biomart_GRCh38_p13)
+ic.pred <- ic_deconv(gene_expression = tpm,
+                     indications = rep('skcm', ncol(tpm)),
+                     cibersort = 'cibersort/',
+                     tumor = TRUE,
+                     rmgenes = NULL,
+                     scale_mrna = TRUE,
+                     expected_cell_types = NULL)
+ic_plot_comp_celltypes(df = ic.pred,
+                     metadata = metadata_ge_module,
+                     response = Response)
+
+}

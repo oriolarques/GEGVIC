@@ -10,6 +10,7 @@ gv_mut_summary(
   response,
   top_genes = 10,
   specific_genes = NULL,
+  col.names = TRUE,
   colors = c("black", "orange")
 )
 }
@@ -27,7 +28,7 @@ Includes the deleted sequence for a deletion or "-" for an insertion.
 of the following: Frame_Shift_Del, Frame_Shift_Ins, In_Frame_Del,
 In_Frame_Ins, Missense_Mutation, Nonsense_Mutation, Silent, Splice_Site,
 Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
-- Variant_type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
+- Variant_Type: Type of mutation. Can be: 'SNP' (Single nucleotide polymorphism),
 'DNP' (Double nucleotide polymorphism), 'INS' (Insertion), 'DEL' (Deletion).
 - Tumor_Sample_Barcode: Sample name.}
 
@@ -38,6 +39,8 @@ Translation_Start_Site, Nonstop_Mutation, RNA, Targeted_Region.
 \item{top_genes}{Number of genes to be analysed in the mutational summary.}
 
 \item{specific_genes}{Genes that will be plotted in the oncoplot.}
+
+\item{col.names}{Logical value to decide if tumour names are added to the plot.}
 
 \item{colors}{Character vector indicating the colors of the different groups
 to compare. Default values are two: black and orange.}
@@ -56,6 +59,7 @@ gv_mut_summary(muts = input_gv_module,
                response = Response,
                top_genes = 10,
                specific_genes = NULL,
+               col.names = TRUE,
                colors = c('black', 'orange'))
 
 

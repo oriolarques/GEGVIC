@@ -10,7 +10,8 @@ ic_plot_comp_samples(
   response,
   compare = NULL,
   p_label = "p.format",
-  colors = c("black", "orange")
+  colors = c("black", "orange"),
+  points = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ p-value).}
 
 \item{colors}{Character vector indicating the colors of the different groups
 to compare. Default values are two: black and orange.}
+
+\item{points}{Logical value to decide if points are added to the plot.}
 }
 \value{
 Returns list containing two ggplot objects.
@@ -42,4 +45,23 @@ Plots predicted immune cell populations to be compared between
 sample groups. Among different immune cells, the following are represented:
 B cells, Macrophages, myeloid Dendritic cells, Neutrophils, Natural Killer,
 T cell CD4+ and T cell CD8+.
+}
+\examples{
+tpm <- ic_raw_to_tpm(counts = input_ge_module,
+                     genes_id = 'entrezgene_id',
+                     biomart = ensembl_biomart_GRCh38_p13)
+ic.pred <- ic_deconv(gene_expression = tpm,
+                     indications = rep('skcm', ncol(tpm)),
+                     cibersort = 'cibersort/',
+                     tumor = TRUE,
+                     rmgenes = NULL,
+                     scale_mrna = TRUE,
+                     expected_cell_types = NULL)
+ic_plot_comp_samples(df = ic.pred,
+                     metadata = metadata_ge_module,
+                     response = Response,
+                     compare = 'wilcox.test',
+                     p_label = 'p.format',
+                     colors = c('black', 'orange'),
+                     points = TRUE)
 }
