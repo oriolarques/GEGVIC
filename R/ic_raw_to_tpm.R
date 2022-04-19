@@ -22,8 +22,8 @@
 #' @import tibble
 #'
 #' @examples
-#' tpm <- ic_raw_to_tpm(counts = input_ge_module,
-#'                      genes_id = 'entrezgene_id',
+#' tpm <- ic_raw_to_tpm(counts = sample_counts,
+#'                      genes_id = 'ensembl_gene_id',
 #'                      biomart = ensembl_biomart_GRCh38_p13)
 
 ic_raw_to_tpm <- function(counts,

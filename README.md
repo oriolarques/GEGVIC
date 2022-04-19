@@ -18,7 +18,9 @@ provides a good flexibility and produces appealing outputs when
 comparing a group of samples for (i) *differential gene expression*,
 (ii) *genetic variations* and (iii) *immune cell composition*.
 
-![GEGVIC outline](vignettes/GEGVIC_outline.png)
+<figure>
+<img src="vignettes/GEGVIC_outline.png" style="width:60.0%" alt="GEGVIC outline" /><figcaption aria-hidden="true">GEGVIC outline</figcaption>
+</figure>
 
 ## Installation
 
@@ -85,14 +87,20 @@ GEGVIC requires three main input data:
 1.  **RNA-sequencing raw counts (Counts)**: Table containing raw gene
     counts as rows and samples as columns. The first column must contain
     gene identifiers that can be either *NCBI ID*, *ENSEMBL gene ID* or
-    *HGNC ID* and its column name MUST be adequately named as either:
-    **entrezgene_id, ensembl_gene_id or hgnc_symbol** respectively.
+    *HGNC ID* and its column name **MUST** be adequately named as
+    either:
+
+-   **entrezgene_id**
+
+-   **ensembl_gene_id**
+
+-   **hgnc_symbol**
 
 ![input_counts](vignettes/input_counts.png)
 
 2.  **Genetic variations data (Muts)**: Table containing short variant
-    calls. Necessary columns MUST have the following names (following
-    the [MAF
+    calls. Necessary columns **MUST** have the following names
+    (following the [MAF
     format](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)):
     -   Hugo_Symbol: Gene symbol from HGNC.
     -   Chromosome: Affected chromosome.
@@ -127,13 +135,8 @@ GEGVIC requires three main input data:
 Here, we will explore the workflow, how to use each function and the
 outputs that they generate. Users can use their own data (with the
 appropriate format as indicated before) by loading them in the R
-workspace, however, the package comes with pre-loaded input data from
-the article Riaz et al. ready to use and it is this one that will be
-used to show the functionalities of the package.
-
-*Reference: Riaz N, Havel JJ, Makarov V, Desrichard A, Urba WJ, Sims JS,
-et al. Tumor and Microenvironment Evolution during Immunotherapy with
-Nivolumab. Cell. 2017;171(4):934-949.e15. *
+workspace, however, the package comes with pre-loaded input data from a
+subset of the TCGA-COADREAD cohort.
 
 *Notes:*
 
@@ -158,21 +161,21 @@ This module uses the functionalities provided by the `DESeq2`
 
 First, using the **ge_pca()** function we can perform a PCA to evaluate
 how samples and groups relate to each other. For that, we indicate the
-raw counts file (*input_ge_module*), how the gene identifiers are
-encoded (‘*entrezgene_id*’), the metadata file (metadata_ge_module) and
-the **unquoted name of the column** that contains the groups of interest
-as the response argument. Then, the design should be a formula that
+raw counts file (*sample_counts*), how the gene identifiers are encoded
+(‘*ensembl_gene_id*’), the metadata file (*sample_metadata*) and the
+**unquoted name of the column** that contains the groups of interest as
+the response argument. Then, the design should be a formula that
 expresses how the counts for each gene depend on the variables in the
 metadata, and finally the colours to represent each sample group. The
 function outputs a plot.
 
 ``` r
-ge_pca(counts = input_ge_module,
-       genes_id = 'entrezgene_id',
-       metadata = metadata_ge_module,
-       response = Response,
-       design = 'Response',
-       colors = c('black', 'orange'))
+ge_pca(counts = sample_counts,
+       genes_id = 'ensembl_gene_id',
+       metadata = sample_metadata,
+       response = MSI_status,
+       design = 'MSI_status',
+       colors = c('orange', 'black'))
 ```
 
 ![PCA](vignettes/01_pca.png)
@@ -192,11 +195,11 @@ log2 fold changes to be applied (or not).
 in a form of a list.**
 
 ``` r
-results.dds <- ge_diff_exp(counts = input_ge_module,
-                           genes_id = 'entrezgene_id',
-                           metadata = metadata_ge_module,
-                           design = 'Response',
-                           ref_level = c('Response', 'Non_Responders'),
+results.dds <- ge_diff_exp(counts = sample_counts,
+                           genes_id = 'ensembl_gene_id',
+                           metadata = sample_metadata,
+                           design = 'MSI_status',
+                           ref_level = c('MSI_status', 'MSS'),
                            shrink = 'apeglm')
 ```
 
@@ -225,9 +228,9 @@ available the following databases:
     *ensembl_biomart_GRCm39*.
 
 ``` r
- annot.res <- ge_annot(results_dds = results.dds,
-                          genes_id = 'entrezgene_id',
-                          biomart = ensembl_biomart_GRCh38_p13)
+annot.res <- ge_annot(results_dds = results.dds,
+                      genes_id = 'ensembl_gene_id',
+                      biomart = ensembl_biomart_GRCh38_p13)
 ```
 
 #### 1.4. Volcano plot
@@ -270,9 +273,10 @@ Molecular Signatures Database,
 created following the corresponding \[guidelines\]
 (<https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats>).
 In the case of working with mouse data, gene symbols are automatically
-transformed to human orthologs so the same gene sets from MSigDB can be
-used. The *C7: Immunologic signature gene sets* was downloaded
-(**c7.all.v7.2.symbols.gmt** file) and used to create this example.
+transformed to human orthologs, so the same gene sets from MSigDB can be
+used. The *Reactome* gene sets were downloaded
+(**c2.cp.reactome.v7.5.1.symbols.gmt** file) and used to create this
+example.
 
 Additionally, users can define the adjusted p-value cut-off to be more
 or less restrictive when performing GSEA. The function generates two
@@ -285,7 +289,7 @@ object results object as* `gsea.res$table_name@result` *or (2)*
 
 ``` r
 gsea.res <- ge_gsea(annot_res = annot.res,
-                    gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+                    gmt = 'inst/extdata/c2.cp.reactome.v7.5.1.symbols.gmt',
                     gsea_pvalue = 0.2)
 ```
 
@@ -311,15 +315,15 @@ groups and also if gene set names and/or sample names should be plotted
 or not.
 
 ``` r
-gsva.res <- ge_single(counts = input_ge_module,
-                      metadata = metadata_ge_module,
-                      genes_id = 'entrezgene_id',
-                      response = Response,
-                      design = 'Response',
+gsva.res <- ge_single(counts = sample_counts,
+                      metadata = sample_metadata,
+                      genes_id = 'ensembl_gene_id',
+                      response = MSI_status,
+                      design = 'MSI_status',
                       biomart = ensembl_biomart_GRCh38_p13,
                       gsva_gmt = 'hallmark',
                       method = 'gsva',
-                      colors = c('black', 'orange'),
+                      colors = c('orange', 'black'),
                       row.names = TRUE,
                       col.names = TRUE)
 ```
@@ -335,27 +339,31 @@ and the `deconstructSigs`
 
 #### 2.1. Mutational summary
 
-The genetic variations input (*input_gv_module*) together with samples
+The genetic variations input (*sample_mutations*) together with samples
 metadata can be used in the function **gv_mut_summary()** to generate
 two plots that will first summarise the mutation types present in the
 samples and second highlight the most common mutations by groups in a
-form of an oncoplot. Users **MUST** indicate the **unquoted name** of
-the column that contains the groups of interest in the response
-argument. Additionally, the number and which genes will appear in the
-oncoplot and the colours of sample groups can be modified.
+form of an oncoplot.
+
+Users **MUST** indicate the **unquoted name** of the column that
+contains the groups of interest in the response argument. Additionally,
+parameters that define the number and which genes will appear in the
+oncoplot, the colours of sample groups and whether the names of the
+samples will appear in the plot can be modified.
 
 ``` r
-gv_mut_summary(muts = input_gv_module,
-               metadata = metadata_ge_module,
-               response = Response,
+gv_mut_summary(muts = sample_mutations,
+               metadata = sample_metadata,
+               response = MSI_status,
                top_genes = 10,
                specific_genes = NULL,
-               colors = c('black', 'orange'))
+               col.names = FALSE,
+               colors = c('orange', 'black'))
 ```
 
-![Genetic variants summary](vignettes/07_gv_summary.png)
+![Genetic variants summary](vignettes/04_gv_summary.png)
 
-![Oncoplot](vignettes/07_gv_oncoplot.png)
+![Oncoplot](vignettes/04_gv_oncoplot.png)
 
 #### 2.2. Mutational load
 
@@ -367,19 +375,19 @@ significance is represented. As usual, the function allows to change
 also the colours of the groups.
 
 ``` r
-mut.load <- gv_mut_load(muts = input_gv_module,
-                        metadata = metadata_ge_module,
-                        response = Response,
+mut.load <- gv_mut_load(muts = sample_mutations,
+                        metadata = sample_metadata,
+                        response = MSI_status,
                         compare = 'wilcox.test',
                         p_label = 'p.format',
-                        colors = c('black', 'orange'))
+                        colors = c('orange', 'black'))
 ```
 
-![Mutational load](vignettes/08_gv_mutload.png)
+![Mutational load](vignettes/05_gv_mutload.png)
 
 #### 2.3. Mutational signatures
 
-The last function of the package, **gv_mut_signatures()** is used to
+The last function of the module, **gv_mut_signatures()** is used to
 predict the weight of mutational signatures contributing to an
 individual tumour sample. As well as the inputs described before, here
 the user have to choose the version of the genome to work with. To do
@@ -391,18 +399,24 @@ so, the gbuild argument should be one of the following:
 
 -   ‘BSgenome.Mmusculus.UCSC.mm10’
 
--   ‘BSgenome.Mmusculus.UCSC.mm39’ for mouse data.
+-   ‘BSgenome.Mmusculus.UCSC.mm39’
 
 Also, the mutational signature matrices containing the frequencies of
 all nucleotide changes per signature need to be indicated. GEGVIC
 contains the matrices from
 [COSMIC](https://cancer.sanger.ac.uk/signatures/downloads/) for single
-and double base substitutions. To choose one, the user has to indicate
-’COSMIC_v{XX}\_{YY}BS_GRCh{ZZ}’ in the mut_sigs argument. The **XX** is
-the version, that can be v2 or v3.2. **YY** indicates if mutations are
-single (S) or double (D) base substitutions, while the **ZZ** is for the
-genome assembly, either GRCh37 or GRCh38 for human data and mm9 or mm10
-for mouse data.
+and double base substitutions.
+
+To choose one, the user has to indicate ’COSMIC_v{XX}\_{YY}BS_GRCh{ZZ}’
+(i.e. ‘COSMIC_v2_SBS_GRCh37’) in the mut_sigs argument:
+
+-   **XX** is the version, that can be v2 or v3.2.
+
+-   **YY** indicates if mutations are single (S) or double (D) base
+    substitutions.
+
+-   **ZZ** is for the genome assembly, either GRCh37 or GRCh38 for human
+    data and mm9 or mm10 for mouse data.
 
 The function generates two plots. The first is a barplot that shows the
 weight of the top four mutational signatures per sample and group. Since
@@ -415,18 +429,19 @@ literature, the second plot can be helpful, especially when many
 mutational signatures are present in many samples.
 
 ``` r
-mut.sigs <- gv_mut_signatures(muts = input_gv_module,
-                              metadata = metadata_ge_module,
-                              response = Response,
-                              gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-                              mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+mut.sigs <- gv_mut_signatures(muts = sample_mutations,
+                              metadata = sample_metadata,
+                              response = MSI_status,
+                              gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
+                              mut_sigs = 'COSMIC_v2_SBS_GRCh38',
                               tri.counts.method = 'default',
-                              colors = c('black', 'orange'))
+                              colors = c('orange', 'black'),
+                              col.names = TRUE)
 ```
 
-![Mutational signatures](vignettes/09_gv_mutsig.png)
+![Mutational signatures](vignettes/06_gv_mutsig.png)
 
-![Mutational heatmap](vignettes/09_gv_heatmap.png)
+![Mutational heatmap](vignettes/06_gv_heatmap.png)
 
 ### 3. Immune cell Composition module (IC)
 
@@ -444,8 +459,8 @@ gene identifiers encoding and the biomaRt database. The results should
 be stored as a new object (**tmp**).
 
 ``` r
-tpm <- ic_raw_to_tpm(counts = input_ge_module,
-                     genes_id = 'entrezgene_id',
+tpm <- ic_raw_to_tpm(counts = sample_counts,
+                     genes_id = 'ensembl_gene_id',
                      biomart = ensembl_biomart_GRCh38_p13)
 ```
 
@@ -470,7 +485,7 @@ a new object (**ic.pred**).
 
 ``` r
 ic.pred <- ic_deconv(gene_expression = tpm,
-                     indications = rep('skcm', ncol(tpm)),
+                     indications = rep('coad', ncol(tpm)),
                      cibersort = 'cibersort/',
                      tumor = TRUE,
                      rmgenes = NULL,
@@ -494,15 +509,15 @@ the groups and decide if points are added to the plot.
 
 ``` r
 ic_plot_comp_samples(df = ic.pred,
-                     metadata = metadata_ge_module,
-                     response = Response,
+                     metadata = sample_metadata,
+                     response = MSI_status,
                      compare = 'wilcox.test',
                      p_label = 'p.format',
-                     colors = c('black', 'orange'),
-                     points = TRUE)
+                     colors = c('orange', 'black'),
+                     points = FALSE)
 ```
 
-![Immune cell populations between samples](vignettes/04_ic_samples.png)
+![Immune cell populations between samples](vignettes/07_ic_samples.png)
 
 Similarly, the **ic_plot_comp_celltypes()** function is able to plot the
 comparison of each immune cell fraction within each sample from the
@@ -510,11 +525,11 @@ predictions made by CIBERSORT, EPIC and QUANTISEQ.
 
 ``` r
 ic_plot_comp_celltypes(df = ic.pred,
-                       metadata = metadata_ge_module,
-                       response = Response)
+                       metadata = sample_metadata,
+                       response = MSI_status)
 ```
 
-![Immune cell populations per sample](vignettes/05_ic_types.png)
+![Immune cell populations per sample](vignettes/07_ic_types.png)
 
 #### 3.4. Calculate Immunophenogram and Immunophenoscores
 
@@ -526,15 +541,20 @@ Effector cells (EC) and Suppressor cells (SC) in each sample, making
 possible the comparison between samples. For further interpretation
 please visit <https://tcia.at/tools/toolsMain>.
 
+**Note: Immunophenograms are generated in a pdf file containing the
+results for each sample in a single page. The output file, named**
+`immunophenogram_report.pdf`**, will be stored in the working
+directory.**
+
 ``` r
 ips <- ic_score(tpm = tpm,
-                metadata = metadata_ge_module,
-                response = Response,
+                metadata = sample_metadata,
+                response = MSI_status,
                 compare = 'wilcox.test',
                 p_label = 'p.format',
-                colors = c('black', 'orange'))
+                colors = c('orange', 'black'))
 ```
 
-![Immunophenograms](vignettes/06_ic_ipg.png)
+![Immunophenograms](vignettes/08_ic_ipg.png)
 
-![Immunophenoscores](vignettes/06_ic_ips.png)
+![Immunophenoscores](vignettes/08_ic_ips.png)

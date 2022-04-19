@@ -33,22 +33,22 @@
 #' @import rlang
 #'
 #' @examples
-#' tpm <- ic_raw_to_tpm(counts = input_ge_module,
-#'                      genes_id = 'entrezgene_id',
+#' tpm <- ic_raw_to_tpm(counts = sample_counts,
+#'                      genes_id = 'ensembl_gene_id',
 #'                      biomart = ensembl_biomart_GRCh38_p13)
 #' ic.pred <- ic_deconv(gene_expression = tpm,
-#'                      indications = rep('skcm', ncol(tpm)),
-#'                      cibersort = 'cibersort/',
+#'                      indications = rep('coad', ncol(tpm)),
+#'                      cibersort = NULL,
 #'                      tumor = TRUE,
 #'                      rmgenes = NULL,
 #'                      scale_mrna = TRUE,
 #'                      expected_cell_types = NULL)
 #' ic_plot_comp_samples(df = ic.pred,
-#'                      metadata = metadata_ge_module,
-#'                      response = Response,
+#'                      metadata = sample_metadata,
+#'                      response = MSI_status,
 #'                      compare = 'wilcox.test',
 #'                      p_label = 'p.format',
-#'                      colors = c('black', 'orange'),
+#'                      colors = c('orange', 'black'),
 #'                      points = TRUE)
 
 ic_plot_comp_samples <- function(df,

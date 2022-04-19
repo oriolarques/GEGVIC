@@ -39,13 +39,13 @@
 #' @import dplyr
 #'
 #' @examples
-#' gv_mut_summary(muts = input_gv_module,
-#'                metadata = metadata_ge_module,
-#'                response = Response,
+#' gv_mut_summary(muts = sample_mutations,
+#'                metadata = sample_metadata,
+#'                response = MSI_status,
 #'                top_genes = 10,
 #'                specific_genes = NULL,
 #'                col.names = TRUE,
-#'                colors = c('black', 'orange'))
+#'                colors = c('orange', 'black'))
 #'
 #'
 gv_mut_summary <- function(muts,

@@ -23,19 +23,19 @@
 #' @import rlang
 #'
 #' @examples
-#' ge_pca(counts = input_ge_module,
-#'        genes_id = 'entrezgene_id',
-#'        metadata = metadata_ge_module,
-#'        response = Response,
-#'        design = 'Response',
-#'        colors = c('black', 'orange'))
+#' ge_pca(counts = sample_counts,
+#'        genes_id = 'ensembl_gene_id',
+#'        metadata = sample_metadata,
+#'        response = MSI_status,
+#'        design = 'MSI_status',
+#'        colors = c('orange', 'black'))
 #'
 ge_pca <- function(counts,
                    genes_id,
                    metadata,
                    response,
                    design,
-                   colors = c('black', 'orange')) {
+                   colors = c('orange', 'black')) {
 
     # Preprocess counts data
     counts <- preprocess_ge_counts(counts = counts,

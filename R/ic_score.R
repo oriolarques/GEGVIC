@@ -34,20 +34,19 @@
 #' tpm <- ic_raw_to_tpm(counts = input_ge_module,
 #'                      genes_id = 'entrezgene_id',
 #'                      biomart = ensembl_biomart_GRCh38_p13)
-#'
 #' ips <- ic_score(tpm = tpm,
-#'                 metadata = metadata_ge_module,
-#'                 response = Response,
+#'                 metadata = sample_metadata,
+#'                 response = MSI_status,
 #'                 compare = 'wilcox.test',
 #'                 p_label = 'p.format',
-#'                 colors = c('black', 'orange'))
+#'                 colors = c('orange', 'black'))
 #'
 ic_score <- function(tpm,
                      metadata,
                      response,
                      compare = NULL,
                      p_label = 'p.format',
-                     colors = c('black', 'orange')) {
+                     colors = c('orange', 'black')) {
 
     # Create a list to store phenograms
     ipheno_list <- list()

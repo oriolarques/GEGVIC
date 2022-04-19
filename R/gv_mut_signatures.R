@@ -64,13 +64,13 @@
 #' @import rlang
 #'
 #' @examples
-#' mut.sigs <- gv_mut_signatures(muts = input_gv_module,
-#'                               metadata = metadata_ge_module,
-#'                               response = Response,
-#'                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-#'                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+#' mut.sigs <- gv_mut_signatures(muts = sample_mutations,
+#'                               metadata = sample_metadata,
+#'                               response = MSI_status,
+#'                               gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
+#'                               mut_sigs = 'COSMIC_v2_SBS_GRCh38',
 #'                               tri.counts.method = 'default',
-#'                               colors = c('black', 'orange'),
+#'                               colors = c('orange', 'black'),
 #'                               col.names = TRUE)
 #'
 gv_mut_signatures <- function(muts,
