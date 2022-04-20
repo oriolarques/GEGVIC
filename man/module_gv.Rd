@@ -10,7 +10,7 @@ module_gv(
   response,
   top_genes = 10,
   specific_genes = NULL,
-  colors = c("black", "orange"),
+  colors = c("orange", "black"),
   compare = NULL,
   p_label = "p.format",
   gbuild = "BSgenome.Hsapiens.UCSC.hg19",
@@ -97,16 +97,16 @@ Summarises genetic variations, calculates mutational load and
 predicts mutational signatures in samples of interest.
 }
 \examples{
-tables_module_gv <- module_gv(muts = input_gv_module,
-                              metadata = metadata_ge_module,
-                              response = Response,
+tables_module_gv <- module_gv(muts = sample_mutations,
+                              metadata = sample_metadata,
+                              response = MSI_status,
                               top_genes = 10,
                               specific_genes = NULL,
-                              colors = c('black' ,'orange'),
+                              colors = c('orange' ,'black'),
                               compare = 'wilcox.test',
                               p_label = 'p.format',
-                              gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-                              mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+                              gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
+                              mut_sigs = 'COSMIC_v2_SBS_GRCh38',
                               tri.counts.method = 'default',
                               col.names = TRUE)
 

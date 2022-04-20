@@ -24,14 +24,13 @@
 #' @import dplyr
 #' @import ggplot2
 #' @import rlang
-#' @import grid
 #' @import ggpubr
 #' @import patchwork
 #' @import ggplotify
 #' @importFrom gridExtra marrangeGrob
 #'
 #' @examples
-#' tpm <- ic_raw_to_tpm(counts = input_ge_module,
+#' tpm <- ic_raw_to_tpm(counts = sample_counts,
 #'                      genes_id = 'entrezgene_id',
 #'                      biomart = ensembl_biomart_GRCh38_p13)
 #' ips <- ic_score(tpm = tpm,
@@ -230,7 +229,7 @@ ic_score <- function(tpm,
         data_b_ticks <- data.frame(x = rep(1.2, 7),
                                    value = seq(-3,3, by=1),
                                    y = seq(0,6, by=1)*(22/6) +0.5)
-        legendtheme <- theme(plot.margin = unit(c(2,0,2,0),"inch"),
+        legendtheme <- theme(plot.margin = unit(c(0,0,0,0),"inch"), # Modified for GEGVIC
                              panel.spacing = unit(0,"null"),
                              panel.grid.major = element_blank(),
                              panel.grid.minor = element_blank(),
@@ -301,7 +300,7 @@ ic_score <- function(tpm,
 
     # Save a pdf report with each IPG per sample
     report <- lapply(ipheno_list, function(x) ggplotify::as.ggplot(plot = x,
-                                                                   scale = 1.1))
+                                                                   scale = 1))
     report <- marrangeGrob(grobs = report, ncol = 1, nrow = 1)
 
     ggsave('immunophenogram_report.pdf', report)

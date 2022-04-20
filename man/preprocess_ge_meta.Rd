@@ -18,6 +18,6 @@ Generates a data frame.
 Prepares metadata file for posterior analysis using DESeq2.
 }
 \examples{
-metadata <- preprocess_ge_meta(metadata = metadata_ge_module,
-                               counts = input_ge_module[,-1])
+metadata <- preprocess_ge_meta(metadata = sample_metadata,
+                               counts = sample_counts[,-1])
 }

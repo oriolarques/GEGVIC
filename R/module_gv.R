@@ -79,16 +79,16 @@
 #' @import ggplotify
 #'
 #' @examples
-#' tables_module_gv <- module_gv(muts = input_gv_module,
-#'                               metadata = metadata_ge_module,
-#'                               response = Response,
+#' tables_module_gv <- module_gv(muts = sample_mutations,
+#'                               metadata = sample_metadata,
+#'                               response = MSI_status,
 #'                               top_genes = 10,
 #'                               specific_genes = NULL,
-#'                               colors = c('black' ,'orange'),
+#'                               colors = c('orange' ,'black'),
 #'                               compare = 'wilcox.test',
 #'                               p_label = 'p.format',
-#'                               gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-#'                               mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+#'                               gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
+#'                               mut_sigs = 'COSMIC_v2_SBS_GRCh38',
 #'                               tri.counts.method = 'default',
 #'                               col.names = TRUE)
 #'
@@ -97,7 +97,7 @@ module_gv <- function(muts,
                       response,
                       top_genes = 10,
                       specific_genes = NULL,
-                      colors = c('black' ,'orange'),
+                      colors = c('orange' ,'black'),
                       compare = NULL,
                       p_label = 'p.format',
                       gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
@@ -231,13 +231,16 @@ module_gv <- function(muts,
             labs(fill = 'Signatures') +
 
             # Themes
-            theme_linedraw() +
+            theme_bw() +
             theme(
                 plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
                 #axis.text.x.bottom = element_blank(),
                 axis.title.x = element_blank(),
                 axis.title.y = element_blank(),
-                axis.text.x = element_text(size = 5, angle = 45, hjust = 1)
+                axis.text.x = element_text(size = 5, angle = 45, hjust = 1),
+                strip.background = element_rect(
+                    color="black", fill="black", size=1.5, linetype="solid"),
+                strip.text = element_text(color = 'white')
             ) +
 
             # Faceting

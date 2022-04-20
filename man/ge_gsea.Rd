@@ -22,17 +22,17 @@ Returns ggplot objects and a list of gseaResult objects.
 Performs Gene Set Enrichment Analysis using gene sets specified by the user.
 }
 \examples{
-results_dds <- ge_diff_exp(counts = input_ge_module,
-                           genes_id = 'entrezgene_id',
-                           metadata = metadata_ge_module,
-                           design = 'Response',
-                           ref_level = c('Response', 'Non_Responders'),
-                           shrink = 'none')
+results.dds <- ge_diff_exp(counts = sample_counts,
+                           genes_id = 'ensembl_gene_id',
+                           metadata = sample_metadata,
+                           design = 'MSI_status',
+                           ref_level = c('MSI_status', 'MSS'),
+                           shrink = 'apeglm')
 annot.res <- ge_annot(results_dds = results_dds,
-                      genes_id = 'entrezgene_id',
+                      genes_id = 'ensembl_gene_id',
                       biomart = ensembl_biomart_GRCh38_p13)
 gsea.res <- ge_gsea(annot_res = annot.res,
-                    gmt = 'inst/extdata/c7.all.v7.2.symbols.gmt',
+                    gmt = 'inst/extdata/c2.cp.reactome.v7.5.1.symbols.gmt',
                     gsea_pvalue = 0.2)
 
 }

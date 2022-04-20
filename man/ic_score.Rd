@@ -10,7 +10,7 @@ ic_score(
   response,
   compare = NULL,
   p_label = "p.format",
-  colors = c("black", "orange")
+  colors = c("orange", "black")
 )
 }
 \arguments{
@@ -41,15 +41,14 @@ Calculates and plots immunophenogram (IPG) and immunophenoscores
 (IPS) for each sample and each group of study.
 }
 \examples{
-tpm <- ic_raw_to_tpm(counts = input_ge_module,
+tpm <- ic_raw_to_tpm(counts = sample_counts,
                      genes_id = 'entrezgene_id',
                      biomart = ensembl_biomart_GRCh38_p13)
-
 ips <- ic_score(tpm = tpm,
-                metadata = metadata_ge_module,
-                response = Response,
+                metadata = sample_metadata,
+                response = MSI_status,
                 compare = 'wilcox.test',
                 p_label = 'p.format',
-                colors = c('black', 'orange'))
+                colors = c('orange', 'black'))
 
 }

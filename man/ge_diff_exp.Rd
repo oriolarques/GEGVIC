@@ -32,11 +32,11 @@ level comparison, in form of DESeqResults objects.
 Performs differential gene expression using DESeq2.
 }
 \examples{
-results_dds <- ge_diff_exp(counts = input_ge_module,
-                           genes_id = 'entrezgene_id',
-                           metadata = metadata_ge_module,
-                           design = 'Response',
-                           ref_level = c('Response', 'Non_Responders'),
+results.dds <- ge_diff_exp(counts = sample_counts,
+                           genes_id = 'ensembl_gene_id',
+                           metadata = sample_metadata,
+                           design = 'MSI_status',
+                           ref_level = c('MSI_status', 'MSS'),
                            shrink = 'apeglm')
 
 }

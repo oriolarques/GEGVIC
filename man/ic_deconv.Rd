@@ -56,11 +56,11 @@ the user need to specify the path to the storage location of such files in
 the cibersort parameter.
 }
 \examples{
-tpm <- ic_raw_to_tpm(counts = input_ge_module,
-                     genes_id = 'entrezgene_id',
+tpm <- ic_raw_to_tpm(counts = sample_counts,
+                     genes_id = 'ensembl_gene_id',
                      biomart = ensembl_biomart_GRCh38_p13)
 ic.pred <- ic_deconv(gene_expression = tpm,
-                     indications = rep('skcm', ncol(tpm)),
+                     indications = rep('coad', ncol(tpm)),
                      cibersort = NULL,
                      tumor = TRUE,
                      rmgenes = NULL,

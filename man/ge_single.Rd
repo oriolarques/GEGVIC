@@ -13,7 +13,7 @@ ge_single(
   biomart,
   gsva_gmt = "hallmark",
   method = "gsva",
-  colors = c("black", "orange"),
+  colors = c("orange", "black"),
   row.names = TRUE,
   col.names = TRUE
 )
@@ -60,15 +60,15 @@ Returns a heatmap and the expression values in a form of a matrix.
 
 }
 \examples{
-gsva.res <- ge_single(counts = input_ge_module,
-                      metadata = metadata_ge_module,
-                      genes_id = 'entrezgene_id',
-                      response = Response,
-                      design = 'Response',
+gsva.res <- ge_single(counts = sample_counts,
+                      metadata = sample_metadata,
+                      genes_id = 'ensembl_gene_id',
+                      response = MSI_status,
+                      design = 'MSI_status',
                       biomart = ensembl_biomart_GRCh38_p13,
                       gsva_gmt = 'hallmark',
                       method = 'gsva',
-                      colors = c('black', 'orange'),
+                      colors = c('orange', 'black'),
                       row.names = TRUE,
                       col.names = TRUE)
 

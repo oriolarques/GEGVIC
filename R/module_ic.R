@@ -62,16 +62,16 @@
 #' @importFrom gridExtra marrangeGrob
 #'
 #' @examples
-#' tables_module_ic <- module_ic(counts = input_ge_module,
-#'                               genes_id = 'entrezgene_id',
+#' tables_module_ic <- module_ic(counts = sample_counts,
+#'                               genes_id = 'ensembl_gene_id',
 #'                               biomart = ensembl_biomart_GRCh38_p13,
-#'                               indications = rep('skcm', ncol(input_ge_module[-1])),
+#'                               indications = rep('coad', ncol(sample_counts[-1])),
 #'                               cibersort = NULL,
-#'                               metadata = metadata_ge_module,
-#'                               response = Response,
+#'                               metadata = sample_metadata,
+#'                               response = MSI_status,
 #'                               compare = 'wilcox.test',
 #'                               p_label = 'p.format',
-#'                               colors = c('black', 'orange'),
+#'                               colors = c('orange', 'black'),
 #'                               points = TRUE)
 #'
 module_ic <- function(counts,
@@ -87,7 +87,7 @@ module_ic <- function(counts,
                       response,
                       compare = NULL,
                       p_label = 'p.format',
-                      colors = c('black', 'orange'),
+                      colors = c('orange', 'black'),
                       points = TRUE) {
 
     # Obtain TPM from raw counts

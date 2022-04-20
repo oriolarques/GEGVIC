@@ -159,7 +159,7 @@ This module uses the functionalities provided by the `DESeq2`
 
 #### 1.1. PCA
 
-First, using the **ge_pca()** function we can perform a PCA to evaluate
+First, using the `ge_pca()` function we can perform a PCA to evaluate
 how samples and groups relate to each other. For that, we indicate the
 raw counts file (*sample_counts*), how the gene identifiers are encoded
 (‘*ensembl_gene_id*’), the metadata file (*sample_metadata*) and the
@@ -183,8 +183,8 @@ ge_pca(counts = sample_counts,
 #### 1.2. Differential gene expression
 
 Then, we can compute differential gene expression between groups of
-interest using the **ge_diff_exp()** function and store the results in
-an object (**results.dds**).
+interest using the `ge_diff_exp()` function and store the results in an
+object (**results.dds**).
 
 We need to define new parameters such as the samples group that will be
 used as the level of reference (the group to which the others will be
@@ -206,7 +206,7 @@ results.dds <- ge_diff_exp(counts = sample_counts,
 #### 1.3. Gene annotation
 
 In the case that the gene identifiers provided are not in form of HGNC
-symbols but are NCBI or ENSEMBL ID, we have to use the **ge_annot()**
+symbols but are NCBI or ENSEMBL ID, we have to use the `ge_annot()`
 function to perform the appropriate conversion and store the results in
 a new object (**annot.res**). For that we will have to indicate a query
 from the `biomart`
@@ -236,7 +236,7 @@ annot.res <- ge_annot(results_dds = results.dds,
 #### 1.4. Volcano plot
 
 To represent differential gene expression in form of Volcano plots the
-function **ge_volcano()** is used to generate a plot for each comparison
+function `ge_volcano()` is used to generate a plot for each comparison
 groups. In the plot, the top ten most significantly up- and dw-regulated
 genes will be highlighted. Furthermore, the function allow users to
 define the fold change and adjusted p-value to further customize the
@@ -252,8 +252,8 @@ ge_volcano(annot_res = annot.res,
 
 #### 1.5. GSEA: Gene Set Enrichment Analysis
 
-One of the last functions of the module, **ge_gsea()**, permits to
-perform Gene Set Enrichment Analysis (GSEA) using the `clusterProfiler`
+One of the last functions of the module, `ge_gsea()`, permits to perform
+Gene Set Enrichment Analysis (GSEA) using the `clusterProfiler`
 [package](https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html)
 functionalities. The resulting top 20 regulated gene sets are shown in a
 bubble plot where Normalized Enrichment Score (NES) is shown. The size
@@ -301,9 +301,9 @@ gsea.res <- ge_gsea(annot_res = annot.res,
 
 ![GSEA: Leading edge](vignettes/03_gsea_leading_edge.png)
 
-Finally, the **ge_single()** allows to perform Gene Set Variation
-Analysis (GSVA) or single sample GSEA (ssGSEA) to cluster samples using
-the `GSVA`
+Finally, the `ge_single()` allows to perform Gene Set Variation Analysis
+(GSVA) or single sample GSEA (ssGSEA) to cluster samples using the
+`GSVA`
 [package](https://bioconductor.org/packages/release/bioc/html/GSVA.html).
 In order to do that, the user has to define the method and also indicate
 the gene set collection of interest. By default, the `HALLMARK`
@@ -340,8 +340,8 @@ and the `deconstructSigs`
 #### 2.1. Mutational summary
 
 The genetic variations input (*sample_mutations*) together with samples
-metadata can be used in the function **gv_mut_summary()** to generate
-two plots that will first summarise the mutation types present in the
+metadata can be used in the function `gv_mut_summary()` to generate two
+plots that will first summarise the mutation types present in the
 samples and second highlight the most common mutations by groups in a
 form of an oncoplot.
 
@@ -367,7 +367,7 @@ gv_mut_summary(muts = sample_mutations,
 
 #### 2.2. Mutational load
 
-The function **gv_mut_load()** will calculate the total number of
+The function `gv_mut_load()` will calculate the total number of
 mutations per sample. The same inputs as the previous function are
 required. Also the compare and p_label arguments allow users to decide
 which method should be used for comparing means and the way the
@@ -387,11 +387,11 @@ mut.load <- gv_mut_load(muts = sample_mutations,
 
 #### 2.3. Mutational signatures
 
-The last function of the module, **gv_mut_signatures()** is used to
-predict the weight of mutational signatures contributing to an
-individual tumour sample. As well as the inputs described before, here
-the user have to choose the version of the genome to work with. To do
-so, the gbuild argument should be one of the following:
+The last function of the module,`gv_mut_signatures()` is used to predict
+the weight of mutational signatures contributing to an individual tumour
+sample. As well as the inputs described before, here the user have to
+choose the version of the genome to work with. To do so, the gbuild
+argument should be one of the following:
 
 -   ‘BSgenome.Hsapiens.UCSC.hg19’
 
@@ -453,10 +453,10 @@ This module uses functionalities from the `immunedeconv`
 To predict immune composition of tumour microenvironment from
 RNA-sequencing data, we need first to transform raw counts to TPM
 (Transcript Per kilobase Million), as it is required by all the methods
-in the `immunedeconv` package. The function *ic_raw_to_tpm()* takes the
+in the `immunedeconv` package. The function `ic_raw_to_tpm()` takes the
 same input as for the GE_module (RNA-seq raw counts). It also needs the
 gene identifiers encoding and the biomaRt database. The results should
-be stored as a new object (**tmp**).
+be stored as a new object (i.e.: **tmp**).
 
 ``` r
 tpm <- ic_raw_to_tpm(counts = sample_counts,
@@ -467,7 +467,7 @@ tpm <- ic_raw_to_tpm(counts = sample_counts,
 #### 3.2. Predict immune cell composition
 
 The object containing TPM reads will be used as the input for the
-**ic_deconv()** function, which estimates the immune cell composition of
+`ic_deconv()` function, which estimates the immune cell composition of
 the samples. All the following methods (included in the `immunedeconv`
 package) QUANTISEQ, TIMER, MCP_COUNTER, XCELL, EPIC and CIBERSORT will
 be used.
@@ -481,7 +481,7 @@ files in the cibersort argument.*
 The indications argument must be a character vector of cancer type codes
 for each sample in the tpm matrix. Indications supported can be checked
 using immunedeconv::timer_available_cancers. Results should be saved in
-a new object (**ic.pred**).
+a new object (i.e.: **ic.pred**).
 
 ``` r
 ic.pred <- ic_deconv(gene_expression = tpm,
@@ -495,17 +495,17 @@ ic.pred <- ic_deconv(gene_expression = tpm,
 
 #### 3.3. Plot cell predictions
 
-With the **ic_plot_comp_samples()** function we can plot a graph
-comparing each immune cell populations between sample groups per method.
-For that, the name of column where lies the grouping variable must be
-written **WITHOUT** quotes in the response argument. The compare
-argument allow users to decide which method should be used for comparing
-means. Options are ‘t.test’ and ‘wilcox.test’ for two groups or ‘anova’
-and ‘kruskal.test’ for more groups. Also, the p_label argument permits
-to choose the way the significance is represented, being either
-‘p.signif’ (shows the significance levels) or ‘p.format’ (shows the
-formatted p-value). The function allows to change also the colours of
-the groups and decide if points are added to the plot.
+With the `ic_plot_comp_samples()` function we can plot a graph comparing
+each immune cell populations between sample groups per method. For that,
+the name of column where lies the grouping variable must be written
+**WITHOUT** quotes in the response argument. The compare argument allow
+users to decide which method should be used for comparing means. Options
+are ‘t.test’ and ‘wilcox.test’ for two groups or ‘anova’ and
+‘kruskal.test’ for more groups. Also, the p_label argument permits to
+choose the way the significance is represented, being either ‘p.signif’
+(shows the significance levels) or ‘p.format’ (shows the formatted
+p-value). The function allows to change also the colours of the groups
+and decide if points are added to the plot.
 
 ``` r
 ic_plot_comp_samples(df = ic.pred,
@@ -519,7 +519,7 @@ ic_plot_comp_samples(df = ic.pred,
 
 ![Immune cell populations between samples](vignettes/07_ic_samples.png)
 
-Similarly, the **ic_plot_comp_celltypes()** function is able to plot the
+Similarly, the `ic_plot_comp_celltypes()` function is able to plot the
 comparison of each immune cell fraction within each sample from the
 predictions made by CIBERSORT, EPIC and QUANTISEQ.
 
@@ -533,7 +533,7 @@ ic_plot_comp_celltypes(df = ic.pred,
 
 #### 3.4. Calculate Immunophenogram and Immunophenoscores
 
-The last function in this module, **ic_score()** uses TPM expression
+The last function in this module, `ic_score()` uses TPM expression
 values to calculate and plot immunophenogram (IPG) and immunophenoscores
 (IPS) for each sample and each group of study. They give an overall
 picture of the state of MHC molecules (MHC), Immunomodulators (CP),
@@ -558,3 +558,108 @@ ips <- ic_score(tpm = tpm,
 ![Immunophenograms](vignettes/08_ic_ipg.png)
 
 ![Immunophenoscores](vignettes/08_ic_ips.png)
+
+## Additional Features
+
+### Execution by modules
+
+GEGVIC offers the possibility to execute all the functions of a specific
+module at once using a single function with all the parameters described
+before. To access the result tables the output needs to be saved in a
+new object.
+
+``` r
+# Gene Expression Module (GE)
+tables_module_ge <- module_ge(counts = sample_counts,
+                              genes_id = 'ensembl_gene_id',
+                              metadata = sample_metadata,
+                              response = MSI_status,
+                              design = 'MSI_status',
+                              colors = c('orange', 'black'),
+                              ref_level = c('MSI_status', 'MSS'),
+                              shrink = 'apeglm',
+                              biomart = ensembl_biomart_GRCh38_p13,
+                              fold_change = 2,
+                              p.adj = 0.05,
+                              gmt = 'inst/extdata/c2.cp.reactome.v7.5.1.symbols.gmt',
+                              gsea_pvalue = 0.2,
+                              gsva_gmt = 'hallmark',
+                              method = 'gsva',
+                              row.names = TRUE,
+                              col.names = TRUE)
+
+# Genetic Variations Module (GV)
+tables_module_gv <- module_gv(muts = sample_mutations,
+                              metadata = sample_metadata,
+                              response = MSI_status,
+                              top_genes = 10,
+                              specific_genes = NULL,
+                              colors = c('orange' ,'black'),
+                              compare = 'wilcox.test',
+                              p_label = 'p.format',
+                              gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
+                              mut_sigs = 'COSMIC_v2_SBS_GRCh38',
+                              tri.counts.method = 'default',
+                              col.names = TRUE)
+
+# Immune cell Composition module (IC)
+tables_module_ic <- module_ic(counts = sample_counts,
+                              genes_id = 'ensembl_gene_id',
+                              biomart = ensembl_biomart_GRCh38_p13,
+                              indications = rep('coad', ncol(sample_counts[-1])),
+                              cibersort = NULL,
+                              metadata = sample_metadata,
+                              response = MSI_status,
+                              compare = 'wilcox.test',
+                              p_label = 'p.format',
+                              colors = c('orange', 'black'),
+                              points = TRUE)
+```
+
+### Automatic Report
+
+Finally, GEGVIC offers the possibility to generate an HTML report which
+will contain all the graphical outputs already shown in this manual
+using the `auto_rep()` function. Appart from all the options already
+explained for each function, the user has the option to select which
+modules will be executed and also the output directory where the report
+will be saved.
+
+``` r
+auto_rep(ge_module = TRUE,
+         gv_module = TRUE,
+         ic_module = TRUE,
+         out_dir = NULL,
+         counts = sample_counts,
+         genes_id = 'ensembl_gene_id',
+         metadata = sample_metadata,
+         response = 'MSI_status',
+         design = 'MSI_status',
+         colors = c('orange', 'black'),
+         ref_level = c('MSI_status', 'MSS'),
+         shrink = 'apeglm',
+         biomart = ensembl_biomart_GRCh38_p13,
+         fold_change = 2,
+         p.adj = 0.05,
+         gmt = 'c2.cp.reactome.v7.5.1.symbols.gmt',
+         gsea_pvalue = 0.2,
+         gsva_gmt = 'hallmark',
+         method = 'gsva',
+         row.names = TRUE,
+         col.names = TRUE,
+         muts = sample_mutations,
+         top_genes = 10,
+         specific_genes = NULL,
+         compare = 'wilcox.test',
+         p_label = 'p.format',
+         gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
+         mut_sigs = 'COSMIC_v2_SBS_GRCh38',
+         tri.counts.method = 'default',
+         indications = rep('coad', ncol(sample_counts[-1])),
+         cibersort = NULL,
+         tumor = TRUE,
+         rmgenes = NULL,
+         scale_mrna = TRUE,
+         expected_cell_types = NULL,
+         points = TRUE)
+```

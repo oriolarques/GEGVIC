@@ -1,11 +1,13 @@
 #' @title auto_rep
 #'
-#' @description
+#' @description Executes all GEGVIC functions to generate an HTML report with
+#' the results.
 #'
-#' @param ge_module
-#' @param gv_module
-#' @param ic_module
-#' @param out_dir
+#' @param ge_module Logical value to determine whether this module is executed or not.
+#' @param gv_module Logical value to determine whether this module is executed or not.
+#' @param ic_module Logical value to determine whether this module is executed or not.
+#' @param out_dir Path to determine the output directory. By default it is set
+#' to the working directory.
 #' @param counts Data frame that contains gene expression data as raw counts.
 #' @param genes_id Name of the column that contains gene identifiers. Should be
 #' one of the following:'entrez_gene_id', 'ensemblgene_id' or 'hgnc_symbol'.
@@ -92,37 +94,61 @@
 #'
 #' @export
 #'
+#' @import rlang
+#' @import DESeq2
+#' @import SummarizedExperiment
+#' @import dplyr
+#' @import ggplot2
+#' @import tibble
+#' @import apeglm
+#' @import ggrepel
+#' @import clusterProfiler
+#' @import GSEAmining
+#' @import GSEABase
+#' @import GSVA
+#' @import pheatmap
+#' @importFrom maftools read.maf
+#' @importFrom maftools plotmafSummary
+#' @importFrom maftools oncoplot
+#' @import ggpubr
+#' @import tidyr
+#' @import deconstructSigs
+#' @import ggplotify
+#' @import immunedeconv
+#' @import patchwork
+#' @importFrom gridExtra marrangeGrob
+#'
 #' @examples
 #' auto_rep(ge_module = TRUE,
 #'          gv_module = TRUE,
 #'          ic_module = TRUE,
 #'          out_dir = NULL,
-#'          counts = input_ge_module,
-#'          genes_id = 'entrezgene_id',
-#'          metadata = metadata_ge_module,
-#'          response = 'Response',
-#'          design = 'Response',
-#'          colors = c('black', 'orange'),
-#'          ref_level = c('Response', 'Non_Responders'),
+#'          counts = sample_counts,
+#'          genes_id = 'ensembl_gene_id',
+#'          metadata = sample_metadata,
+#'          response = 'MSI_status',
+#'          design = 'MSI_status',
+#'          colors = c('orange', 'black'),
+#'          ref_level = c('MSI_status', 'MSS'),
 #'          shrink = 'apeglm',
 #'          biomart = ensembl_biomart_GRCh38_p13,
 #'          fold_change = 2,
 #'          p.adj = 0.05,
-#'          gmt = 'c7.all.v7.2.symbols.gmt',
+#'          gmt = 'inst/extdata/c2.cp.reactome.v7.5.1.symbols.gmt',
 #'          gsea_pvalue = 0.2,
 #'          gsva_gmt = 'hallmark',
 #'          method = 'gsva',
 #'          row.names = TRUE,
 #'          col.names = TRUE,
-#'          muts = input_gv_module,
+#'          muts = sample_mutations,
 #'          top_genes = 10,
 #'          specific_genes = NULL,
 #'          compare = 'wilcox.test',
 #'          p_label = 'p.format',
-#'          gbuild = 'BSgenome.Hsapiens.UCSC.hg19',
-#'          mut_sigs = 'COSMIC_v2_SBS_GRCh37',
+#'          gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
+#'          mut_sigs = 'COSMIC_v2_SBS_GRCh38',
 #'          tri.counts.method = 'default',
-#'          indications = rep('skcm', ncol(input_ge_module[-1])),
+#'          indications = rep('COAD', ncol(sample_counts[-1])),
 #'          cibersort = NULL,
 #'          tumor = TRUE,
 #'          rmgenes = NULL,
@@ -183,6 +209,7 @@ auto_rep <- function(ge_module = TRUE,
                       params = list("ge_module" = ge_module,
                                     "gv_module" = gv_module,
                                     "ic_module" = ic_module,
+                                    "out_dir" = out_dir,
                                     "counts" = counts,
                                     "genes_id" = genes_id,
                                     "metadata" = metadata,

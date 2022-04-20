@@ -21,7 +21,7 @@ Extracts mutational signatures contribution prediction from the
 deconstrucSigs package in a legible format.
 }
 \examples{
-mut.sbs <- input_gv_module \%>\% dplyr::filter(Variant_Type == 'SNP')
+mut.sbs <- sample_mutations \%>\% dplyr::filter(Variant_Type == 'SNP')
 sigs.sbs.input <- deconstructSigs::mut.to.sigs.input(
                                           mut.ref = mut.sbs,
                                           sample.id = 'Tumor_Sample_Barcode',
@@ -29,9 +29,9 @@ sigs.sbs.input <- deconstructSigs::mut.to.sigs.input(
                                           pos = 'Start_Position',
                                           ref = 'Reference_Allele',
                                           alt = 'Tumor_Seq_Allele2',
-                                          bsg = BSgenome.Hsapiens.UCSC.hg19,
+                                          bsg = BSgenome.Hsapiens.UCSC.hg38,
                                           sig.type = 'SBS')
-ids_samples <- unique(input_gv_module$Tumor_Sample_Barcode)
+ids_samples <- unique(sample_mutations$Tumor_Sample_Barcode)
 results_sbs <- sapply(ids_samples,
                       function(x) {
                          deconstructSigs::whichSignatures(

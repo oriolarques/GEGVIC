@@ -54,11 +54,11 @@ Summarises the total number of mutations per sample and compares
 different groups of interest.
 }
 \examples{
-mut.load <- gv_mut_load(muts = input_gv_module,
-                        metadata = metadata_ge_module,
-                        response = Response,
+mut.load <- gv_mut_load(muts = sample_mutations,
+                        metadata = sample_metadata,
+                        response = MSI_status,
                         compare = 'wilcox.test',
                         p_label = 'p.format',
-                        colors = c('black', 'orange'))
+                        colors = c('orange', 'black'))
 
 }

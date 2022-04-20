@@ -19,6 +19,7 @@ Generates a data frame.
 Prepares RNA-seq raw counts for posterior analysis using DESeq2.
 }
 \examples{
-counts <- preprocess_ge_counts(counts = input_ge_module, genes_id = 'entrezgene_id')
+counts <- preprocess_ge_counts(counts = sample_counts,
+                               genes_id = 'ensembl_gene_id')
 
 }
