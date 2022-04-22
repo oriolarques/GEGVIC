@@ -143,7 +143,7 @@ ic_plot_comp_celltypes <- function(df,
 
     ## Eliminate sample names if the user decides so
     if(col.names == FALSE){
-        p <- p + theme(axis.text.x.bottom = element_blank(),,
+        p <- p + theme(axis.text.x.bottom = element_blank(),
                        axis.text.x = element_blank())
     }
 
