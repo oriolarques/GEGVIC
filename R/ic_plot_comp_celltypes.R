@@ -10,6 +10,7 @@
 #' prediction for each sample.
 #' @param metadata Data frame that contains supporting variables to the data.
 #' @param response Unquoted name of the variable indicating the groups to analyse.
+#' @param col.names Logical value to determine if tumour are shown in plots.
 #'
 #' @return Returns a ggplot object.
 #'
@@ -36,11 +37,13 @@
 #'                      expected_cell_types = NULL)
 #' ic_plot_comp_celltypes(df = ic.pred,
 #'                      metadata = sample_metadata,
-#'                      response = MSI_status)
+#'                      response = MSI_status,
+#'                      col.names = TRUE)
 #'
 ic_plot_comp_celltypes <- function(df,
                                    metadata,
-                                   response) {
+                                   response,
+                                   col.names = TRUE) {
 
     # Create an object to process the data
     temp_df <- NULL
@@ -125,10 +128,9 @@ ic_plot_comp_celltypes <- function(df,
         theme_bw() +
         theme(
             plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
-            axis.text.x.bottom = element_blank(),
             axis.title.x = element_blank(),
             axis.title.y = element_blank(),
-            axis.text.x = element_text(size = 5, angle = 45, hjust = 1),
+            axis.text.x = element_text(size = 8, angle = 45, hjust = 1, face = 'bold'),
             strip.background = element_rect(
                 color="black", fill="black", size=1.5, linetype="solid"),
             strip.text = element_text(color = 'white')
@@ -139,9 +141,13 @@ ic_plot_comp_celltypes <- function(df,
                    scales = 'free_x',
                    switch = 'y')
 
+    ## Eliminate sample names if the user decides so
+    if(col.names == FALSE){
+        p <- p + theme(axis.text.x.bottom = element_blank(),,
+                       axis.text.x = element_blank())
+    }
+
     # Return the plot
     print(p)
-
-
 
 }

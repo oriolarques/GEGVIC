@@ -237,7 +237,7 @@ module_gv <- function(muts,
                 #axis.text.x.bottom = element_blank(),
                 axis.title.x = element_blank(),
                 axis.title.y = element_blank(),
-                axis.text.x = element_text(size = 5, angle = 45, hjust = 1),
+                axis.text.x = element_text(size = 8, angle = 45, hjust = 1, face = 'bold'),
                 strip.background = element_rect(
                     color="black", fill="black", size=1.5, linetype="solid"),
                 strip.text = element_text(color = 'white')

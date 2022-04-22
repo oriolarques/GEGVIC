@@ -526,7 +526,8 @@ predictions made by CIBERSORT, EPIC and QUANTISEQ.
 ``` r
 ic_plot_comp_celltypes(df = ic.pred,
                        metadata = sample_metadata,
-                       response = MSI_status)
+                       response = MSI_status,
+                       col.names = TRUE)
 ```
 
 ![Immune cell populations per sample](vignettes/07_ic_types.png)
