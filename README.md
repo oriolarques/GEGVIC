@@ -19,7 +19,9 @@ comparing a group of samples for (i) *differential gene expression*,
 (ii) *genetic variations* and (iii) *immune cell composition*.
 
 <figure>
-<img src="vignettes/GEGVIC_outline.png" style="width:60.0%" alt="GEGVIC outline" /><figcaption aria-hidden="true">GEGVIC outline</figcaption>
+<img src="vignettes/GEGVIC_outline.png" style="width:60.0%"
+alt="GEGVIC outline" />
+<figcaption aria-hidden="true">GEGVIC outline</figcaption>
 </figure>
 
 ## Installation
@@ -56,6 +58,7 @@ if(!require(DT)) install.packages("DT")
 if(!require(shinyFiles)) install.packages("shinyFiles")
 if(!require(shinythemes)) install.packages("shinythemes")
 if(!require(tm)) install.packages("tm")
+if(!require(rmarkdown)) install.packages("rmarkdown")
 
 # Bioconductor packages
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
@@ -72,7 +75,8 @@ if(!require(BSgenome.Hsapiens.UCSC.hg19)) BiocManager::install("BSgenome.Hsapien
 if(!require(BSgenome.Hsapiens.UCSC.hg38)) BiocManager::install("BSgenome.Hsapiens.UCSC.hg38")
 if(!require(BSgenome.Mmusculus.UCSC.mm10)) BiocManager::install("BSgenome.Mmusculus.UCSC.mm10")
 if(!require(BSgenome.Mmusculus.UCSC.mm39)) BiocManager::install("BSgenome.Mmusculus.UCSC.mm39")
-
+if(!require(DO.db)) BiocManager::install("DO.db")
+if(!require(GO.db)) BiocManager::install("GO.db")
 
 # Github packages
 remotes::install_github("icbi-lab/immunedeconv")
