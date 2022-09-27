@@ -3,7 +3,7 @@
 #' @description Summarises the total number of mutations per sample and compares
 #' different groups of interest.
 #'
-#' @param muts Data frame containing genetic variations. Necessary columns must
+#' @param muts Data frame containing genomic variations. Necessary columns must
 #' have the following names:
 #' - Hugo_Symbol: Gene symbol from HGNC.
 #' - Chromosome: Affected chromosome.

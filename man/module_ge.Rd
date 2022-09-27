@@ -79,6 +79,13 @@ heatmap.}
 
 \item{col.names}{Logical value to determine if column-names are shown in the
 heatmap.}
+
+\item{kcdf}{Character string denoting the kernel to use during the non-parametric
+estimation of the cumulative distribution function of expression levels across
+samples when method="gsva". By default, kcdf="Poisson". It should be used when
+input expression values are integer counts, such as those derived from RNA-seq experiments.
+kcdf="Gaussian" which is suitable when input expression values are continuous,
+such as microarray fluorescent units in logarithmic scale, RNA-seq log-CPMs, log-RPKMs or log-TPMs.}
 }
 \value{
 Returns ggplot objects (containing PCA, Volcano plot and GSEA analyses)
@@ -105,6 +112,7 @@ tables_module_ge <- module_ge(counts = sample_counts,
                               gsea_pvalue = 0.2,
                               gsva_gmt = 'hallmark',
                               method = 'gsva',
+                              kcdf = 'Poisson',
                               row.names = TRUE,
                               col.names = TRUE)
 

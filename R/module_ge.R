@@ -38,6 +38,12 @@
 #' sets from MSigDB (version 7.5.1).
 #' @param method Name of the method to perform Gene set variation analysis. The
 #' options are: 'gsva', 'ssgea' or 'zscore'. Default value is 'gsva'.
+#' @param kcdf 	Character string denoting the kernel to use during the non-parametric
+#' estimation of the cumulative distribution function of expression levels across
+#' samples when method="gsva". By default, kcdf="Poisson". It should be used when
+#' input expression values are integer counts, such as those derived from RNA-seq experiments.
+#' kcdf="Gaussian" which is suitable when input expression values are continuous,
+#' such as microarray fluorescent units in logarithmic scale, RNA-seq log-CPMs, log-RPKMs or log-TPMs.
 #' @param row.names Logical value to determine if row-names are shown in the
 #' heatmap.
 #' @param col.names Logical value to determine if column-names are shown in the
@@ -78,6 +84,7 @@
 #'                               gsea_pvalue = 0.2,
 #'                               gsva_gmt = 'hallmark',
 #'                               method = 'gsva',
+#'                               kcdf = 'Poisson',
 #'                               row.names = TRUE,
 #'                               col.names = TRUE)
 #'

@@ -26,6 +26,7 @@ params:
     gsea_pvalue: 0.2
     gsva_gmt: NULL
     method: 'gsva'
+    kcdf: 'Poisson'
     row.names: TRUE
     col.names: TRUE
     muts: NULL
@@ -128,6 +129,7 @@ gsva.res <- ge_single(counts = params$counts,
                       biomart = params$biomart,
                       gsva_gmt = params$gsva_gmt,
                       method = params$method,
+                      kcdf = params$kcdf,
                       colors = params$colors,
                       row.names = params$row.names,
                       col.names = params$col.names)

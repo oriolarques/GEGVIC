@@ -15,7 +15,7 @@ gv_mut_summary(
 )
 }
 \arguments{
-\item{muts}{Data frame containing genetic variations. Necessary columns must
+\item{muts}{Data frame containing genomic variations. Necessary columns must
 have the following names:
 - Hugo_Symbol: Gene symbol from HGNC.
 - Chromosome: Affected chromosome.
@@ -49,7 +49,7 @@ to compare. Default values are two: black and orange.}
 Prints two plots: A summary of sample mutations and an oncoplot.
 }
 \description{
-Given a table that contains genetic variants from samples of
+Given a table that contains genomic variants from samples of
 interest, it summarises different aspects of such mutations and draws an
 oncoplot.
 }

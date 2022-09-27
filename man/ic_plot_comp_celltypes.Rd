@@ -4,7 +4,7 @@
 \alias{ic_plot_comp_celltypes}
 \title{ic_plot_comp_celltypes}
 \usage{
-ic_plot_comp_celltypes(df, metadata, response)
+ic_plot_comp_celltypes(df, metadata, response, col.names = TRUE)
 }
 \arguments{
 \item{df}{Output ot ic_deconv function. A data frame containing the predictions
@@ -15,6 +15,8 @@ prediction for each sample.}
 \item{metadata}{Data frame that contains supporting variables to the data.}
 
 \item{response}{Unquoted name of the variable indicating the groups to analyse.}
+
+\item{col.names}{Logical value to determine if tumour are shown in plots.}
 }
 \value{
 Returns a ggplot object.
@@ -37,6 +39,7 @@ ic.pred <- ic_deconv(gene_expression = tpm,
                      expected_cell_types = NULL)
 ic_plot_comp_celltypes(df = ic.pred,
                      metadata = sample_metadata,
-                     response = MSI_status)
+                     response = MSI_status,
+                     col.names = TRUE)
 
 }

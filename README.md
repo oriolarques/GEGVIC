@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-GEGVIC is a workflow to analyse **G**ene **E**xpression, **G**enetic
+GEGVIC is a workflow to analyse **G**ene **E**xpression, **G**enomic
 **V**ariations and **I**mmune cell **C**omposition of tumour samples
 using Next Generation Sequencing data. This is a common need in the
 majority of the laboratories in the world, however, many times the high
@@ -16,7 +16,7 @@ and difficult the process.
 Here we present an easy-to-use tool that requires few input files,
 provides a good flexibility and produces appealing outputs when
 comparing a group of samples for (i) *differential gene expression*,
-(ii) *genetic variations* and (iii) *immune cell composition*.
+(ii) *genomic variations* and (iii) *immune cell composition*.
 
 <figure>
 <img src="vignettes/GEGVIC_outline.png" style="width:60.0%"
@@ -102,7 +102,7 @@ GEGVIC requires three main input data:
 
 ![input_counts](vignettes/input_counts.png)
 
-2.  **Genetic variations data (Muts)**: Table containing short variant
+2.  **Genomic variations data (Muts)**: Table containing short variant
     calls. Necessary columns **MUST** have the following names
     (following the [MAF
     format](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)):
@@ -130,7 +130,7 @@ GEGVIC requires three main input data:
     the samples to create groups such as response to a therapy. The
     first column MUST be named **Samples** and contain the same
     nomenclature for each sample as in the *RNA-sequencing raw counts*
-    and *Genetic variations data tables*.
+    and *Genomic variations data tables*.
 
 ![input_metadata](vignettes/input_metadata.png)
 
@@ -334,7 +334,7 @@ gsva.res <- ge_single(counts = sample_counts,
 
 ![GSVA](vignettes/03_gsva.png)
 
-### 2. Genetic Variations module (GV)
+### 2. Genomic Variations module (GV)
 
 This module uses functionalities from the `maftools`
 [package](https://bioconductor.org/packages/release/bioc/html/maftools.html)
@@ -343,7 +343,7 @@ and the `deconstructSigs`
 
 #### 2.1. Mutational summary
 
-The genetic variations input (*sample_mutations*) together with samples
+The genomic variations input (*sample_mutations*) together with samples
 metadata can be used in the function `gv_mut_summary()` to generate two
 plots that will first summarise the mutation types present in the
 samples and second highlight the most common mutations by groups in a
@@ -365,7 +365,7 @@ gv_mut_summary(muts = sample_mutations,
                colors = c('orange', 'black'))
 ```
 
-![Genetic variants summary](vignettes/04_gv_summary.png)
+![Genomic variants summary](vignettes/04_gv_summary.png)
 
 ![Oncoplot](vignettes/04_gv_oncoplot.png)
 
@@ -593,7 +593,7 @@ tables_module_ge <- module_ge(counts = sample_counts,
                               row.names = TRUE,
                               col.names = TRUE)
 
-# Genetic Variations Module (GV)
+# Genomic Variations Module (GV)
 tables_module_gv <- module_gv(muts = sample_mutations,
                               metadata = sample_metadata,
                               response = MSI_status,

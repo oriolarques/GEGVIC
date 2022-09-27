@@ -137,6 +137,39 @@ comparing means. Options are 't.test' and 'wilcox.test' for two groups or
 'p.signif' (shows the significance levels), 'p.format' (shows the formatted
 p-value).}
 
+\item{gbuild}{Version of the genome to work with. It can be one of the following:
+- ‘BSgenome.Hsapiens.UCSC.hg19’
+- ‘BSgenome.Hsapiens.UCSC.hg38’
+- ‘BSgenome.Mmusculus.UCSC.mm10’
+- ‘BSgenome.Mmusculus.UCSC.mm39’}
+
+\item{mut_sigs}{Mutational signature matrices containing the frequencies of
+all nucleotide changes per signature need to be indicated. GEGVIC contains the
+matrices from COSMIC for single and double base substitutions. To choose one,
+the user has to indicate ’COSMIC_v{XX}_{YY}BS_GRCh{ZZ}’ in the mut_sigs argument.
+The XX is the version, that can be v2 or v3.2. YY indicates if mutations are
+single (S) or double (D) base substitutions, while the ZZ is for the genome
+assembly, either GRCh37 or GRCh38 for human data and mm9 or mm10 for mouse data.}
+
+\item{tri.counts.method}{Normalization method. Needs to be set to either:
+- 'default' – no further normalization.
+- 'exome' – normalized by number of times each trinucleotide context is
+observed in the exome.
+- 'genome' – normalized by number of times each trinucleotide context is
+observed in the genome.
+- 'exome2genome' – multiplied by a ratio of that trinucleotide's occurence in
+the genome to the trinucleotide's occurence in the exome.
+- 'genome2exome' – multiplied by a ratio of that trinucleotide's occurence in
+the exome to the trinucleotide's occurence in the genome.
+- data frame containing user defined scaling factor – count data for each
+trinucleotide context is multiplied by the corresponding value given in the
+data frame.}
+
+\item{indications}{Character vector of cancer type codes for each sample in
+the tpm matrix.This is used by TIMER method. Indications supported
+can be checked using immunedeconv::timer_available_cancers. Default value is
+NULL.}
+
 \item{cibersort}{Path to the CIBERSORT.R and LM22.txt files. Default value is
 NULL.}
 
@@ -157,9 +190,13 @@ this can improve results for xCell
 (see https://github.com/grst/immunedeconv/issues/1).}
 
 \item{points}{Logical value to decide if points are added to the plot.}
-}
-\value{
 
+\item{kcdf}{Character string denoting the kernel to use during the non-parametric
+estimation of the cumulative distribution function of expression levels across
+samples when method="gsva". By default, kcdf="Poisson". It should be used when
+input expression values are integer counts, such as those derived from RNA-seq experiments.
+kcdf="Gaussian" which is suitable when input expression values are continuous,
+such as microarray fluorescent units in logarithmic scale, RNA-seq log-CPMs, log-RPKMs or log-TPMs.}
 }
 \description{
 Executes all GEGVIC functions to generate an HTML report with
@@ -185,6 +222,7 @@ auto_rep(ge_module = TRUE,
          gsea_pvalue = 0.2,
          gsva_gmt = 'hallmark',
          method = 'gsva',
+         kcdf = 'Poisson',
          row.names = TRUE,
          col.names = TRUE,
          muts = sample_mutations,

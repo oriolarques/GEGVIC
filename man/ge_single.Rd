@@ -13,6 +13,7 @@ ge_single(
   biomart,
   gsva_gmt = "hallmark",
   method = "gsva",
+  kcdf = "Poisson",
   colors = c("orange", "black"),
   row.names = TRUE,
   col.names = TRUE
@@ -44,6 +45,13 @@ sets from MSigDB (version 7.5.1).}
 \item{method}{Name of the method to perform Gene set variation analysis. The
 options are: 'gsva', 'ssgea' or 'zscore'. Default value is 'gsva'.}
 
+\item{kcdf}{Character string denoting the kernel to use during the non-parametric
+estimation of the cumulative distribution function of expression levels across
+samples when method="gsva". By default, kcdf="Poisson". It should be used when
+input expression values are integer counts, such as those derived from RNA-seq experiments.
+kcdf="Gaussian" which is suitable when input expression values are continuous,
+such as microarray fluorescent units in logarithmic scale, RNA-seq log-CPMs, log-RPKMs or log-TPMs.}
+
 \item{colors}{Character vector indicating the colors of the different groups
 to compare. Default values are two: black and orange.}
 
@@ -57,7 +65,7 @@ heatmap.}
 Returns a heatmap and the expression values in a form of a matrix.
 }
 \description{
-
+Performs Gene Set Variation Analysis.
 }
 \examples{
 gsva.res <- ge_single(counts = sample_counts,
@@ -68,6 +76,7 @@ gsva.res <- ge_single(counts = sample_counts,
                       biomart = ensembl_biomart_GRCh38_p13,
                       gsva_gmt = 'hallmark',
                       method = 'gsva',
+                      kcdf = 'Poisson',
                       colors = c('orange', 'black'),
                       row.names = TRUE,
                       col.names = TRUE)

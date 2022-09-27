@@ -1,10 +1,10 @@
 #' @title gv_mut_summary
 #'
-#' @description Given a table that contains genetic variants from samples of
+#' @description Given a table that contains genomic variants from samples of
 #' interest, it summarises different aspects of such mutations and draws an
 #' oncoplot.
 #'
-#' @param muts Data frame containing genetic variations. Necessary columns must
+#' @param muts Data frame containing genomic variations. Necessary columns must
 #' have the following names:
 #' - Hugo_Symbol: Gene symbol from HGNC.
 #' - Chromosome: Affected chromosome.
