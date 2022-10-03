@@ -24,6 +24,7 @@ auto_rep(
   gsea_pvalue = 0.2,
   gsva_gmt = "hallmark",
   method = "gsva",
+  kcdf = "Gaussian",
   row.names = TRUE,
   col.names = TRUE,
   muts,
@@ -101,6 +102,11 @@ sets from MSigDB (version 7.5.1).}
 
 \item{method}{Name of the method to perform Gene set variation analysis. The
 options are: 'gsva', 'ssgea' or 'zscore'. Default value is 'gsva'.}
+
+\item{kcdf}{Character string denoting the kernel to use during the non-parametric
+estimation of the cumulative distribution function of expression levels across
+samples when method="gsva". By default, "Gaussian" since GEGVIC transforms
+raw counts using the vst transformation. Other options are 'Poisson' or 'none'.}
 
 \item{row.names}{Logical value to determine if row-names are shown in the
 heatmap.}
@@ -190,13 +196,9 @@ this can improve results for xCell
 (see https://github.com/grst/immunedeconv/issues/1).}
 
 \item{points}{Logical value to decide if points are added to the plot.}
-
-\item{kcdf}{Character string denoting the kernel to use during the non-parametric
-estimation of the cumulative distribution function of expression levels across
-samples when method="gsva". By default, kcdf="Poisson". It should be used when
-input expression values are integer counts, such as those derived from RNA-seq experiments.
-kcdf="Gaussian" which is suitable when input expression values are continuous,
-such as microarray fluorescent units in logarithmic scale, RNA-seq log-CPMs, log-RPKMs or log-TPMs.}
+}
+\value{
+Returns an HTML report.
 }
 \description{
 Executes all GEGVIC functions to generate an HTML report with
@@ -222,7 +224,7 @@ auto_rep(ge_module = TRUE,
          gsea_pvalue = 0.2,
          gsva_gmt = 'hallmark',
          method = 'gsva',
-         kcdf = 'Poisson',
+         kcdf = 'Gaussian',
          row.names = TRUE,
          col.names = TRUE,
          muts = sample_mutations,

@@ -119,7 +119,7 @@
 #' (see https://github.com/grst/immunedeconv/issues/1).
 #' @param points Logical value to decide if points are added to the plot.
 #'
-#' @return
+#' @return Returns an HTML report.
 #'
 #' @export
 #'

@@ -13,7 +13,7 @@ ge_single(
   biomart,
   gsva_gmt = "hallmark",
   method = "gsva",
-  kcdf = "Poisson",
+  kcdf = "Gaussian",
   colors = c("orange", "black"),
   row.names = TRUE,
   col.names = TRUE
@@ -47,10 +47,8 @@ options are: 'gsva', 'ssgea' or 'zscore'. Default value is 'gsva'.}
 
 \item{kcdf}{Character string denoting the kernel to use during the non-parametric
 estimation of the cumulative distribution function of expression levels across
-samples when method="gsva". By default, kcdf="Poisson". It should be used when
-input expression values are integer counts, such as those derived from RNA-seq experiments.
-kcdf="Gaussian" which is suitable when input expression values are continuous,
-such as microarray fluorescent units in logarithmic scale, RNA-seq log-CPMs, log-RPKMs or log-TPMs.}
+samples when method="gsva". By default, "Gaussian" since GEGVIC transforms
+raw counts using the vst transformation. Other options are 'Poisson' or 'none'.}
 
 \item{colors}{Character vector indicating the colors of the different groups
 to compare. Default values are two: black and orange.}
@@ -76,7 +74,7 @@ gsva.res <- ge_single(counts = sample_counts,
                       biomart = ensembl_biomart_GRCh38_p13,
                       gsva_gmt = 'hallmark',
                       method = 'gsva',
-                      kcdf = 'Poisson',
+                      kcdf = 'Gaussian',
                       colors = c('orange', 'black'),
                       row.names = TRUE,
                       col.names = TRUE)
