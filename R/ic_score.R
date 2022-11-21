@@ -419,6 +419,8 @@ ic_score <- function(tpm,
               legend.position = 'bottom'
         )
     if(is.null(compare) == FALSE){
+        library('ggplot2') # load to avoid Error in `ggpubr::stat_compare_means()`  could not find function "after_stat"
+
         subplots <- subplots +
             ggpubr::stat_compare_means(method = compare,
                                        label = p_label,

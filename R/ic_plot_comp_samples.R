@@ -155,7 +155,7 @@ ic_plot_comp_samples <- function(df,
 
     # Add p-values for comparisons
     if(is.null(compare) == FALSE){
-        library('ggplot2')
+        library('ggplot2') # load to avoid Error in `ggpubr::stat_compare_means()`  could not find function "after_stat"
 
         p <- p +
             ggpubr::stat_compare_means(method = compare,
