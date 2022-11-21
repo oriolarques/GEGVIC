@@ -386,7 +386,7 @@ ic_score <- function(tpm,
               axis.text.x = element_text(angle = 45, hjust = 1),
               legend.position = 'bottom',
               strip.background = element_rect(
-                  color="black", fill="black", size=1.5, linetype="solid"),
+                  color="black", fill="black", linewidth=1.5, linetype="solid"),
               strip.text = element_text(color = 'white')) +
         facet_wrap(~ Cell_type,
                    scales = 'free_y',

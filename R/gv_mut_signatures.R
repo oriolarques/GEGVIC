@@ -193,7 +193,7 @@ gv_mut_signatures <- function(muts,
             axis.title.y = element_blank(),
             axis.text.x = element_text(size = 8, angle = 45, hjust = 1, face = 'bold'),
             strip.background = element_rect(
-                color="black", fill="black", size=1.5, linetype="solid"),
+                color="black", fill="black", linewidth=1.5, linetype="solid"),
             strip.text = element_text(color = 'white')
         ) +
 
