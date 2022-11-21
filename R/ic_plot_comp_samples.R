@@ -141,6 +141,8 @@ ic_plot_comp_samples <- function(df,
             axis.title.y = element_blank(),
             axis.text.x = element_text(angle = 45, hjust = 1),
             legend.position = 'bottom',
+            legend.title = element_text(face='bold', size =12),
+            legend.text = element_text(size =12),
             strip.background = element_rect(
                 color="black", fill="black", size=1.5, linetype="solid"),
             strip.text = element_text(color = 'white')

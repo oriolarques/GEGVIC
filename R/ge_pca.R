@@ -65,10 +65,30 @@ ge_pca <- function(counts,
         colnames(.)
 
     # plot PCA
-    DESeq2::plotPCA(vsd, intgroup = quoted.resp) +
-                scale_color_manual(values = colors) +
-                labs(title = 'Principal Component Analysis') +
-                theme_bw() +
-                theme(plot.title = element_text(hjust = 0.5))
+    # DESeq2::plotPCA(vsd, intgroup = quoted.resp) +
+    #             scale_color_manual(values = colors) +
+    #             labs(title = 'Principal Component Analysis') +
+    #             theme_bw() +
+    #             theme(plot.title = element_text(hjust = 0.5))
+    ## PCA
+    pca <- DESeq2::plotPCA(vsd, intgroup = quoted.resp, returnData = TRUE)
+    ## Get Variation percentage
+    percentVar <- round(100 * attr(pca, "percentVar"))
+    ## Print manual PCA
+    print(
+        ggplot(pca, aes(PC1, PC2, col = !!response)) +
+            geom_point(size = 5, alpha = 0.5)+
+            scale_color_manual(values = colors) +
+            labs(title = 'Principal Component Analysis',
+                 x = paste0("PC1: ",percentVar[1],"% variance"),
+                 y = paste0("PC2: ",percentVar[2],"% variance")) +
+            theme_bw() +
+            theme(plot.title = element_text(hjust = 0.5, size = 15),
+                  axis.text = element_text(size=15, face = "bold"),
+                  axis.title.y = element_text(size=15),
+                  axis.title.x = element_text(size=15),
+                  legend.title = element_text(face='bold', size =12),
+                  legend.text = element_text(size =12))
+    )
 
 }

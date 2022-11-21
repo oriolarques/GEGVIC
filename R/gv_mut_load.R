@@ -89,11 +89,14 @@ gv_mut_load <- function(muts,
         theme_bw() +
         theme(
             plot.title = element_text(size = 15, hjust = 0.5, face = 'bold'),
+            axis.text = element_text(size=15, face = "bold"),
             axis.text.x.bottom = element_blank(),
             axis.title.x = element_blank(),
             axis.title.y = element_blank(),
             axis.text.x = element_text(angle = 45, hjust = 1),
-            legend.position = 'bottom'
+            legend.position = 'bottom',
+            legend.title = element_text(face='bold', size =12),
+            legend.text = element_text(size =12)
         )
 
     # Add p-values for comparisons
@@ -103,7 +106,8 @@ gv_mut_load <- function(muts,
                                        label = p_label,
                                        label.y.npc = 0.95,
                                        label.x.npc = 0.3,
-                                       show.legend = FALSE)
+                                       show.legend = FALSE,
+                                       size = 5)
 
     }
 

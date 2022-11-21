@@ -137,13 +137,14 @@ ge_gsea <- function(annot_res,
                         labs(title =  names(annot_res)[i],
                              size='% of genes in\n leading edge', colour = 'p.adjust')+
                         theme_bw()+
-                        theme(panel.grid = element_blank(),
-                              axis.text = element_text(size=12, face = "bold"),
+                        theme(plot.title = element_text(hjust = 0.5, size = 15),
+                              panel.grid = element_blank(),
                               axis.title.y = element_blank(),
                               axis.title.x = element_text(size=15),
-                              axis.text.x = element_text(size=10),
-                              legend.title = element_text(face='bold', size =8),
-                              legend.text = element_text(size =7))
+                              axis.text.x = element_text(size=15, face = "bold"),
+                              axis.text.y = element_text(size=12, face = "bold"),
+                              legend.title = element_text(face='bold', size =12),
+                              legend.text = element_text(size =12))
                 )
 
                 # 2.3. Cluster gene sets
