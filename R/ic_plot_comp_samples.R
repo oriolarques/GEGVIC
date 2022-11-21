@@ -156,7 +156,8 @@ ic_plot_comp_samples <- function(df,
     # Add p-values for comparisons
     if(is.null(compare) == FALSE){
         p <- p +
-            ggpubr::stat_compare_means(method = compare,
+            ggpubr::stat_compare_means(aes(label = after_stat(p_label)),
+                                       method = compare,
                                        label = p_label,
                                        label.y.npc = 0.95,
                                        label.x.npc = 0.3,
