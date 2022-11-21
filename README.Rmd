@@ -238,11 +238,90 @@ gsva.res <- ge_single(counts = sample_counts,
 ![GSVA](vignettes/03_gsva.png)
 
 
-### 2. Genomic Variations module (GV)
+### 2. Immune cell Composition module (IC)
+
+This module uses functionalities from the `immunedeconv` [package](https://github.com/icbi-lab/immunedeconv).
+
+#### 2.1 Transform raw counts to TPM
+
+To predict immune composition of tumour microenvironment from RNA-sequencing data, we need first to transform raw counts to TPM (Transcript Per kilobase Million), as it is required by all the methods in the `immunedeconv` package. The function `ic_raw_to_tpm()` takes the same input as for the GE_module (RNA-seq raw counts). It also needs the gene identifiers encoding and the biomaRt database. The results should be stored as a new object (i.e.: **tmp**).
+
+``` r
+tpm <- ic_raw_to_tpm(counts = sample_counts,
+                     genes_id = 'ensembl_gene_id',
+                     biomart = ensembl_biomart_GRCh38_p13)
+```
+
+#### 2.2. Predict immune cell composition
+
+The object containing TPM reads will be used as the input for the `ic_deconv()` function, which estimates the immune cell composition of the samples. All the following methods (included in the `immunedeconv` package) QUANTISEQ, TIMER, MCP_COUNTER, XCELL, EPIC and CIBERSORT will be used. 
+
+*Note: To use the CIBERSORT, the user need to register on the CIBERSORT web page (https://cibersort.stanford.edu), obtain a license and download the source code in form of two files CIBERSORT.R and LM22.txt. Then, the user need to specify the path to the storage location of such files in the cibersort argument.*
+
+The indications argument must be a character vector of cancer type codes for each sample in the tpm matrix. Indications supported can be checked using immunedeconv::timer_available_cancers. Results should be saved in a new object (i.e.: **ic.pred**).
+
+``` r
+ic.pred <- ic_deconv(gene_expression = tpm,
+                     indications = rep('coad', ncol(tpm)),
+                     cibersort = 'cibersort/',
+                     tumor = TRUE,
+                     rmgenes = NULL,
+                     scale_mrna = TRUE,
+                     expected_cell_types = NULL)
+```
+
+#### 2.3. Plot cell predictions
+
+With the `ic_plot_comp_samples()` function we can plot a graph comparing each immune cell populations between sample groups per method. For that, the name of column where lies the grouping variable must be written **WITHOUT** quotes in the response argument. The compare argument allow users to decide which method should be used for comparing means. Options are 't.test' and 'wilcox.test' for two groups or 'anova' and 'kruskal.test' for more groups. Also, the p_label argument permits to choose the way the significance is represented, being either 'p.signif' (shows the significance levels) or 'p.format' (shows the formatted p-value). The function allows to change also the colours of the groups and decide if points are added to the plot.
+
+``` r
+ic_plot_comp_samples(df = ic.pred,
+                     metadata = sample_metadata,
+                     response = MSI_status,
+                     compare = 'wilcox.test',
+                     p_label = 'p.format',
+                     colors = c('orange', 'black'),
+                     points = FALSE)
+```
+
+![Immune cell populations between samples](vignettes/07_ic_samples.png)
+
+Similarly, the `ic_plot_comp_celltypes()` function is able to plot the comparison of each immune cell fraction within each sample from the predictions made by CIBERSORT, EPIC and QUANTISEQ.
+
+``` r
+ic_plot_comp_celltypes(df = ic.pred,
+                       metadata = sample_metadata,
+                       response = MSI_status,
+                       col.names = TRUE)
+```
+
+![Immune cell populations per sample](vignettes/07_ic_types.png)
+
+#### 2.4. Calculate Immunophenogram and Immunophenoscores
+
+The last function in this module, `ic_score()` uses TPM expression values to calculate and plot immunophenogram (IPG) and immunophenoscores (IPS) for each sample and each group of study. They give an overall picture of the state of MHC molecules (MHC), Immunomodulators (CP), Effector cells (EC) and Suppressor cells (SC) in each sample, making possible the comparison between samples. For further interpretation please visit https://tcia.at/tools/toolsMain.
+
+**Note: Immunophenograms are generated in a pdf file containing the results for each sample in a single page. The output file, named** `immunophenogram_report.pdf`**, will be stored in the working directory.**
+
+
+``` r
+ips <- ic_score(tpm = tpm,
+                metadata = sample_metadata,
+                response = MSI_status,
+                compare = 'wilcox.test',
+                p_label = 'p.format',
+                colors = c('orange', 'black'))
+```
+
+![Immunophenograms](vignettes/08_ic_ipg.png)
+
+![Immunophenoscores](vignettes/08_ic_ips.png)
+
+### 3. Genomic Variations module (GV)
 
 This module uses functionalities from the `maftools` [package](https://bioconductor.org/packages/release/bioc/html/maftools.html) and the `deconstructSigs` [package](https://github.com/raerose01/deconstructSigs).
 
-#### 2.1. Mutational summary 
+#### 3.1. Mutational summary 
 
 The genomic variations input (*sample_mutations*) together with samples metadata can be used in the function `gv_mut_summary()` to generate two plots that will first summarise the mutation types present in the samples and second highlight the most common mutations by groups in a form of an oncoplot. 
 
@@ -262,7 +341,7 @@ gv_mut_summary(muts = sample_mutations,
 
 ![Oncoplot](vignettes/04_gv_oncoplot.png)
 
-#### 2.2. Mutational load
+#### 3.2. Mutational load
 
 The function `gv_mut_load()` will calculate the total number of mutations per sample. The same inputs as the previous function are required. Also the compare and p_label arguments allow users to decide which method should be used for comparing means and the way the significance is represented. As usual, the function allows to change also the colours of the groups. 
 
@@ -277,7 +356,7 @@ mut.load <- gv_mut_load(muts = sample_mutations,
 
 ![Mutational load](vignettes/05_gv_mutload.png)
 
-#### 2.3. Mutational signatures
+#### 3.3. Mutational signatures
 
 The last function of the module,`gv_mut_signatures()` is used to predict the weight of mutational signatures contributing to an individual tumour sample. As well as the inputs described before, here the user have to choose the version of the genome to work with. To do so, the gbuild argument should be one of the following:
 
@@ -317,84 +396,6 @@ mut.sigs <- gv_mut_signatures(muts = sample_mutations,
 
 ![Mutational heatmap](vignettes/06_gv_heatmap.png)
 
-### 3. Immune cell Composition module (IC)
-
-This module uses functionalities from the `immunedeconv` [package](https://github.com/icbi-lab/immunedeconv).
-
-#### 3.1 Transform raw counts to TPM
-
-To predict immune composition of tumour microenvironment from RNA-sequencing data, we need first to transform raw counts to TPM (Transcript Per kilobase Million), as it is required by all the methods in the `immunedeconv` package. The function `ic_raw_to_tpm()` takes the same input as for the GE_module (RNA-seq raw counts). It also needs the gene identifiers encoding and the biomaRt database. The results should be stored as a new object (i.e.: **tmp**).
-
-``` r
-tpm <- ic_raw_to_tpm(counts = sample_counts,
-                     genes_id = 'ensembl_gene_id',
-                     biomart = ensembl_biomart_GRCh38_p13)
-```
-
-#### 3.2. Predict immune cell composition
-
-The object containing TPM reads will be used as the input for the `ic_deconv()` function, which estimates the immune cell composition of the samples. All the following methods (included in the `immunedeconv` package) QUANTISEQ, TIMER, MCP_COUNTER, XCELL, EPIC and CIBERSORT will be used. 
-
-*Note: To use the CIBERSORT, the user need to register on the CIBERSORT web page (https://cibersort.stanford.edu), obtain a license and download the source code in form of two files CIBERSORT.R and LM22.txt. Then, the user need to specify the path to the storage location of such files in the cibersort argument.*
-
-The indications argument must be a character vector of cancer type codes for each sample in the tpm matrix. Indications supported can be checked using immunedeconv::timer_available_cancers. Results should be saved in a new object (i.e.: **ic.pred**).
-
-``` r
-ic.pred <- ic_deconv(gene_expression = tpm,
-                     indications = rep('coad', ncol(tpm)),
-                     cibersort = 'cibersort/',
-                     tumor = TRUE,
-                     rmgenes = NULL,
-                     scale_mrna = TRUE,
-                     expected_cell_types = NULL)
-```
-
-#### 3.3. Plot cell predictions
-
-With the `ic_plot_comp_samples()` function we can plot a graph comparing each immune cell populations between sample groups per method. For that, the name of column where lies the grouping variable must be written **WITHOUT** quotes in the response argument. The compare argument allow users to decide which method should be used for comparing means. Options are 't.test' and 'wilcox.test' for two groups or 'anova' and 'kruskal.test' for more groups. Also, the p_label argument permits to choose the way the significance is represented, being either 'p.signif' (shows the significance levels) or 'p.format' (shows the formatted p-value). The function allows to change also the colours of the groups and decide if points are added to the plot.
-
-``` r
-ic_plot_comp_samples(df = ic.pred,
-                     metadata = sample_metadata,
-                     response = MSI_status,
-                     compare = 'wilcox.test',
-                     p_label = 'p.format',
-                     colors = c('orange', 'black'),
-                     points = FALSE)
-```
-
-![Immune cell populations between samples](vignettes/07_ic_samples.png)
-
-Similarly, the `ic_plot_comp_celltypes()` function is able to plot the comparison of each immune cell fraction within each sample from the predictions made by CIBERSORT, EPIC and QUANTISEQ.
-
-``` r
-ic_plot_comp_celltypes(df = ic.pred,
-                       metadata = sample_metadata,
-                       response = MSI_status,
-                       col.names = TRUE)
-```
-
-![Immune cell populations per sample](vignettes/07_ic_types.png)
-
-#### 3.4. Calculate Immunophenogram and Immunophenoscores
-
-The last function in this module, `ic_score()` uses TPM expression values to calculate and plot immunophenogram (IPG) and immunophenoscores (IPS) for each sample and each group of study. They give an overall picture of the state of MHC molecules (MHC), Immunomodulators (CP), Effector cells (EC) and Suppressor cells (SC) in each sample, making possible the comparison between samples. For further interpretation please visit https://tcia.at/tools/toolsMain.
-
-**Note: Immunophenograms are generated in a pdf file containing the results for each sample in a single page. The output file, named** `immunophenogram_report.pdf`**, will be stored in the working directory.**
-
-
-``` r
-ips <- ic_score(tpm = tpm,
-                metadata = sample_metadata,
-                response = MSI_status,
-                compare = 'wilcox.test',
-                p_label = 'p.format',
-                colors = c('orange', 'black'))
-```
-
-![Immunophenograms](vignettes/08_ic_ipg.png)
-
-![Immunophenoscores](vignettes/08_ic_ips.png)
 
 ## Additional Features
 

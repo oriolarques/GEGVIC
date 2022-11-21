@@ -94,11 +94,11 @@ GEGVIC requires three main input data:
     *HGNC ID* and its column name **MUST** be adequately named as
     either:
 
--   **entrezgene_id**
+- **entrezgene_id**
 
--   **ensembl_gene_id**
+- **ensembl_gene_id**
 
--   **hgnc_symbol**
+- **hgnc_symbol**
 
 ![input_counts](vignettes/input_counts.png)
 
@@ -106,23 +106,23 @@ GEGVIC requires three main input data:
     calls. Necessary columns **MUST** have the following names
     (following the [MAF
     format](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)):
-    -   Hugo_Symbol: Gene symbol from HGNC.
-    -   Chromosome: Affected chromosome.
-    -   Start_Position: Mutation start coordinate.
-    -   End_Position: Mutation end coordinate.
-    -   Reference_Allele: The plus strand reference allele at this
-        position. Includes the deleted sequence for a deletion or “-”
-        for an insertion.
-    -   Tumor_Seq_Allele2: Tumor sequencing discovery allele.
-    -   Variant_Classification: Translational effect of variant allele.
-        Can be one of the following: Frame_Shift_Del, Frame_Shift_Ins,
-        In_Frame_Del, In_Frame_Ins, Missense_Mutation,
-        Nonsense_Mutation, Silent, Splice_Site, Translation_Start_Site,
-        Nonstop_Mutation, RNA, Targeted_Region.
-    -   Variant_Type: Type of mutation. Can be: ‘SNP’ (Single nucleotide
-        polymorphism), ‘DNP’ (Double nucleotide polymorphism), ‘INS’
-        (Insertion), ‘DEL’ (Deletion).
-    -   Tumor_Sample_Barcode: Sample name.
+    - Hugo_Symbol: Gene symbol from HGNC.
+    - Chromosome: Affected chromosome.
+    - Start_Position: Mutation start coordinate.
+    - End_Position: Mutation end coordinate.
+    - Reference_Allele: The plus strand reference allele at this
+      position. Includes the deleted sequence for a deletion or “-” for
+      an insertion.
+    - Tumor_Seq_Allele2: Tumor sequencing discovery allele.
+    - Variant_Classification: Translational effect of variant allele.
+      Can be one of the following: Frame_Shift_Del, Frame_Shift_Ins,
+      In_Frame_Del, In_Frame_Ins, Missense_Mutation, Nonsense_Mutation,
+      Silent, Splice_Site, Translation_Start_Site, Nonstop_Mutation,
+      RNA, Targeted_Region.
+    - Variant_Type: Type of mutation. Can be: ‘SNP’ (Single nucleotide
+      polymorphism), ‘DNP’ (Double nucleotide polymorphism), ‘INS’
+      (Insertion), ‘DEL’ (Deletion).
+    - Tumor_Sample_Barcode: Sample name.
 
 ![input_muts](vignettes/input_muts.png)
 
@@ -144,12 +144,12 @@ subset of the TCGA-COADREAD cohort.
 
 *Notes:*
 
--   *All the functions names have a prefix that indicate to which module
-    they belong.*
--   *For further information about specific function argument, install
-    the GEGVIC package and use the help function or visit the
-    description page for the corresponding function in the GitHub
-    respository under the ‘R/’ section.*
+- *All the functions names have a prefix that indicate to which module
+  they belong.*
+- *For further information about specific function argument, install the
+  GEGVIC package and use the help function or visit the description page
+  for the corresponding function in the GitHub respository under the
+  ‘R/’ section.*
 
 ``` r
 # load the package
@@ -219,17 +219,16 @@ with the following attributes: ensembl_gene_id, hgnc_symbol,
 entrezgene_id, transcript_length, refseq_mrna. GEGVIC has already
 available the following databases:
 
--   Genome Reference Consortium Human Build 37:
-    *ensembl_biomart_GRCh37*.
+- Genome Reference Consortium Human Build 37: *ensembl_biomart_GRCh37*.
 
--   Genome Reference Consortium Human Build 38:
-    *ensembl_biomart_GRCh38_p13*.
+- Genome Reference Consortium Human Build 38:
+  *ensembl_biomart_GRCh38_p13*.
 
--   Genome Reference Consortium Mouse Build 38 (mm10):
-    *ensembl_biomart_GRCm38_p6*.
+- Genome Reference Consortium Mouse Build 38 (mm10):
+  *ensembl_biomart_GRCm38_p6*.
 
--   Genome Reference Consortium Mouse Build 39 (mm39):
-    *ensembl_biomart_GRCm39*.
+- Genome Reference Consortium Mouse Build 39 (mm39):
+  *ensembl_biomart_GRCm39*.
 
 ``` r
 annot.res <- ge_annot(results_dds = results.dds,
@@ -335,125 +334,12 @@ gsva.res <- ge_single(counts = sample_counts,
 
 ![GSVA](vignettes/03_gsva.png)
 
-### 2. Genomic Variations module (GV)
-
-This module uses functionalities from the `maftools`
-[package](https://bioconductor.org/packages/release/bioc/html/maftools.html)
-and the `deconstructSigs`
-[package](https://github.com/raerose01/deconstructSigs).
-
-#### 2.1. Mutational summary
-
-The genomic variations input (*sample_mutations*) together with samples
-metadata can be used in the function `gv_mut_summary()` to generate two
-plots that will first summarise the mutation types present in the
-samples and second highlight the most common mutations by groups in a
-form of an oncoplot.
-
-Users **MUST** indicate the **unquoted name** of the column that
-contains the groups of interest in the response argument. Additionally,
-parameters that define the number and which genes will appear in the
-oncoplot, the colours of sample groups and whether the names of the
-samples will appear in the plot can be modified.
-
-``` r
-gv_mut_summary(muts = sample_mutations,
-               metadata = sample_metadata,
-               response = MSI_status,
-               top_genes = 10,
-               specific_genes = NULL,
-               col.names = FALSE,
-               colors = c('orange', 'black'))
-```
-
-![Genomic variants summary](vignettes/04_gv_summary.png)
-
-![Oncoplot](vignettes/04_gv_oncoplot.png)
-
-#### 2.2. Mutational load
-
-The function `gv_mut_load()` will calculate the total number of
-mutations per sample. The same inputs as the previous function are
-required. Also the compare and p_label arguments allow users to decide
-which method should be used for comparing means and the way the
-significance is represented. As usual, the function allows to change
-also the colours of the groups.
-
-``` r
-mut.load <- gv_mut_load(muts = sample_mutations,
-                        metadata = sample_metadata,
-                        response = MSI_status,
-                        compare = 'wilcox.test',
-                        p_label = 'p.format',
-                        colors = c('orange', 'black'))
-```
-
-![Mutational load](vignettes/05_gv_mutload.png)
-
-#### 2.3. Mutational signatures
-
-The last function of the module,`gv_mut_signatures()` is used to predict
-the weight of mutational signatures contributing to an individual tumour
-sample. As well as the inputs described before, here the user have to
-choose the version of the genome to work with. To do so, the gbuild
-argument should be one of the following:
-
--   ‘BSgenome.Hsapiens.UCSC.hg19’
-
--   ‘BSgenome.Hsapiens.UCSC.hg38’
-
--   ‘BSgenome.Mmusculus.UCSC.mm10’
-
--   ‘BSgenome.Mmusculus.UCSC.mm39’
-
-Also, the mutational signature matrices containing the frequencies of
-all nucleotide changes per signature need to be indicated. GEGVIC
-contains the matrices from
-[COSMIC](https://cancer.sanger.ac.uk/signatures/downloads/) for single
-and double base substitutions.
-
-To choose one, the user has to indicate ’COSMIC_v{XX}\_{YY}BS_GRCh{ZZ}’
-(i.e. ‘COSMIC_v2_SBS_GRCh37’) in the mut_sigs argument:
-
--   **XX** is the version, that can be v2 or v3.2.
-
--   **YY** indicates if mutations are single (S) or double (D) base
-    substitutions.
-
--   **ZZ** is for the genome assembly, either GRCh37 or GRCh38 for human
-    data and mm9 or mm10 for mouse data.
-
-The function generates two plots. The first is a barplot that shows the
-weight of the top four mutational signatures per sample and group. Since
-depending on how many samples or signatures are present in the analysis
-the results may be difficult to interpret, a second plot is generated.
-This is a heatmap that shows all samples as columns and signatures as
-rows and the weight of each signature determines the intensity of the
-colour. We believe that, although the first plot is more common in the
-literature, the second plot can be helpful, especially when many
-mutational signatures are present in many samples.
-
-``` r
-mut.sigs <- gv_mut_signatures(muts = sample_mutations,
-                              metadata = sample_metadata,
-                              response = MSI_status,
-                              gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
-                              mut_sigs = 'COSMIC_v2_SBS_GRCh38',
-                              tri.counts.method = 'default',
-                              colors = c('orange', 'black'),
-                              col.names = TRUE)
-```
-
-![Mutational signatures](vignettes/06_gv_mutsig.png)
-
-![Mutational heatmap](vignettes/06_gv_heatmap.png)
-
-### 3. Immune cell Composition module (IC)
+### 2. Immune cell Composition module (IC)
 
 This module uses functionalities from the `immunedeconv`
 [package](https://github.com/icbi-lab/immunedeconv).
 
-#### 3.1 Transform raw counts to TPM
+#### 2.1 Transform raw counts to TPM
 
 To predict immune composition of tumour microenvironment from
 RNA-sequencing data, we need first to transform raw counts to TPM
@@ -469,7 +355,7 @@ tpm <- ic_raw_to_tpm(counts = sample_counts,
                      biomart = ensembl_biomart_GRCh38_p13)
 ```
 
-#### 3.2. Predict immune cell composition
+#### 2.2. Predict immune cell composition
 
 The object containing TPM reads will be used as the input for the
 `ic_deconv()` function, which estimates the immune cell composition of
@@ -498,7 +384,7 @@ ic.pred <- ic_deconv(gene_expression = tpm,
                      expected_cell_types = NULL)
 ```
 
-#### 3.3. Plot cell predictions
+#### 2.3. Plot cell predictions
 
 With the `ic_plot_comp_samples()` function we can plot a graph comparing
 each immune cell populations between sample groups per method. For that,
@@ -537,7 +423,7 @@ ic_plot_comp_celltypes(df = ic.pred,
 
 ![Immune cell populations per sample](vignettes/07_ic_types.png)
 
-#### 3.4. Calculate Immunophenogram and Immunophenoscores
+#### 2.4. Calculate Immunophenogram and Immunophenoscores
 
 The last function in this module, `ic_score()` uses TPM expression
 values to calculate and plot immunophenogram (IPG) and immunophenoscores
@@ -564,6 +450,119 @@ ips <- ic_score(tpm = tpm,
 ![Immunophenograms](vignettes/08_ic_ipg.png)
 
 ![Immunophenoscores](vignettes/08_ic_ips.png)
+
+### 3. Genomic Variations module (GV)
+
+This module uses functionalities from the `maftools`
+[package](https://bioconductor.org/packages/release/bioc/html/maftools.html)
+and the `deconstructSigs`
+[package](https://github.com/raerose01/deconstructSigs).
+
+#### 3.1. Mutational summary
+
+The genomic variations input (*sample_mutations*) together with samples
+metadata can be used in the function `gv_mut_summary()` to generate two
+plots that will first summarise the mutation types present in the
+samples and second highlight the most common mutations by groups in a
+form of an oncoplot.
+
+Users **MUST** indicate the **unquoted name** of the column that
+contains the groups of interest in the response argument. Additionally,
+parameters that define the number and which genes will appear in the
+oncoplot, the colours of sample groups and whether the names of the
+samples will appear in the plot can be modified.
+
+``` r
+gv_mut_summary(muts = sample_mutations,
+               metadata = sample_metadata,
+               response = MSI_status,
+               top_genes = 10,
+               specific_genes = NULL,
+               col.names = FALSE,
+               colors = c('orange', 'black'))
+```
+
+![Genomic variants summary](vignettes/04_gv_summary.png)
+
+![Oncoplot](vignettes/04_gv_oncoplot.png)
+
+#### 3.2. Mutational load
+
+The function `gv_mut_load()` will calculate the total number of
+mutations per sample. The same inputs as the previous function are
+required. Also the compare and p_label arguments allow users to decide
+which method should be used for comparing means and the way the
+significance is represented. As usual, the function allows to change
+also the colours of the groups.
+
+``` r
+mut.load <- gv_mut_load(muts = sample_mutations,
+                        metadata = sample_metadata,
+                        response = MSI_status,
+                        compare = 'wilcox.test',
+                        p_label = 'p.format',
+                        colors = c('orange', 'black'))
+```
+
+![Mutational load](vignettes/05_gv_mutload.png)
+
+#### 3.3. Mutational signatures
+
+The last function of the module,`gv_mut_signatures()` is used to predict
+the weight of mutational signatures contributing to an individual tumour
+sample. As well as the inputs described before, here the user have to
+choose the version of the genome to work with. To do so, the gbuild
+argument should be one of the following:
+
+- ‘BSgenome.Hsapiens.UCSC.hg19’
+
+- ‘BSgenome.Hsapiens.UCSC.hg38’
+
+- ‘BSgenome.Mmusculus.UCSC.mm10’
+
+- ‘BSgenome.Mmusculus.UCSC.mm39’
+
+Also, the mutational signature matrices containing the frequencies of
+all nucleotide changes per signature need to be indicated. GEGVIC
+contains the matrices from
+[COSMIC](https://cancer.sanger.ac.uk/signatures/downloads/) for single
+and double base substitutions.
+
+To choose one, the user has to indicate ’COSMIC_v{XX}\_{YY}BS_GRCh{ZZ}’
+(i.e. ‘COSMIC_v2_SBS_GRCh37’) in the mut_sigs argument:
+
+- **XX** is the version, that can be v2 or v3.2.
+
+- **YY** indicates if mutations are single (S) or double (D) base
+  substitutions.
+
+- **ZZ** is for the genome assembly, either GRCh37 or GRCh38 for human
+  data and mm9 or mm10 for mouse data.
+
+The function generates two plots. The first is a barplot that shows the
+weight of the top four mutational signatures per sample and group. Since
+depending on how many samples or signatures are present in the analysis
+the results may be difficult to interpret, a second plot is generated.
+This is a heatmap that shows all samples as columns and signatures as
+rows and the weight of each signature determines the intensity of the
+colour. We believe that, although the first plot is more common in the
+literature, the second plot can be helpful, especially when many
+mutational signatures are present in many samples.
+
+``` r
+mut.sigs <- gv_mut_signatures(muts = sample_mutations,
+                              metadata = sample_metadata,
+                              response = MSI_status,
+                              gbuild = 'BSgenome.Hsapiens.UCSC.hg38',
+                              mut_sigs = 'COSMIC_v2_SBS_GRCh38',
+                              tri.counts.method = 'default',
+                              colors = c('orange', 'black'),
+                              col.names = TRUE)
+```
+
+![Mutational signatures](vignettes/06_gv_mutsig.png)
+
+![Mutational heatmap](vignettes/06_gv_heatmap.png)
 
 ## Additional Features
 
