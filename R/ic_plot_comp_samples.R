@@ -155,7 +155,7 @@ ic_plot_comp_samples <- function(df,
 
     # Add p-values for comparisons
     if(is.null(compare) == FALSE){
-        requireNamespace('ggplot2')
+        library('ggplot2')
 
         p <- p +
             ggpubr::stat_compare_means(method = compare,
