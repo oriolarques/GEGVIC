@@ -356,6 +356,7 @@ mut.load <- gv_mut_load(muts = sample_mutations,
 
 ![Mutational load](vignettes/05_gv_mutload.png)
 
+
 #### 3.3. Mutational signatures
 
 The last function of the module,`gv_mut_signatures()` is used to predict the weight of mutational signatures contributing to an individual tumour sample. As well as the inputs described before, here the user have to choose the version of the genome to work with. To do so, the gbuild argument should be one of the following:
