@@ -353,7 +353,7 @@ mut.load <- gv_mut_load(muts = sample_mutations,
                         p_label = 'p.format',
                         colors = c('orange', 'black'))
 ```
-
+ 
 ![Mutational load](vignettes/05_gv_mutload.png)
 
 
