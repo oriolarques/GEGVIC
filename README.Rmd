@@ -354,7 +354,7 @@ mut.load <- gv_mut_load(muts = sample_mutations,
                         colors = c('orange', 'black'))
 ```
 
-![Mutational load](vignettes/05_gv_mutload.png) 
+![Mutational load](vignettes/05_gv_mutload.png)
 
 
 #### 3.3. Mutational signatures

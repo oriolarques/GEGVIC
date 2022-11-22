@@ -529,7 +529,7 @@ contains the matrices from
 and double base substitutions.
 
 To choose one, the user has to indicate ’COSMIC_v{XX}\_{YY}BS_GRCh{ZZ}’
-(i.e. ‘COSMIC_v2_SBS_GRCh37’) in the mut_sigs argument:
+(i.e. ‘COSMIC_v2_SBS_GRCh37’) in the mut_sigs argument:
 
 - **XX** is the version, that can be v2 or v3.2.
 
