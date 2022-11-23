@@ -34,9 +34,7 @@ Imports:
     GSVA,
     GSEABase,
     SummarizedExperiment,
-    gridExtra,
-    Brobdingnag,
-    Matrix
+    gridExtra
 Suggests: 
     rmarkdown,
     knitr
