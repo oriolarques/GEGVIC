@@ -34,9 +34,10 @@ Imports:
     GSVA,
     GSEABase,
     SummarizedExperiment,
-    gridExtra
+    gridExtra,
+    Brobdingnag,
+    Matrix
 Suggests: 
     rmarkdown,
-    knitr,
-    Brobdingnag
+    knitr
 VignetteBuilder: knitr
