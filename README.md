@@ -377,7 +377,7 @@ a new object (i.e.: **ic.pred**).
 ``` r
 ic.pred <- ic_deconv(gene_expression = tpm,
                      indications = rep('coad', ncol(tpm)),
-                     cibersort = 'cibersort/',
+                     cibersort = 'cibersort/', # Set to NULL to not use this option
                      tumor = TRUE,
                      rmgenes = NULL,
                      scale_mrna = TRUE,
