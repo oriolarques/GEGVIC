@@ -26,6 +26,8 @@ alt="GEGVIC outline" />
 
 ## Installation
 
+**NOTE!!: Since the update of R to version 4.2 there are problems with some third package dependencies. Because of that GEGVIC presently only works under any R versions** $\le$ **4.1.3 or the latest development version (4.3.0).**
+
 You can install the development version of `GEGVIC` from
 [GitHub](https://github.com/oriolarques/GEGVIC) with:
 
