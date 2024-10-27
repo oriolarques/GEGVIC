@@ -158,12 +158,25 @@ ge_single <- function(counts,
         gmt <- GSEABase::getGmt(gsva_gmt)
     }
 
-    # Calculate GSVA/ssGSEA
-    gsva_temp <- GSVA::gsva(expr = as.matrix(exprs.mat.annot),
-                            gset.idx.list = gmt,
-                            method = method,
-                            kcdf = kcdf)
+    # Define gsva parameters
+    if(method == 'gsva') {
+        params_gsva <- GSVA::gsvaParam(exprData = as.matrix(exprs_mat_annot),
+                                       geneSets = gmt,
+                                       kcdf = kcdf)
+    } else if(method == 'ssgsea') {
+        params_gsva <- GSVA::ssgseaParam(exprData = as.matrix(exprs_mat_annot),
+                                         geneSets = gmt,
+                                         kcdf = kcdf)
+    } else if(method == 'zscore') {
+        params_gsva <- GSVA::zscoreParam(exprData = as.matrix(exprs_mat_annot),
+                                         geneSets = gmt,
+                                         kcdf = kcdf)
+    }
 
+    # Calculate GSVA/ssGSEA
+    gsva_temp <- GSVA::gsva(params_gsva,
+                            verbose=TRUE)
+      
     # Plot Heatmap
     ## Define response level group colors in a list
     temp_color <- colors
