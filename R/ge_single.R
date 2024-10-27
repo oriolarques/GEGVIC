@@ -160,15 +160,15 @@ ge_single <- function(counts,
 
     # Define gsva parameters
     if(method == 'gsva') {
-        params_gsva <- GSVA::gsvaParam(exprData = as.matrix(exprs_mat_annot),
+        params_gsva <- GSVA::gsvaParam(exprData = as.matrix(exprs.mat.annot),
                                        geneSets = gmt,
                                        kcdf = kcdf)
     } else if(method == 'ssgsea') {
-        params_gsva <- GSVA::ssgseaParam(exprData = as.matrix(exprs_mat_annot),
+        params_gsva <- GSVA::ssgseaParam(exprData = as.matrix(exprs.mat.annot),
                                          geneSets = gmt,
                                          kcdf = kcdf)
     } else if(method == 'zscore') {
-        params_gsva <- GSVA::zscoreParam(exprData = as.matrix(exprs_mat_annot),
+        params_gsva <- GSVA::zscoreParam(exprData = as.matrix(exprs.mat.annot),
                                          geneSets = gmt,
                                          kcdf = kcdf)
     }
